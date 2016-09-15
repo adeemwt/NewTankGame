@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "36240850285",
+    "firebase_url": "https://tankgameproject-85eb4.firebaseio.com",
+    "project_id": "tankgameproject-85eb4",
+    "storage_bucket": "tankgameproject-85eb4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36240850285:android:8fd93bac767a8caf",
+        "android_client_info": {
+          "package_name": "com.example.adeem.tankgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "36240850285-7me3m3te8c4lsvr93cmrm137ip9mg6p2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWSTucyHnetDJbYwDbU06PdF5Jy4Nkz3I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
