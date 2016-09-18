@@ -10,64 +10,64 @@
     tools:context=".SignUpActivity">
 
     <Button
+        android:id="@+id/signupBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="confirm"
-        android:id="@+id/signupBTN"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="74dp" />
+        android:layout_marginBottom="74dp"
+        android:text="confirm" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="USER NAME"
         android:id="@+id/textView"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="97dp" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PASSWORD"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="97dp"
+        android:text="USER NAME" />
+
+    <TextView
         android:id="@+id/PASS"
-        android:layout_marginTop="36dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="36dp"
+        android:text="PASSWORD" />
 
     <EditText
+        android:id="@+id/nameTXT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/nameTXT"
         android:layout_above="@+id/PASS"
         android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/textView"
-        android:layout_alignStart="@+id/signupBTN" />
+        android:layout_alignStart="@+id/signupBTN"
+        android:layout_toEndOf="@+id/textView" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CONFIRM"
         android:id="@+id/textView2"
-        android:layout_below="@+id/PASS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="34dp" />
+        android:layout_below="@+id/PASS"
+        android:layout_marginTop="34dp"
+        android:text="CONFIRM" />
 
     <EditText
+        android:id="@+id/passTXT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/PASSTXT"
         android:layout_alignBottom="@+id/PASS"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:ems="10"
+        android:inputType="textPassword" />
 
     <EditText
+        android:id="@+id/confirmTXT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10"
-        android:id="@+id/CONFIRMTXT"
         android:layout_alignBottom="@+id/textView2"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:ems="10"
+        android:inputType="textPassword" />
 </RelativeLayout>
