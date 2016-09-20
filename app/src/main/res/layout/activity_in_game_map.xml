@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.adeem.tankgame.inGameMap">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/gyrosxample"
+
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="up"
+        android:id="@+id/upBTN"
+        android:layout_marginBottom="119dp"
+        android:layout_marginEnd="56dp"
+        android:layout_x="222dp"
+        android:layout_y="386dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LEFT"
+        android:id="@+id/leftBTN"
+        android:layout_marginTop="44dp"
+        android:layout_x="163dp"
+        android:layout_y="425dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RIGHT"
+        android:id="@+id/rightBTN"
+
+        android:layout_x="270dp"
+        android:layout_y="421dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DOWN"
+        android:id="@+id/downBTN"
+        android:layout_x="229dp"
+        android:layout_y="445dp" />
+
+    <ImageButton
+        android:layout_width="42dp"
+        android:layout_height="69dp"
+        android:id="@+id/ourTank"
+        android:layout_x="163dp"
+        android:layout_y="196dp"
+        android:background="@drawable/tank" />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="66dp"
+        android:id="@+id/target2"
+        android:background="@drawable/target_goat"
+        android:visibility="gone"
+/>
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="66dp"
+        android:id="@+id/target1"
+        android:background="@drawable/target_goat"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="66dp"
+        android:id="@+id/target5"
+        android:background="@drawable/target_goat"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="66dp"
+        android:id="@+id/target3"
+        android:background="@drawable/target_goat"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="66dp"
+        android:id="@+id/target4"
+        android:background="@drawable/target_goat"
+        android:visibility="gone"/>
+
+
+</AbsoluteLayout>

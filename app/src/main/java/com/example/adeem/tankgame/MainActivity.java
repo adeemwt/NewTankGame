@@ -75,7 +75,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              startAct2Intent = new Intent(this, SignUpActivity.class); // change
              startActivity(startAct2Intent);
          }else if(buttonId == R.id.startBTN){
-             startAct2Intent = new Intent(this, SignUpActivity.class);// change
+
+             prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+
+             SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+             editor.putString("difficultly","easy");
+
+             editor.commit();
+             startAct2Intent = new Intent(this, inGameMap.class);// change
              startActivity(startAct2Intent);
          }else if(buttonId == R.id.multiBTN){
              startAct2Intent = new Intent(this, SignUpActivity.class);// change

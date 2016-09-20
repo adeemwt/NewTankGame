@@ -3,6 +3,8 @@ package classes;
 import android.graphics.Color;
 import android.graphics.Point;
 
+import java.util.Comparator;
+
 /**
  * Created by adeem on 14/09/2016.
  *
@@ -15,17 +17,22 @@ import android.graphics.Point;
  4.	Class - Player  (var)
 
  */
-public class Tank { //player id? or a class player? איקe vy tank has a player what deos the player class do other than save the id and name? nothing .. but you need a conection so you can use it to save if we won or not okzy, then plalyer , less searches WAT?
+public class Tank implements Comparable<Tank> { //player id? or a class player? איקe vy tank has a player what deos the player class do other than save the id and name? nothing .. but you need a conection so you can use it to save if we won or not okzy, then plalyer , less searches WAT?
     private Point position;
     private int currentScore;
     private Player player;
     private Color colour;//every tank has a player, and when it scores it saves ... i dont know what the player deos XD
     private float headingAngle;
+
     public Tank(Player player,Color colour){
-        this.position = new Point(0,0);
+        this.position = new Point(0,0);//initial possitoin
         this.currentScore = 0;
         this.colour = colour;
         this.player = player;
+    }
+
+    public Player getPlayer(){
+        return this.player;
     }
     public Color getColour(){
         return this.colour;
@@ -56,5 +63,10 @@ public class Tank { //player id? or a class player? איקe vy tank has a player
 
     public void setheadingAngle(float headingAngle) {
         this.headingAngle = headingAngle;
+    }
+
+    @Override
+    public int compareTo(Tank another) {
+       return this.getPlayer().getName().compareTo(another.getPlayer().getName());
     }
 }
