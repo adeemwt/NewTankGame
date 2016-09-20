@@ -37,7 +37,7 @@ import java.lang.Math;
 //TODO : GYRO, SHOOTING, HIGHSCORE BORES, SAVES KILLS, LIMITS, CHECKING FOR ACCEDENTS ,SPINNER DIFF, SPINNER FOR MULTI, HOST/GUEST
 import classes.*;
 
-public class inGameMap extends AppCompatActivity implements View.OnClickListener {
+public class inGameMap extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
     final Point EASY_SIZE  = new Point(1000,1000);
     final Point MEDUIM_SIZE  = new Point(1500,1500);
     final Point HARD_SIZE  = new Point(2000,2000);
@@ -53,6 +53,9 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
     final int TARGET_NUM_MADUIM = 10;
     final int TARGET_NUM_HARD = 15;
     final double EPSILON = 0.000001;
+
+
+    private SensorManager sManager;
 
     int targetNum = 0;
     ArrayList<Tank> tanks;
@@ -84,8 +87,8 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
 
     };
 
-    SensorManager sensorManager;
-    Sensor sensor;
+//    SensorManager sensorManager;
+//    Sensor sensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,10 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
 //
 //        SensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        Sensor = SensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED );
-
+        sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sManager.registerListener(this,
+                sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_UI);
         if(restoredText!=null){
             switch (restoredText){
                 case("easy") : {
@@ -195,7 +201,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
             img.setY(targets.get(i).getCords().y);
             img.setVisibility(View.VISIBLE);
 
-            test.setText(test.getText() +"\n("+ x +"," + y +")");
+        //    test.setText(test.getText() +"\n("+ x +"," + y +")");
             TargetImages.add(img);
         }
 
@@ -214,47 +220,61 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
 //    // Create a constant to convert nanoseconds to seconds.// STOPSHIP: 19/09/2016
 //    public void onAccuracyChanged(Sensor sensor, int acc) { }
 //
-//    public void onSensorChanged(SensorEvent event) { // the same
-//        // This timestep's delta rotation to be multiplied by the current rotation
-//        // after computing it from the gyro sample data.
-//        if (timestamp != 0) {
-//            final float dT = (event.timestamp - timestamp) * NS2S;
-//            // Axis of the rotation sample, not normalized yet.
-//            float axisX = event.values[0];
-//            float axisY = event.values[1];
-//            float axisZ = event.values[2];
-//            // Calculate the angular speed of the sample
-//            float omegaMagnitude = (float)Math.sqrt(axisX*axisX + axisY*axisY + axisZ*axisZ);
+
+    public void onSensorChanged(SensorEvent event) { // the same
+        // This timestep's delta rotation to be multiplied by the current rotation
+        // after computing it from the gyro sample data.
+        if (timestamp != 0) {
+            final float dT = (event.timestamp - timestamp) * NS2S;
+            // Axis of the rotation sample, not normalized yet.
+            float axisX = event.values[0];
+            float axisY = event.values[1];
+            float axisZ = event.values[2];
+            // Calculate the angular speed of the sample
+            float omegaMagnitude = (float)Math.sqrt(axisX*axisX + axisY*axisY + axisZ*axisZ);
+
+            // Normalize the rotation vector if it's big enough to get the axis
+            // (that is, EPSILON should represent your maximum allowable margin of error)
+            if (omegaMagnitude > EPSILON) {
+                axisX /= omegaMagnitude;
+                axisY /= omegaMagnitude;
+                axisZ /= omegaMagnitude;
+            }
+            // Integrate around this axis with the angular speed by the timestep
+            // in order to get a delta rotation from this sample over the timestep
+            // We will convert this axis-angle representation of the delta rotation
+            // into a quaternion before turning it into the rotation matrix.
+            float  thetaOverTwo = omegaMagnitude * dT / 2.0f;
+            float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
+            float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
+            deltaRotationVector[0] = sinThetaOverTwo * axisX;
+            deltaRotationVector[1] = sinThetaOverTwo * axisY;
+            deltaRotationVector[2] = sinThetaOverTwo * axisZ;
+            deltaRotationVector[3] = cosThetaOverTwo;
+
+            test.setText("the Gyro is : \n  x = "+deltaRotationVector[0] +"\n y = "+deltaRotationVector[1] +"\n z = "+ deltaRotationVector[2] +"\n fourth one ... = "+deltaRotationVector[3]);
+        }
+        timestamp = event.timestamp;
+        float[] deltaRotationMatrix = new float[9];
+
+        SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+                for(int i =0 ; i < TargetImages.size() ; i++) {
+            TargetImages.get(i).setY(TargetImages.get(i).getY() -deltaRotationVector[1]*50);
+            TargetImages.get(i).setX(TargetImages.get(i).getX() +deltaRotationVector[0]*50);
+        }
+        double angle = Math.asin(deltaRotationVector[0]*100 / Math.sqrt(Math.pow(deltaRotationVector[0]*100,2)+Math.pow(deltaRotationVector[1]*100,2)));
+//        if(deltaRotationVector[1] < 0)
+//        ourTank.setRotation((float)-(deltaRotationVector[0])*1000);
 //
-//            // Normalize the rotation vector if it's big enough to get the axis
-//            // (that is, EPSILON should represent your maximum allowable margin of error)
-//            if (omegaMagnitude > EPSILON) {
-//                axisX /= omegaMagnitude;
-//                axisY /= omegaMagnitude;
-//                axisZ /= omegaMagnitude;
-//            }
-//            // Integrate around this axis with the angular speed by the timestep
-//            // in order to get a delta rotation from this sample over the timestep
-//            // We will convert this axis-angle representation of the delta rotation
-//            // into a quaternion before turning it into the rotation matrix.
-//            float  thetaOverTwo = omegaMagnitude * dT / 2.0f;
-//            float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
-//            float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
-//            deltaRotationVector[0] = sinThetaOverTwo * axisX;
-//            deltaRotationVector[1] = sinThetaOverTwo * axisY;
-//            deltaRotationVector[2] = sinThetaOverTwo * axisZ;
-//            deltaRotationVector[3] = cosThetaOverTwo;
-//
-//            test.setText("the Gyro is : \n  x = "+deltaRotationVector[0] +"\n y = "+deltaRotationVector[1] +"\n z = "+ deltaRotationVector[2] +"\n fourth one ... = "+deltaRotationVector[3]);
-//        }
-//        timestamp = event.timestamp;
-//        float[] deltaRotationMatrix = new float[9];
-//
-//        SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
-//        // User code should concatenate the delta rotation we computed with the current rotation
-//        // in order to get the updated rotation.
-//        // rotationCurrent = rotationCurrent * deltaRotationMatrix;
-//    }
+//        else
+            ourTank.setRotation((float)(-angle/Math.PI*180));
+
+        test.setText(test.getText() + "\nthe angle is : " + angle + "turing from pi" + angle/Math.PI*180);
+
+        // User code should concatenate the delta rotation we computed with the current rotation
+        // in order to get the updated rotation.
+        // rotationCurrent = rotationCurrent * deltaRotationMatrix;
+    }
 
 //
 //
@@ -283,6 +303,51 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
 //            test.setText("X : " + (int)x + " rad/s" +"\nY : " + (int)y + " rad/s"+ "\nZ : " + (int)z + " rad/s");
 //        }
 //    };
+
+
+@Override
+protected void onResume()
+{
+    super.onResume();
+        /*register the sensor listener to listen to the gyroscope sensor, use the
+        callbacks defined in this class, and gather the sensor information as quick
+        as possible*/
+    //sManager.registerListener(this, sManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),SensorManager.SENSOR_DELAY_FASTEST);
+}
+
+    //When this Activity isn't visible anymore
+    @Override
+    protected void onStop()
+    {
+        //unregister the sensor listener
+        sManager.unregisterListener(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor arg0, int arg1)
+    {
+        //Do nothing.
+    }
+
+//    @Override
+//    public void onSensorChanged(SensorEvent event)
+//    {        //else it will output the Roll, Pitch and Yawn values
+//
+//        if (event.accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE)
+//        {
+//            return;
+//        }
+//        for(int i =0 ; i < TargetImages.size() ; i++) {
+//            TargetImages.get(i).setX(TargetImages.get(i).getX() +(event.values[1]-10)/2);
+//            TargetImages.get(i).setY(TargetImages.get(i).getY() +(event.values[2]-10)/2);
+//        }
+//        test.setText("Orientation X (Roll) :"+ Float.toString(event.values[2]) +"\n"+
+//                "Orientation Y (Pitch) :"+ Float.toString(event.values[1]) +"\n"+
+//                "Orientation Z (Yaw) :"+ Float.toString(event.values[0]));
+//        //if sensor is unreliable, return void
+//
+//    }
 }
 
 
