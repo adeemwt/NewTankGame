@@ -14,4 +14,11 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <color name="white">#000000</color>
+
+    <string-array name="Diff_spinner">
+        <item>easy</item>
+        <item>medium</item>
+        <item>hard</item>
+    </string-array>
 </resources>

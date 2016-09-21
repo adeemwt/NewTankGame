@@ -1,5 +1,6 @@
 package com.example.adeem.tankgame;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ Firebase mRef;
 
     SignUpActivity thisclass = this;
 
+    final Activity Me = this;
     String MY_PREFS_NAME = "usernamePREFS";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +67,10 @@ Firebase mRef;
 
                         editor.commit();
 
-                   Intent startAct2Intent = new Intent(thisclass, MainActivity.class);
-                    startActivity(startAct2Intent); }
+                        Me.onBackPressed();
+//                   Intent startAct2Intent = new Intent(thisclass, MainActivity.class);
+//                    startActivity(startAct2Intent);
+                    }
                     else{
 
                         Toast.makeText(getApplicationContext(), "the username already exists, please try again !", Toast.LENGTH_SHORT).show();

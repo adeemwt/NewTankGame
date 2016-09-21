@@ -7,16 +7,18 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@color/white"
+
+    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
+    android:id="@+id/mainlayout">
     tools:context="com.example.adeem.tankgame.inGameMap">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Large Text"
-        android:id="@+id/gyrosxample"
-
-        />
+    <ImageView
+        android:layout_width="729dp"
+        android:layout_height="729dp"
+        android:id="@+id/limitsView"
+        android:layout_x="0dp"
+        android:layout_y="0dp"
+        android:background="@drawable/limits2" />
 
     <Button
         android:layout_width="wrap_content"
@@ -58,45 +60,121 @@
         android:layout_width="42dp"
         android:layout_height="69dp"
         android:id="@+id/ourTank"
-        android:layout_x="163dp"
-        android:layout_y="196dp"
-        android:background="@drawable/tank" />
+        android:layout_x="176dp"
+        android:layout_y="209dp"
+        android:background="@drawable/trastank" />
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="66dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/target2"
-        android:background="@drawable/target_goat"
+        android:background="@drawable/target_goattrans"
         android:visibility="gone"
 />
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="66dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/target1"
-        android:background="@drawable/target_goat"
+        android:background="@drawable/target_goattrans"
         android:visibility="gone"/>
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="66dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/target5"
-        android:background="@drawable/target_goat"
+        android:background="@drawable/target_goattrans"
         android:visibility="gone"/>
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="66dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/target3"
-        android:background="@drawable/target_goat"
+        android:background="@drawable/target_goattrans"
         android:visibility="gone"/>
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="66dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:id="@+id/target4"
-        android:background="@drawable/target_goat"
+        android:background="@drawable/target_goattrans"
         android:visibility="gone"/>
 
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target6"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target7"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target8"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target9"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target10"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target11"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target12"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target13"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target14"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:id="@+id/target15"
+        android:background="@drawable/target_goattrans"
+        android:visibility="gone"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/gyrosxample"
+        />
+
+    <TextView
+        android:layout_width="111dp"
+        android:layout_height="46dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/time"
+        android:layout_x="277dp"
+        android:layout_y="26dp" />
 
 </AbsoluteLayout>

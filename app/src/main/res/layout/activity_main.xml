@@ -71,6 +71,13 @@
         android:layout_alignEnd="@+id/txtinhere"
         android:layout_below="@+id/signInBTN"
         android:text="log off" />
+    <Spinner
+        android:id="@+id/Diff_spinner"
+
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/startBTN"
+        android:layout_alignStart="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView3"

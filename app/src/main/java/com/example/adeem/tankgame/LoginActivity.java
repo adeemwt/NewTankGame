@@ -1,8 +1,10 @@
 package com.example.adeem.tankgame;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -26,6 +28,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     Firebase mRef;
     LoginActivity thisclass = this;
     // UI references.
+
+   final  Activity Me = this;
     private AutoCompleteTextView nameView;
     private EditText passwordView;
     private View mProgressView;
@@ -49,15 +53,13 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         mProgressView = findViewById(R.id.login_progress);
 
 
-
-
     }
 
     @Override
     public void onClick(View v) {
         final String name = this.nameView.getText().toString();
         final String pass = this.passwordView.getText().toString();
-
+            boolean flag= false;
 
             mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/" + name + "_pass");//here we copy the url ... so the "users" here is kind of a key that gets a value
             mRef.addValueEventListener(new ValueEventListener() {
@@ -80,10 +82,9 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
                             editor.commit();
 
-
-
-                            Intent startAct2Intent = new Intent(thisclass, MainActivity.class);
-                            startActivity(startAct2Intent);
+                            Me.onBackPressed();
+//                            Intent startAct2Intent = new Intent(thisclass, MainActivity.class);
+//                            startActivity(startAct2Intent);
                         }else
                             Toast.makeText(getApplicationContext(), "NOPE WRONG PASS", Toast.LENGTH_SHORT).show();
                     }
