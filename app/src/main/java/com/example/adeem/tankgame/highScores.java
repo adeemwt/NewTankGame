@@ -56,27 +56,18 @@ public class highScores extends AppCompatActivity implements View.OnClickListene
         });
 
         fillSingle();
-//
-//
-//        String[] values = new String[] { "05492973572 john",
-//                "0527847574892 marry",
-//                "0500000000 dick",
-//                "09204738729  work"
-//        };
-//
-//        ArrayAdapter<String> listadapter = new ArrayAdapter<String>(this,
-//                android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
-
-        // Assign adapter to ListView
-     //   PlayerList.setAdapter(listadapter);
        button.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        if(button.isChecked())
         fillSingle();
+        else
+            fillMulti();
     }
+
 
     public void fillMulti(){
 
@@ -92,7 +83,7 @@ public class highScores extends AppCompatActivity implements View.OnClickListene
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) {
 //                    BlogPost post = postSnapshot.getValue(BlogPost.class);
 //                    System.out.println(post.getAuthor() + " - " + post.getTitle());
-      //           txt.setText(txt.getText()+"\n" + postSnapshot.getValue(String.class));
+      //           txt.setText(txt.getText()+"\n" + postSnapshot.getValue(String.class)); mabe youll go learn for yor exam and illl finish it? adeem?
                     String usernameKey =  postSnapshot.getKey();
                     txt.setText(txt.getText()+"\n" +usernameKey);
                     Iterator it  =postSnapshot.getChildren().iterator();
