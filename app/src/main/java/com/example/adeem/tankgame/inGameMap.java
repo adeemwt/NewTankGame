@@ -3,6 +3,7 @@ package com.example.adeem.tankgame;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -166,7 +167,9 @@ int seconds;
                 sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_UI);
 
-        if(Difficulty!=null){
+
+
+        if(Difficulty!=null){ /// WE CAN USE STRING RESURCE HERE ... need changing
             switch (Difficulty){
                 case("easy") : {
                     this.WidthAndHieght = this.EASY_SIZE;
@@ -396,13 +399,15 @@ int seconds;
 
         boolean moveYup  = (ourTank.getY() < backGround.getY() - deltaRotationVector[1]*50 && deltaRotationVector[1] >0);//how do we make this shit look good ?
         boolean moveYdown = (backGround.getHeight()-0.5f)/scale >-backGround.getY()-ourTank.getY()-(((backGround.getHeight()-0.5f)/scale )-ourTank.getY()) -48;// -(backGround.getY()+(backGround.getHeight()-0.5f)/scale - deltaRotationVector[1]*50);// && deltaRotationVector[1] <0  ;
-        boolean moveY2 = ((backGround.getHeight()-0.5f)/scale - Math.abs(backGround.getY())) > ourTank.getY();
-    test.setText(ourTank.getY()+" > "+(backGround.getY()+(backGround.getHeight()-0.5f)/scale - deltaRotationVector[1]*50)+"\n  backGround.getY() is "+ backGround.getY() +"\n (backGround.getHeight()-0.5f)/scale is = " + (backGround.getHeight()-0.5f)/scale);
+
+        boolean moveY2 = (backGround.getHeight() - Math.abs(backGround.getY())) > ourTank.getY() + 130;
+
+    test.setText(ourTank.getY()+" < "+((backGround.getHeight()-0.5f) - Math.abs(backGround.getY()))+"\n  backGround.getY() is "+ backGround.getY() +"\n (backGround.getHeight()-0.5f)/scale is = " + (backGround.getHeight()-0.5f)/scale);
 //WTFFFFFFFFFFFFFFFFF
         for(int i =0 ; i < TargetImages.size() ; i++) {
            // if(moveX)
                 TargetImages.get(i).setX(TargetImages.get(i).getX() +deltaRotationVector[0]*50);// tank going left = delta >0 , tank going right delta < 0
-           // if(moveY2)
+            if(moveY2)
                 TargetImages.get(i).setY(TargetImages.get(i).getY() -deltaRotationVector[1]*50);// tank going up = delta>0, tank going down delta < 0
         }
 
