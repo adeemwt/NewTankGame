@@ -13,8 +13,8 @@
     android:id="@+id/mainlayout">
     tools:context="com.example.adeem.tankgame.inGameMap">
     <ImageView
-        android:layout_width="729dp"
-        android:layout_height="729dp"
+        android:layout_width="1000dp"
+        android:layout_height="1000px"
         android:id="@+id/limitsView"
         android:layout_x="0dp"
         android:layout_y="0dp"

@@ -51,7 +51,7 @@ Firebase mRef;
         final String pass = this.passtxt.getText().toString();
         if(pass.equals(this.confirmPasstxt.getText().toString())){
 
-            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/" + name + "_pass");//here we copy the url ... so the "users" here is kind of a key that gets a value
+            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");// + "_pass");//here we copy the url ... so the "users" here is kind of a key that gets a value
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

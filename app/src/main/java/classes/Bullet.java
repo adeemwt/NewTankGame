@@ -30,7 +30,6 @@ public class Bullet {
     }
 
     public ArrayList<ImageView> shoot(){
-        double alpha2 = 0 ;
         double alpha1 = 0;
         double Xs =0;
         double Ys =0 ;
@@ -52,11 +51,11 @@ public class Bullet {
             if(tankPosition.x <= allTarget.get(i).getX())
                 alpha1   += 90;
             else{
-
                 alpha1 = 270 -alpha1;
             }
 
-            if(alpha1 + 10 > headingAngle && alpha1 - 15 < headingAngle){
+
+            if(alpha1 + 15 > headingAngle && alpha1 - 15 < headingAngle){
                    allTarget.get(i).setVisibility(View.GONE);
             }
 

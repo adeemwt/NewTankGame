@@ -48,7 +48,7 @@ import java.lang.Math;
 import java.util.Timer;
 import java.util.TimerTask;
 
-//TODO :SHOOTING, HIGHSCORE BORES, SAVES KILLS, ~LIMITS, CHECKING FOR ACCEDENTS ,  HOST/GUEST
+//TODO : HIGHSCORE BORES, SAVES KILLS, ~LIMITS, CHECKING FOR ACCEDENTS ,  HOST/GUEST
 import classes.*;
 
 public class inGameMap extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
@@ -91,6 +91,10 @@ int seconds;
     private Button right;
     private Button down;
 
+
+    private String Difficulty;
+    private String UserName;
+
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
@@ -119,13 +123,16 @@ int seconds;
 
 
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String restoredText = prefs.getString("difficultly", null);
+        Difficulty = prefs.getString("difficultly", null);
+        UserName = prefs.getString("username", null);
+
         ourTank = (ImageButton) findViewById(R.id.ourTank);
         test =(TextView) findViewById(R.id.gyrosxample);
         up = (Button) findViewById(R.id.upBTN);
         down = (Button) findViewById(R.id.downBTN);
         left= (Button) findViewById(R.id.leftBTN);
         right= (Button) findViewById(R.id.rightBTN);
+
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -153,12 +160,14 @@ int seconds;
         right.setVisibility(View.GONE);
 
         backGround = (ImageView) findViewById(R.id.limitsView);
+
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,
                 sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_UI);
-        if(restoredText!=null){
-            switch (restoredText){
+
+        if(Difficulty!=null){
+            switch (Difficulty){
                 case("easy") : {
                     this.WidthAndHieght = this.EASY_SIZE;
                     targetNum = TARGET_NUM_EASY;
@@ -176,10 +185,11 @@ int seconds;
                 }
             }
             randTargets(targetNum);
+
             String userName = prefs.getString("username", null);
 
             Random rnd = new Random();
-            Color c = new Color();
+            Color c = new Color();                   // the tank does not have a color for now
             c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             tanks = new ArrayList<> (playerNum);
             tanks.add(new Tank(new Player(userName),c));
@@ -192,28 +202,21 @@ int seconds;
             rlayout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    //
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         double alpha1;
-                       double Xs= Math.pow(event.getX()-ourTank.getX(),2);
-                        double Ys =        Math.pow(event.getY() - ourTank.getY(),2);
+                        double Xs= Math.pow(event.getX()-ourTank.getX(),2);
+                        double Ys =  Math.pow(event.getY() - ourTank.getY(),2);
                         double sqrt =Math.sqrt(Xs + Ys );
 
                         alpha1 = Math.asin((event.getY() - ourTank.getY())/sqrt);
-                       // alpha1 = Math.atan((event.getX() - ourTank.getX()) /(event.getY() - ourTank.getY()));
                         alpha1 =  alpha1 * 180 / Math.PI;
-                //        test.setText("before ROTATION" + alpha1);
-
                         if(ourTank.getX() <= event.getX())
                          alpha1   += 90;
                         else{
-
                             alpha1 = 270 -alpha1;
                         }
-
                         ourTank.setRotation((float)alpha1);
-                //        test.setText(test.getText() +"\nROTATION" + alpha1 + "\ntank cords (" +ourTank.getX()+","+ourTank.getY()+")" );
-                 //       test.setText(test.getText() +"\nTouch coordinates : " +
-                //                String.valueOf(event.getX()) + "," + String.valueOf(event.getY()));
                     }
                     return true;
                 }
@@ -265,33 +268,31 @@ int seconds;
                 }
                 break;
             }
-            case(R.id.mainlayout):{
-           //     test.setText("x  = "+view.getX() + "y= "+ view.getY());
-            }
+
         }
     }
 
 
-    public void  moveTargets(int xOry, int movement){
-       // test.setText("ATTEMP  PPVKKKKKKKKKP P P P moved in X CORDS");
-    movement*=3;
-        test.setText("height  width " +backGround.getLayoutParams().height+
-        "tank  x = " +ourTank.getX() + "y = " +ourTank.getY() + "\n backgourd (" + backGround.getX() +", " + backGround.getY() +") movement " + movement);
+    public void  moveTargets(int xOry, int movement){ // buttons only
+        movement*=3;
+        final float scale = getResources().getDisplayMetrics().density;
+        test.setText("the Width is "+ backGround.getWidth() + "\nthe dp calc is "+ (backGround.getHeight()-0.5f)/scale);
+        //     test.setText("height  width " +backGround.getLayoutParams().height+
+    //    "tank  x = " +ourTank.getX() + "y = " +ourTank.getY() + "\n backgourd (" + backGround.getX() +", " + backGround.getY() +") movement " + movement);
         if(xOry == CHOOSE_X){
-           // test.setText("ATTEMP  PPP P P P moved in X CORDS");
             if(movement <  0 ) {
 
             }
             else{
                 if(ourTank.getX()  < backGround.getX()) return;
             }
-           //if(ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX()+backGround.getWidth()) {
+           if(ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale) {
                for (int i = 0; i < TargetImages.size(); i++)
                    TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
                if (movement < 0)
                    ourTank.setRotation(90);
                else ourTank.setRotation(-90);
-        //   }
+           }
         }
         else{
             if(movement <  0 ) {
@@ -300,15 +301,15 @@ int seconds;
             else{
                 if(ourTank.getY()  < backGround.getY()) return;
             }
-          // if(ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY()+backGround.getWidth()) {
+          if(ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY()+(backGround.getHeight()-0.5f)/scale) {
                 for (int i = 0; i < TargetImages.size(); i++)
                     TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
                 if (movement < 0)
                     ourTank.setRotation(180);
                 else ourTank.setRotation(0);
-          //  }
+           }
 
-            //todo MAKE THIS WORK
+            //todo MAKE THIS WORK ,
         }
     }
     public void randTargets(int targetNum){
@@ -316,9 +317,12 @@ int seconds;
 
 
         final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
+        test.setText("the dinsitty is " +scale);
+        int pixels = (int) (WidthAndHieght.x* scale + 0.5f);
 
-      //  int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, WidthAndHieght.x, getResources().getDisplayMetrics());
+//    //   int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, WidthAndHieght.x, getResources().getDisplayMetrics());
+// TODO: 23/09/2016
+
         backGround.getLayoutParams().height = pixels;
         backGround.getLayoutParams().width =pixels;
         backGround.requestLayout();
@@ -326,7 +330,7 @@ int seconds;
 
         ///I CHANGED THIS
         for(int i = 0 ; i< targetNum ; i++){
-            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55;
+            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
             int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
             int size = (int)(Math.random() *MAX_TARGET_SIZE);
             targets.add(new Taget(new Point(x,y),size));
@@ -375,10 +379,31 @@ int seconds;
         timestamp = event.timestamp;
         float[] deltaRotationMatrix = new float[9];
 
+
+
+
+
         SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
+        final float scale = getResources().getDisplayMetrics().density;
+
+
+//        if(ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale)
+//        if(ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY()+(backGround.getHeight()-0.5f)/scale) dude XD
+//
+
+        boolean moveX  = (ourTank.getX() < backGround.getX() + deltaRotationVector[0]*50 && deltaRotationVector[0] >0
+            || ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale + deltaRotationVector[0]*50 && deltaRotationVector[0] <0 ) ;
+
+        boolean moveYup  = (ourTank.getY() < backGround.getY() - deltaRotationVector[1]*50 && deltaRotationVector[1] >0);//how do we make this shit look good ?
+        boolean moveYdown = (backGround.getHeight()-0.5f)/scale >-backGround.getY()-ourTank.getY()-(((backGround.getHeight()-0.5f)/scale )-ourTank.getY()) -48;// -(backGround.getY()+(backGround.getHeight()-0.5f)/scale - deltaRotationVector[1]*50);// && deltaRotationVector[1] <0  ;
+        boolean moveY2 = ((backGround.getHeight()-0.5f)/scale - Math.abs(backGround.getY())) > ourTank.getY();
+    test.setText(ourTank.getY()+" > "+(backGround.getY()+(backGround.getHeight()-0.5f)/scale - deltaRotationVector[1]*50)+"\n  backGround.getY() is "+ backGround.getY() +"\n (backGround.getHeight()-0.5f)/scale is = " + (backGround.getHeight()-0.5f)/scale);
+//WTFFFFFFFFFFFFFFFFF
         for(int i =0 ; i < TargetImages.size() ; i++) {
-            TargetImages.get(i).setY(TargetImages.get(i).getY() -deltaRotationVector[1]*50);
-            TargetImages.get(i).setX(TargetImages.get(i).getX() +deltaRotationVector[0]*50);
+           // if(moveX)
+                TargetImages.get(i).setX(TargetImages.get(i).getX() +deltaRotationVector[0]*50);// tank going left = delta >0 , tank going right delta < 0
+           // if(moveY2)
+                TargetImages.get(i).setY(TargetImages.get(i).getY() -deltaRotationVector[1]*50);// tank going up = delta>0, tank going down delta < 0
         }
 
         double angel = Math.atan((deltaRotationVector[0]) /(deltaRotationVector[1]));
@@ -415,9 +440,9 @@ protected void onResume()
 
     public void saveAndExit() {
 
-        String name  = prefs.getString("username", null);
         final Firebase mRef;
-        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/" + name + "_score");//here we copy the url ... so the "users" here is kind of a key that gets a value
+
+        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + UserName + "/singlePlayer/" + Difficulty +"/");//here we copy the url ... so the "users" here is kind of a key that gets a value
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -435,7 +460,6 @@ protected void onResume()
                 }
             });
         this.onBackPressed();
-
         }
 
 }

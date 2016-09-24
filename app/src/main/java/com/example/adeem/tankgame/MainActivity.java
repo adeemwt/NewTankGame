@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.signin.setOnClickListener(this);
         this.startGame.setOnClickListener(this);
         this.startGameMulti.setOnClickListener(this);
+        this.highScores.setOnClickListener(this);
         this.logoff = (Button) findViewById(R.id.logOffBTN);
         this.logoff.setOnClickListener(this);
 
@@ -80,8 +81,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                  this.textRef.setText("signed in user is okay after sign up " + restoredText);
              }
         }else if(buttonId == R.id.highScoresBTN){
-             startAct2Intent = new Intent(this, SignUpActivity.class); // change
+             startAct2Intent = new Intent(this,highScores.class); // change
              startActivity(startAct2Intent);
+
          }else if(buttonId == R.id.startBTN){
              prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
              SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();

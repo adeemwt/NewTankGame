@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         final String pass = this.passwordView.getText().toString();
             boolean flag= false;
 
-            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/" + name + "_pass");//here we copy the url ... so the "users" here is kind of a key that gets a value
+            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");//here we copy the url ... so the "users" here is kind of a key that gets a value
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
