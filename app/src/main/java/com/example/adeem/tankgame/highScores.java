@@ -24,18 +24,18 @@ import java.util.Iterator;
 
 public class highScores extends AppCompatActivity implements View.OnClickListener{
 
-    final static String BTNLABALE1 = "multi player";
-    final static String BTNLABALE2 = "single player";
-    Spinner spinner;
-    ToggleButton button;
-    long sumOfPlayers =0;
-    TextView txt;
-    ArrayList<playerHS> players = new ArrayList<>();
+
+    private Spinner spinner;
+    private ToggleButton button;
+    private long sumOfPlayers =0;
+    private TextView txt;
+    private ArrayList<playerHS> players = new ArrayList<>();
+    private String[] diffSpinner;
 
     public enum sortModes {
         Escore, Mscore, Hscore,KD
     }
-    sortModes sortMode = sortModes.Escore;
+    private sortModes sortMode = sortModes.Escore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +50,19 @@ public class highScores extends AppCompatActivity implements View.OnClickListene
                 R.array.Diff_spinner, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        button.setTextOff(BTNLABALE1);
-        button.setTextOn(BTNLABALE2);
-        button.setText(BTNLABALE2);
+
+        //get strings//
+        Resources res = getResources();
+        diffSpinner = res.getStringArray(R.array.Diff_spinner);
+        String multiLabel = res.getString(R.string.highScoreMultiBTN);
+        String singelLabel = res.getString(R.string.highScoreSingelBTN);
+        ///////////////
+        button.setTextOff(multiLabel);
+        button.setTextOn(singelLabel);
+        button.setText(singelLabel);
+
+
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -94,11 +104,7 @@ public class highScores extends AppCompatActivity implements View.OnClickListene
     }
     public void fillSingle(){
 
-        Resources res = getResources();
-        String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
-
-
-        txt.setText("number of sign in players: " + sumOfPlayers+"\n\n");
+        txt.setText("number of players: " + sumOfPlayers+"\n\n");
 
         if(spinner.getSelectedItem().toString().equals(diffSpinner[0])) {
             sortMode = sortModes.Escore;
@@ -130,9 +136,6 @@ public class highScores extends AppCompatActivity implements View.OnClickListene
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 sumOfPlayers = snapshot.getChildrenCount();
-
-                Resources res = getResources();
-                String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
 
                 for (DataSnapshot postSnapshot: snapshot.getChildren()) { // go over all players
                     String usernameKey =  postSnapshot.getKey();

@@ -3,6 +3,7 @@ package com.example.adeem.tankgame;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,35 +24,27 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
 
 
 
-    SharedPreferences prefs;
-    String MY_PREFS_NAME = "usernamePREFS";
-    Firebase mRef;
-    LoginActivity thisclass = this;
-    // UI references.
+    private SharedPreferences prefs;
+    private String my_pref_name;
+    private Firebase mRef;
 
-   final  Activity Me = this;
+    final  Activity Me = this;
     private AutoCompleteTextView nameView;
     private EditText passwordView;
-    private View mProgressView;
-    private View mLoginFormView;
-
+    private Resources res;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
         nameView = (AutoCompleteTextView) findViewById(R.id.signinNametxt);
         passwordView = (EditText) findViewById(R.id.signInPassTXT);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.signInBTN);
         mEmailSignInButton.setOnClickListener(this);
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-
+        res = getResources();
+        my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
 
     }
 
@@ -59,34 +52,27 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     public void onClick(View v) {
         final String name = this.nameView.getText().toString();
         final String pass = this.passwordView.getText().toString();
-            boolean flag= false;
 
-            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");//here we copy the url ... so the "users" here is kind of a key that gets a value
+        //Connect to fireBase and check if value already exists
+        //if yes allow login
+            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String text = dataSnapshot.getValue(String.class);
                     if(text == null){
-                        Toast.makeText(getApplicationContext(), "the user does not exist! ", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), res.getString(R.string.error_invalid_user), Toast.LENGTH_SHORT).show();
                     }
-
                     else{
                         if(text.equals(pass)) {
-                            Toast.makeText(getApplicationContext(), "currect sign In ", Toast.LENGTH_SHORT).show();
-
-
-                            prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-
-                            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                            editor.putString("username",name);
-
+                            Toast.makeText(getApplicationContext(), res.getString(R.string.signedIn), Toast.LENGTH_SHORT).show();
+                            prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
+                            SharedPreferences.Editor editor = getSharedPreferences(my_pref_name, MODE_PRIVATE).edit();
+                            editor.putString(res.getString(R.string.SharedPreferencesUserName),name);
                             editor.commit();
-
                             Me.onBackPressed();
-//                            Intent startAct2Intent = new Intent(thisclass, MainActivity.class);
-//                            startActivity(startAct2Intent);
                         }else
-                            Toast.makeText(getApplicationContext(), "NOPE WRONG PASS", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), res.getString(R.string.error_incorrect_password), Toast.LENGTH_SHORT).show();
                     }
                 }
                 @Override

@@ -18,7 +18,7 @@
         android:id="@+id/limitsView"
         android:layout_x="0dp"
         android:layout_y="0dp"
-        android:background="@drawable/limits2" />
+        android:background="@drawable/new_map" />
 
     <Button
         android:layout_width="wrap_content"

@@ -33,35 +33,42 @@ public class Bullet {
         double alpha1 = 0;
         double Xs =0;
         double Ys =0 ;
-        String s = "";
         if(headingAngle <0) headingAngle = 360 + headingAngle;
 
         for(int i =0 ; i < allTarget.size()-1; i++)
         {
 
+            //check if the target is visible to the user - (still in the game)
             if(allTarget.get(i).getVisibility() != View.GONE)
+
+            //Xs = ( X1 - X2 )^2
             Xs= Math.pow(allTarget.get(i).getX()-tankPosition.x,2);
+
+            //YS = ( Y1 - Y2 ) ^2
             Ys =  Math.pow(allTarget.get(i).getY() - tankPosition.y,2);
+
+            //sqrt = (Ys + Xs) ^ 0.5
             double sqrt =Math.sqrt(Xs + Ys );
 
+            //alpha(rad) = sin((Y1 - Y2)/sqrt) (RAD   0-PI)
             alpha1 = Math.asin((allTarget.get(i).getY() - tankPosition.y)/sqrt);
-            // alpha1 = Math.atan((event.getX() - ourTank.getX()) /(event.getY() - ourTank.getY()));
+
+            //alpha(dig) = alpha(rad)*180/PI  (DIG  0-360)
             alpha1 =  alpha1 * 180 / Math.PI;
 
+            //check if the tank is up or bellow the target  - calculate the alpha accordingly
             if(tankPosition.x <= allTarget.get(i).getX())
                 alpha1   += 90;
             else{
                 alpha1 = 270 -alpha1;
             }
 
-
+            //check aim accuracy and set invisible if show
             if(alpha1 + 15 > headingAngle && alpha1 - 15 < headingAngle){
                    allTarget.get(i).setVisibility(View.GONE);
             }
 
         }
-
-
         return allTarget;
     }
 

@@ -4,6 +4,7 @@ import com.firebase.client.Firebase;
 
 /**
  * Created by adeem on 16/09/2016.
+ * needed for Firebase
  */
 public class dbInitialConnect extends android.app.Application{
     @Override

@@ -53,52 +53,65 @@ import java.util.TimerTask;
 import classes.*;
 
 public class inGameMap extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
+
+    //final values
     final Point EASY_SIZE  = new Point(1000,1000);
     final Point MEDUIM_SIZE  = new Point(1500,1500);
     final Point HARD_SIZE  = new Point(2000,2000);
 
-    int playerNum = 1;
-    final int MAX_TARGET_SIZE = 5;
-
+    //how big the step for the tank is, dp
     final int STEP = 10;
     final int CHOOSE_X =0;
     final int CHOOSE_Y = 1;
-    TextView test;
+
+    //how many target
+    final int MAX_TARGET_SIZE = 5;
     final int TARGET_NUM_EASY = 5;
     final int TARGET_NUM_MADUIM = 10;
     final int TARGET_NUM_HARD = 15;
     final double EPSILON = 0.000001;
 
 
+    private int playerNum = 1;
+
+
+    private SharedPreferences prefs;
+    private String my_pref_name;
+    private String SHuserName;
+
     private SensorManager sManager;
+    private int targetNum = 0;
+    private ArrayList<Tank> tanks;
+    private ArrayList<Taget> targets;
+    private ArrayList<ImageView> TargetImages = new ArrayList<>();
+    private Point WidthAndHieght ;
 
-    int targetNum = 0;
-    ArrayList<Tank> tanks;
-    ArrayList<Taget> targets;
-    ArrayList<ImageView> TargetImages = new ArrayList<>();
-    Point WidthAndHieght ;
+    private ImageButton ourTank;
+    private TextView test; ////// fot testing only
 
-    ImageButton ourTank;
-//    private SensorManager SensorManager;
-//    private Sensor Sensor;
 
-    SharedPreferences prefs;
-    String MY_PREFS_NAME = "usernamePREFS";
-    Timer t;
-int seconds;
-    ImageView backGround;
+
+    //TIMER variables
+    private Timer t;
+    private int seconds;
+    private ImageView backGround;
+
+    //debugging buttons
     private Button up;
     private Button left;
     private Button right;
     private Button down;
 
-
+    //shared preference variable
     private String Difficulty;
     private String UserName;
 
+    //calculation
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
+
+    //initialize all targets
     private int[] imgIds = {
             R.id.target1,
             R.id.target2,
@@ -122,13 +135,19 @@ int seconds;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game_map);
 
+        Resources res = getResources();
+        String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
+        my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
+        SHuserName = res.getString(R.string.SharedPreferencesUserName);
 
-        prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
         Difficulty = prefs.getString("difficultly", null);
-        UserName = prefs.getString("username", null);
+        UserName = prefs.getString(SHuserName, null);
 
         ourTank = (ImageButton) findViewById(R.id.ourTank);
+        //for debugging only
         test =(TextView) findViewById(R.id.gyrosxample);
+        test.setVisibility(View.GONE);
         up = (Button) findViewById(R.id.upBTN);
         down = (Button) findViewById(R.id.downBTN);
         left= (Button) findViewById(R.id.leftBTN);
@@ -150,6 +169,7 @@ int seconds;
         }, 0, 1000);
 
         test.setText("");
+        ///////////////// for debugging  /////////////////
         up.setOnClickListener(this);
         down.setOnClickListener(this);
         left.setOnClickListener(this);
@@ -159,9 +179,11 @@ int seconds;
         down.setVisibility(View.GONE);
         left.setVisibility(View.GONE);
         right.setVisibility(View.GONE);
+        /////////////////////////////////////////////////
 
         backGround = (ImageView) findViewById(R.id.limitsView);
 
+        //initialize sensor
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,
                 sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -169,49 +191,42 @@ int seconds;
 
 
 
-        if(Difficulty!=null){ /// WE CAN USE STRING RESURCE HERE ... need changing
-            switch (Difficulty){
-                case("easy") : {
-                    this.WidthAndHieght = this.EASY_SIZE;
-                    targetNum = TARGET_NUM_EASY;
-                    break;
-                }
-                case("medium") :{
-                    this.WidthAndHieght = this.MEDUIM_SIZE;
-                    targetNum = TARGET_NUM_MADUIM;
-                    break;
-                }
-                case("hard"):{
-                    this.WidthAndHieght = this.HARD_SIZE;
-                    targetNum = TARGET_NUM_HARD;
-                    break;
-                }
-            }
-            randTargets(targetNum);
+        if(Difficulty!=null){
+            if(Difficulty.equals(diffSpinner[0])){ // easy
+                this.WidthAndHieght = this.EASY_SIZE;
+                targetNum = TARGET_NUM_EASY;
 
-            String userName = prefs.getString("username", null);
+            }else if(Difficulty.equals(diffSpinner[1])){ // medium
+                this.WidthAndHieght = this.MEDUIM_SIZE;
+                targetNum = TARGET_NUM_MADUIM;
+
+            } else { // if(Difficulty.equals(diffSpinner[1]))   hard - default
+                this.WidthAndHieght = this.HARD_SIZE;
+                targetNum = TARGET_NUM_HARD;
+            }
+
+            randTargets(targetNum);
+            String userName = prefs.getString(SHuserName, null);
 
             Random rnd = new Random();
-            Color c = new Color();                   // the tank does not have a color for now
+            Color c = new Color();                   // the tank does not have a color for now (well be added)
             c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             tanks = new ArrayList<> (playerNum);
             tanks.add(new Tank(new Player(userName),c));
             ourTank.setOnClickListener(this);
-          //  sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout);
             rlayout.setOnClickListener(this);
 
+            //on screen  touch get coordinates and change the tank aim accordingly
             rlayout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    //
                     if (event.getAction() == MotionEvent.ACTION_DOWN){
                         double alpha1;
                         double Xs= Math.pow(event.getX()-ourTank.getX(),2);
                         double Ys =  Math.pow(event.getY() - ourTank.getY(),2);
                         double sqrt =Math.sqrt(Xs + Ys );
-
                         alpha1 = Math.asin((event.getY() - ourTank.getY())/sqrt);
                         alpha1 =  alpha1 * 180 / Math.PI;
                         if(ourTank.getX() <= event.getX())
@@ -227,6 +242,8 @@ int seconds;
         }
     }
 
+
+    /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override
     public void onClick(View view) {
         int buttonId = view.getId();
@@ -250,21 +267,9 @@ int seconds;
 
                 for(int i =0 ; i < TargetImages.size()-1; i++){
                     if(TargetImages.get(i).getVisibility() == View.GONE){
-//                        final int z = i;
-//
-//                        TargetImages.get(z).setVisibility(View.VISIBLE);
-//                        TargetImages.get(z).setImageResource(R.drawable.deadgoat);
-//                        Handler handler = new Handler();
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                TargetImages.get(z).setVisibility(View.GONE);
-//                            }
-//                        }, 150);
                         targets.remove(TargetImages.get(i));
                     }
                 }
-
                 TargetImages = targets;
                 if(TargetImages.size()==1){
                     this.saveAndExit();
@@ -275,13 +280,11 @@ int seconds;
         }
     }
 
-
+    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
     public void  moveTargets(int xOry, int movement){ // buttons only
         movement*=3;
         final float scale = getResources().getDisplayMetrics().density;
         test.setText("the Width is "+ backGround.getWidth() + "\nthe dp calc is "+ (backGround.getHeight()-0.5f)/scale);
-        //     test.setText("height  width " +backGround.getLayoutParams().height+
-    //    "tank  x = " +ourTank.getX() + "y = " +ourTank.getY() + "\n backgourd (" + backGround.getX() +", " + backGround.getY() +") movement " + movement);
         if(xOry == CHOOSE_X){
             if(movement <  0 ) {
 
@@ -312,26 +315,25 @@ int seconds;
                 else ourTank.setRotation(0);
            }
 
-            //todo MAKE THIS WORK ,
         }
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //randomize the trget position and set visiable according to the number for the difficulty level
     public void randTargets(int targetNum){
         targets = new ArrayList<>(targetNum);
 
 
         final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the dinsitty is " +scale);
+        test.setText("the dinsity is " +scale);
         int pixels = (int) (WidthAndHieght.x* scale + 0.5f);
 
-//    //   int dimensionInDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, WidthAndHieght.x, getResources().getDisplayMetrics());
-// TODO: 23/09/2016
 
         backGround.getLayoutParams().height = pixels;
         backGround.getLayoutParams().width =pixels;
         backGround.requestLayout();
         ImageView img;
 
-        ///I CHANGED THIS
         for(int i = 0 ; i< targetNum ; i++){
             int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
             int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
@@ -342,16 +344,17 @@ int seconds;
             img.setY(targets.get(i).getCords().y);
             img.setVisibility(View.VISIBLE);
 
-        //    test.setText(test.getText() +"\n("+ x +"," + y +")");
+
             TargetImages.add(img);
         }
+        //add background for moving on map purposes
         TargetImages.add(backGround);
-    //    test.setText("initial \ntank  x = " +ourTank.getX() + "y = " +ourTank.getY() + "\n backgourd (" + backGround.getX() +", " + backGround.getY() );
 
     }
 
 
-    public void onSensorChanged(SensorEvent event) { // the same
+    //on sensor change listener
+    public void onSensorChanged(SensorEvent event) {
         if (timestamp != 0) {
             final float dT = (event.timestamp - timestamp) * NS2S;
             // Axis of the rotation sample, not normalized yet.
@@ -377,46 +380,38 @@ int seconds;
             deltaRotationVector[2] = sinThetaOverTwo * axisZ;
             deltaRotationVector[3] = cosThetaOverTwo;
 
-         //   test.setText("the Gyro is : \n  x = "+deltaRotationVector[0] +"\n y = "+deltaRotationVector[1] +"\n z = "+ deltaRotationVector[2] +"\n fourth one ... = "+deltaRotationVector[3]);
         }
         timestamp = event.timestamp;
         float[] deltaRotationMatrix = new float[9];
 
 
-
-
-
         SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
-        final float scale = getResources().getDisplayMetrics().density;
+
+        //get  scale for screen density - used to convert from PX to DP
+       // final float scale = getResources().getDisplayMetrics().density;
 
 
-//        if(ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale)
-//        if(ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY()+(backGround.getHeight()-0.5f)/scale) dude XD
-//
+        //check if tank is out of border
+        boolean moveY;
+        if(deltaRotationVector[1]>0)//check tank direction on Y axis
+        moveY = (backGround.getHeight() - Math.abs(backGround.getY())) > ourTank.getY() + 130;
+        else moveY = (backGround.getY() < ourTank.getY());
+        boolean moveX;
+        if(deltaRotationVector[0]<0)//check tank direction on X axis
+            moveX = (backGround.getWidth() - Math.abs(backGround.getX())) > ourTank.getX() + 130;
+        else moveX = (backGround.getX() < ourTank.getX());
 
-        boolean moveX  = (ourTank.getX() < backGround.getX() + deltaRotationVector[0]*50 && deltaRotationVector[0] >0
-            || ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale + deltaRotationVector[0]*50 && deltaRotationVector[0] <0 ) ;
+        //test.setText(ourTank.getY()+" < "+((backGround.getHeight()-0.5f) - Math.abs(backGround.getY()))+"\n  backGround.getY() is "+ backGround.getY() +"\n (backGround.getHeight()-0.5f)/scale is = " + (backGround.getHeight()-0.5f)/scale);
 
-        boolean moveYup  = (ourTank.getY() < backGround.getY() - deltaRotationVector[1]*50 && deltaRotationVector[1] >0);//how do we make this shit look good ?
-        boolean moveYdown = (backGround.getHeight()-0.5f)/scale >-backGround.getY()-ourTank.getY()-(((backGround.getHeight()-0.5f)/scale )-ourTank.getY()) -48;// -(backGround.getY()+(backGround.getHeight()-0.5f)/scale - deltaRotationVector[1]*50);// && deltaRotationVector[1] <0  ;
-
-        boolean moveY2 = (backGround.getHeight() - Math.abs(backGround.getY())) > ourTank.getY() + 130;
-
-    test.setText(ourTank.getY()+" < "+((backGround.getHeight()-0.5f) - Math.abs(backGround.getY()))+"\n  backGround.getY() is "+ backGround.getY() +"\n (backGround.getHeight()-0.5f)/scale is = " + (backGround.getHeight()-0.5f)/scale);
-//WTFFFFFFFFFFFFFFFFF
         for(int i =0 ; i < TargetImages.size() ; i++) {
-           // if(moveX)
+            if(moveX)
                 TargetImages.get(i).setX(TargetImages.get(i).getX() +deltaRotationVector[0]*50);// tank going left = delta >0 , tank going right delta < 0
-            if(moveY2)
+            if(moveY)
                 TargetImages.get(i).setY(TargetImages.get(i).getY() -deltaRotationVector[1]*50);// tank going up = delta>0, tank going down delta < 0
         }
 
-        double angel = Math.atan((deltaRotationVector[0]) /(deltaRotationVector[1]));
-        angel =  angel * 180 / Math.PI;
-
-       // test.setText(test.getText() + "\nangle = " +(int)angel);
-
-
+//        double angel = Math.atan((deltaRotationVector[0]) /(deltaRotationVector[1]));
+//        angel =  angel * 180 / Math.PI;
     }
 
 
@@ -443,11 +438,11 @@ protected void onResume()
     }
 
 
-    public void saveAndExit() {
+    public void saveAndExit() { // save score
 
         final Firebase mRef;
 
-        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + UserName + "/singlePlayer/" + Difficulty +"/");//here we copy the url ... so the "users" here is kind of a key that gets a value
+        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + UserName + "/singlePlayer/" + Difficulty +"/");
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {

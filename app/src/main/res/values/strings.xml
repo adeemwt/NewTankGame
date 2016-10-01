@@ -1,19 +1,40 @@
 <resources>
-    <string name="app_name">TankGame</string>
-    <string name="title_activity_login">Sign in</string>
+
+
 
     <!-- Strings related to login -->
+    <string name="app_name">TankGame</string>
+    <string name="title_activity_login">Sign in</string>
     <string name="prompt_username">User Name</string>
     <string name="prompt_password">Password </string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_usernameAlreadyExists">the username already exists, please try again !</string>
+    <string name="error_passwordsDontMatchs">passwords dont match, please try again! </string>
+
+    <string name="signedInAs">signed in as :</string>
+    <string name="signedInAsAfterSignUp">signed in as :</string>
+    <string name="userAdded">the user was added successfully!!  </string>
+
+    <string name="error_userNotSigedIn">YOU HAVE TO BE SIGNED IN TO START</string>
+    <string name="userLogOff">the user is logged off</string>
     <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="error_invalid_user">the user does not exist!</string>
+    <string name="signedIn">signed in successfully</string>
+
+    <!-- Strings related to high Score bord-->
+
+    <string name="highScoreSingelBTN">single player</string>
+    <string name="highScoreMultiBTN">multi player</string>
+
+    <!--  SharedPreferences-->
+    <string name="SharedPreferencesUserName">username</string>
+    <string name="SharedPreferencesPrefsName">usernamePREFS</string>
+
+
+    <!--  Firebase-->
+    <string name="FirebaseUserName">username</string>
+
     <color name="white">#000000</color>
 
     <string-array name="Diff_spinner">

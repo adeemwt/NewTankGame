@@ -60,7 +60,7 @@
         android:layout_above="@+id/signInBTN"
         android:layout_alignEnd="@+id/startBTN"
         android:layout_centerVertical="true"
-        android:text="New Text"
+        android:text=""
         android:textColor="#ee0505" />
 
     <Button

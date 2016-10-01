@@ -17,11 +17,11 @@ import java.util.Comparator;
  4.	Class - Player  (var)
 
  */
-public class Tank implements Comparable<Tank> { //player id? or a class player? איקe vy tank has a player what deos the player class do other than save the id and name? nothing .. but you need a conection so you can use it to save if we won or not okzy, then plalyer , less searches WAT?
+public class Tank implements Comparable<Tank> {
     private Point position;
     private int currentScore;
     private Player player;
-    private Color colour;//every tank has a player, and when it scores it saves ... i dont know what the player deos XD
+    private Color colour;
     private float headingAngle;
 
     public Tank(Player player,Color colour){
