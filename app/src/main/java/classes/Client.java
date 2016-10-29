@@ -1,5 +1,7 @@
 package classes;
 
+import android.widget.TextView;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,12 +16,18 @@ public class Client {
     private ObjectOutputStream toServer = null;
     private ObjectInputStream fromServer = null;
     private Socket socket;
-    public void start() {
+    TextView log ;
+
+    public void start(TextView logg,String serverIP) {
+        this.log = logg;
+        enterChatRoom(serverIP);
+        //XDDD this wass the problem, it didnt do shit!!!!!!!!!!!!
     }
-    private void enterChatRoom() {
+    private void enterChatRoom(String serverIP) {
         try { // Create a socket to connect to the server
             // InetAddress host = InetAddress.getLocalHost();
-                socket = new Socket("localhost", 8000);
+            log.setText(log.getText() +"\nattempting connection- client");
+                socket = new Socket(serverIP, 8000);
                 toServer = new ObjectOutputStream(socket.getOutputStream());
                 fromServer = new ObjectInputStream(socket.getInputStream());
                 new ServerListener(fromServer,toServer).start();
@@ -46,6 +54,7 @@ public class Client {
             this.objectInputStream = objectInputStream;
             this.objectOutputStream = objectOut0utStream;
             try{
+                log.setText(log.getText() +"sending name to server ,\n");
                 this.objectOutputStream.writeObject(new String("myname"));
 
             }catch (Exception e){

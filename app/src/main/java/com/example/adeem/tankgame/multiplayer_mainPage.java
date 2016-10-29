@@ -57,6 +57,7 @@ public class multiplayer_mainPage extends AppCompatActivity implements View.OnCl
             this.log.setText("SERVER MODE\nWaiting for Clients...");
             Server server = new Server();
             server.start(this.log);
+
            // this.log.setText(this.log.getText() +"\n"+ server.showIP());
         }
         //try to connect to chosen server , if connection istablished and server start game, start game
@@ -67,7 +68,7 @@ public class multiplayer_mainPage extends AppCompatActivity implements View.OnCl
                 this.serverIP.setVisibility(View.INVISIBLE);
                 this.log.setText("CLIENT MODE\nConnecting to server....");
                 Client client = new Client();
-                client.start();
+                client.start(this.log,serverIP.toString());
             }
             else{
                 Toast.makeText(getApplicationContext(),"Please enter Server IP address", Toast.LENGTH_SHORT).show();
