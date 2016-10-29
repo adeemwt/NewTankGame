@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.highScores = (Button)findViewById(R.id.highScoresBTN);
         this.startGame =  (Button)findViewById(R.id.startBTN);
         this.startGameMulti =  (Button)findViewById(R.id.multiBTN);
-        this.startGameMulti.setClickable(false);
+
       //  this.startGameMulti.setVisibility(View.GONE);
         this.signup.setOnClickListener(this);
         this.signin.setOnClickListener(this);
@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              startAct2Intent = new Intent(this, inGameMap.class);
              startActivity(startAct2Intent);
          }else if(buttonId == R.id.multiBTN){
+             startAct2Intent = new Intent(this,multiplayer_mainPage.class);
+             startActivity(startAct2Intent);
          }else if(buttonId == R.id.logOffBTN){
              prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
              SharedPreferences.Editor editor = getSharedPreferences(my_pref_name, MODE_PRIVATE).edit();

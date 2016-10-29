@@ -1,7 +1,6 @@
 <resources>
 
 
-
     <!-- Strings related to login -->
     <string name="app_name">TankGame</string>
     <string name="title_activity_login">Sign in</string>
