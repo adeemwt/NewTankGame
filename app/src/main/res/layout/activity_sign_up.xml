@@ -71,6 +71,21 @@
             android:layout_below="@+id/passTXT"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="46dp" />
+
     </android.support.design.widget.TextInputLayout>
+
+    <ProgressBar
+        android:layout_width="99dp"
+        android:layout_height="99dp"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_marginRight="5dp"
+        android:max="100"
+        android:progress="1"
+        android:indeterminate="true"
+        android:id="@+id/p_signbar"
+        android:visibility="invisible"
+        android:layout_above="@+id/signupBTN"
+        android:layout_alignStart="@+id/signupBTN"
+        android:layout_marginBottom="10dp" />
 
 </RelativeLayout>

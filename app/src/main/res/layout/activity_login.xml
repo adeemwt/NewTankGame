@@ -11,18 +11,11 @@
     tools:context="com.example.adeem.tankgame.LoginActivity">
 
     <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
 
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="209dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -74,4 +67,19 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <ProgressBar
+        android:layout_width="99dp"
+        android:layout_height="99dp"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_marginRight="5dp"
+        android:layout_alignBottom="@+id/loadingtxt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="39dp"
+        android:max="100"
+        android:progress="1"
+        android:indeterminate="true"
+        android:id="@+id/pbar"
+        android:visibility="invisible"
+        />
 </LinearLayout>

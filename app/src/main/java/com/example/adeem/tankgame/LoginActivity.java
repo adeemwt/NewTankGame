@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -32,6 +34,8 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     private AutoCompleteTextView nameView;
     private EditText passwordView;
     private Resources res;
+    private ProgressBar pBar;
+    private boolean Pflag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -39,7 +43,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
         setContentView(R.layout.activity_login);
         nameView = (AutoCompleteTextView) findViewById(R.id.signinNametxt);
         passwordView = (EditText) findViewById(R.id.signInPassTXT);
-
+        pBar = (ProgressBar) findViewById(R.id.pbar);
         Button mEmailSignInButton = (Button) findViewById(R.id.signInBTN);
         mEmailSignInButton.setOnClickListener(this);
 
@@ -49,13 +53,22 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
     }
 
     @Override
+    public void onBackPressed() {
+        if(!Pflag)
+            super.onBackPressed();
+    }
+
+    @Override
     public void onClick(View v) {
         final String name = this.nameView.getText().toString();
         final String pass = this.passwordView.getText().toString();
 
         //Connect to fireBase and check if value already exists
         //if yes allow login
-            mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");
+        Pflag = true;
+        pBar.setVisibility(View.VISIBLE);
+
+        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -65,6 +78,7 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                     }
                     else{
                         if(text.equals(pass)) {
+
                             Toast.makeText(getApplicationContext(), res.getString(R.string.signedIn), Toast.LENGTH_SHORT).show();
                             prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
                             SharedPreferences.Editor editor = getSharedPreferences(my_pref_name, MODE_PRIVATE).edit();
@@ -73,7 +87,12 @@ public class LoginActivity extends AppCompatActivity  implements View.OnClickLis
                             Me.onBackPressed();
                         }else
                             Toast.makeText(getApplicationContext(), res.getString(R.string.error_incorrect_password), Toast.LENGTH_SHORT).show();
+
+                        Pflag = false;
+                        pBar.setVisibility(View.INVISIBLE);
                     }
+
+
                 }
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {

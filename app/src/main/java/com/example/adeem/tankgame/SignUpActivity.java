@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +29,9 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
     String my_pref_name;
     private Resources res;
 
+
+    private ProgressBar pBar;
+    private boolean Pflag = false;
     String text;
 
     @Override
@@ -39,6 +43,8 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         this.nametxt = (TextView) findViewById(R.id.nameTXT);
         this.passtxt = (TextView)  findViewById(R.id.passTXT);
         this.confirmPasstxt = (TextView)  findViewById(R.id.confirmTXT);
+
+        pBar = (ProgressBar) findViewById(R.id.p_signbar);
 
         this.confirm.setOnClickListener(this);
 
@@ -56,6 +62,8 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         final String pass = this.passtxt.getText().toString();
         if(pass.equals(this.confirmPasstxt.getText().toString())){
 
+            Pflag = true;
+            pBar.setVisibility(View.VISIBLE);
             mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + name+"/pass/");
 
             mRef.addValueEventListener(new ValueEventListener() {
@@ -77,6 +85,9 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
                         Me.onBackPressed();
                     }
 
+                    Pflag = false;
+                    pBar.setVisibility(View.INVISIBLE);
+
                 }
                 @Override
                 public void onCancelled(FirebaseError firebaseError) {
@@ -95,5 +106,11 @@ public class SignUpActivity extends AppCompatActivity  implements View.OnClickLi
         }
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if(!Pflag)
+            super.onBackPressed();
+    }
 
 }
