@@ -73,4 +73,22 @@
         android:id="@+id/server_startGame"
         android:visibility="invisible" />
 
+    <Button
+        android:text="Connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/connect_button"
+        android:layout_marginTop="15dp"
+        android:layout_alignTop="@+id/log_txt"
+        android:layout_toEndOf="@+id/log_txt"
+        android:layout_marginStart="24dp" />
+
+    <Button
+        android:text="DisConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/disconnectBTN"
+        android:layout_below="@+id/connect_button"
+        android:layout_alignStart="@+id/connect_button" />
+
 </RelativeLayout>

@@ -7,11 +7,19 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-feature android:name="android.hardware.wifi" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission
+        android:required="true"
+        android:name="android.permission.INTERNET"/>
 
     <application
         android:name=".dbInitialConnect"
@@ -33,7 +41,8 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".inGameMap" />
         <activity android:name=".highScores" />
-        <activity android:name=".multiplayer_mainPage"></activity>
+        <activity android:name=".multiplayer_mainPage" />
+        <activity android:name=".multiPlayerInGame"></activity>
     </application>
 
 </manifest>

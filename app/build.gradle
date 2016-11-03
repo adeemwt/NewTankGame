@@ -28,6 +28,9 @@ android {
         exclude 'META-INF/NOTICE'
     }
 }
+repositories {
+    maven { url 'http://clojars.org/repo' }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -35,5 +38,9 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.firebase:firebase-client-android:2.3.1'
+    compile 'com.pusher:pusher-java-client:1.0.0'
+    compile 'com.loopj.android:android-async-http:1.4.9'// for our HTTP requests later
+    compile 'com.google.code.gson:gson:2.2.4'// for parsing JSON
+    compile 'com.squareup.picasso:picasso:2.1.1' // for image rendering
 }
 apply plugin: 'com.google.gms.google-services'

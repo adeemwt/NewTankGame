@@ -94,6 +94,7 @@ public class Server{
         private void notifyAll(Object msg) throws IOException {
         }
     }
+
     public void close(){
         if(serverSocket != null){
             try {
