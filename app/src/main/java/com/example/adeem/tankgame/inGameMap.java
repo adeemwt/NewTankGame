@@ -42,6 +42,8 @@ import com.firebase.client.ValueEventListener;
 
 import junit.framework.Test;
 
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Random;
@@ -53,6 +55,8 @@ import java.util.TimerTask;
 import classes.*;
 
 public class inGameMap extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
+
+
 
     //final values
     final Point EASY_SIZE  = new Point(1000,1000);
@@ -95,6 +99,9 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
     private Timer t;
     private int seconds;
     private ImageView backGround;
+
+
+
 
     //debugging buttons
     private Button up;
@@ -209,7 +216,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
             String userName = prefs.getString(SHuserName, null);
 
             Random rnd = new Random();
-            Color c = new Color();                   // the tank does not have a color for now (well be added)
+            Color c = new Color(); // the tank does not have a color for now (well be added)
             c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             tanks = new ArrayList<> (playerNum);
             tanks.add(new Tank(new Player(userName),c));

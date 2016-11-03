@@ -23,6 +23,7 @@ public class Tank implements Comparable<Tank> {
     private Player player;
     private Color colour;
     private float headingAngle;
+    private boolean shot = false;
 
     public Tank(Player player,Color colour){
         this.position = new Point(0,0);//initial possitoin
@@ -41,6 +42,12 @@ public class Tank implements Comparable<Tank> {
         return position;
     }
 
+    public  void setShot(){
+        this.shot = true;
+    }
+    public boolean getShot(){
+        return shot;
+    }
     public void setPosition(Point position) {
         this.position = position;
     }
