@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -28,9 +29,11 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -38,18 +41,22 @@ import java.util.TimerTask;
 
 import classes.Bullet;
 import classes.Player;
+import classes.ServerMessage;
 import classes.Taget;
 import classes.Tank;
 
-public class Client_Ingame_trial extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
-
+public class server_inGame extends AppCompatActivity  implements View.OnClickListener, SensorEventListener {
 
     //the socketOuput and input streams , no need to initialize atm
-    ObjectInputStream input = null;
-    ObjectOutputStream output = null;
+    //ObjectInputStream input = null;
+    //ObjectOutputStream output = null;
 
-
+    int clientCount = 1; // server is number 0
     ArrayList<ImageButton> myenemy = new ArrayList<ImageButton>();
+    ArrayList<Tank> tankArry = new ArrayList<Tank>();
+    ArrayList<Bullet> bulletArry = new ArrayList<Bullet>();
+    Boolean gameRuning = true;
+
 
     //final values
     final Point EASY_SIZE = new Point(1000, 1000);
@@ -78,9 +85,11 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
 
     private SensorManager sManager;
     private int targetNum = 0;
-    private ArrayList<Tank> tanks;
-    private ArrayList<Taget> targets;
-    private ArrayList<ImageView> TargetImages = new ArrayList<>();
+ // /  private ArrayList<Tank> /tanks;
+  //  private ArrayList<Taget> targets;
+   // private ArrayList<ImageView> TargetImages = new ArrayList<>();
+
+    private ArrayList<Socket> connections;
     private Point WidthAndHieght;
 
     private ImageButton ourTank;
@@ -106,12 +115,23 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
      */
     private GoogleApiClient client;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game_map);
 
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        Bundle bundle = getIntent().getExtras();
+        test = (Button) findViewById(R.id.send_test);
+        connections = (ArrayList<Socket>) bundle.get("TANKS_CONNECTIONS");
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        for(int i =0 ; i < connections.size() ; i++){
+            client_Listener listener = new client_Listener(connections.get(i));
+            tankArry.add(new Tank(new Player(""+ i),null));
+        }
         Resources res = getResources();
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
@@ -152,7 +172,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
                 SensorManager.SENSOR_DELAY_UI);
 
 
-        server_Listener Slistener = new server_Listener(input);
+       // server_Listener Slistener = new server_Listener(input);
         if (Difficulty != null) {
             if (Difficulty.equals(diffSpinner[0])) { // easy
                 this.WidthAndHieght = this.EASY_SIZE;
@@ -167,14 +187,14 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
                 targetNum = TARGET_NUM_HARD;
             }
 
-            randTargets(targetNum);
+            //randTargets(targetNum);
             String userName = prefs.getString(SHuserName, null);
 
-            Random rnd = new Random();
-            Color c = new Color();                   // the tank does not have a color for now (well be added)
-            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            tanks = new ArrayList<>(playerNum);
-            tanks.add(new Tank(new Player(userName), c));
+//            Random rnd = new Random();
+//            Color c = new Color();                   // the tank does not have a color for now (well be added)
+//            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+//            tanks = new ArrayList<>(playerNum);
+//            tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout_client);
@@ -215,7 +235,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         switch (buttonId) {
 
             case (R.id.ourTank): {
-                Bullet bullet = new Bullet(this.TargetImages, ourTank.getRotation(), tanks.get(0), new Point((int) ourTank.getX(), (int) ourTank.getY()));
+                Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -229,84 +249,85 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
 //                    this.saveAndExit();
 //                }
 
-                try {
-                    this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
-                }catch (Exception e){
+                bulletArry.add(bullet);
+               // try {
+               //     this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about
+               // }catch (Exception e){
                     //an excpetion has accured ...
-                }
+               // }
                 break;
             }
 
         }
     }
-
-    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
-    public void moveTargets(int xOry, int movement) { // buttons only
-        movement *= 3;
-        final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the Width is " + backGround.getWidth() + "\nthe dp calc is " + (backGround.getHeight() - 0.5f) / scale);
-        if (xOry == CHOOSE_X) {
-            if (movement < 0) {
-
-            } else {
-                if (ourTank.getX() < backGround.getX()) return;
-            }
-            if (ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX() + (backGround.getWidth() - 0.5f) / scale) {
-                for (int i = 0; i < TargetImages.size(); i++)
-                    TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
-                if (movement < 0)
-                    ourTank.setRotation(90);
-                else ourTank.setRotation(-90);
-            }
-        } else {
-            if (movement < 0) {
-
-            } else {
-                if (ourTank.getY() < backGround.getY()) return;
-            }
-            if (ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY() + (backGround.getHeight() - 0.5f) / scale) {
-                for (int i = 0; i < TargetImages.size(); i++)
-                    TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
-                if (movement < 0)
-                    ourTank.setRotation(180);
-                else ourTank.setRotation(0);
-            }
-
-        }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //randomize the trget position and set visiable according to the number for the difficulty level
-    public void randTargets(int targetNum) {
-        targets = new ArrayList<>(targetNum);
-
-
-        final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the dinsity is " + scale);
-        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-
-
-        backGround.getLayoutParams().height = pixels;
-        backGround.getLayoutParams().width = pixels;
-        backGround.requestLayout();
-        ImageView img;
-
-//        for(int i = 0 ; i< targetNum ; i++){
-////            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
-////            int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
-////            int size = (int)(Math.random() *MAX_TARGET_SIZE);
-////            targets.add(new Taget(new Point(x,y),size));
-////            img =(ImageView) findViewById(imgIds[i]);
-////            img.setX(targets.get(i).getCords().x);
-////            img.setY(targets.get(i).getCords().y);
-////            img.setVisibility(View.VISIBLE);
 //
+//    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
+//    public void moveTargets(int xOry, int movement) { // buttons only
+//        movement *= 3;
+//        final float scale = getResources().getDisplayMetrics().density;
+//        test.setText("the Width is " + backGround.getWidth() + "\nthe dp calc is " + (backGround.getHeight() - 0.5f) / scale);
+//        if (xOry == CHOOSE_X) {
+//            if (movement < 0) {
 //
-//            TargetImages.add(img);
+//            } else {
+//                if (ourTank.getX() < backGround.getX()) return;
+//            }
+//            if (ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX() + (backGround.getWidth() - 0.5f) / scale) {
+//                for (int i = 0; i < TargetImages.size(); i++)
+//                    TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
+//                if (movement < 0)
+//                    ourTank.setRotation(90);
+//                else ourTank.setRotation(-90);
+//            }
+//        } else {
+//            if (movement < 0) {
+//
+//            } else {
+//                if (ourTank.getY() < backGround.getY()) return;
+//            }
+//            if (ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY() + (backGround.getHeight() - 0.5f) / scale) {
+//                for (int i = 0; i < TargetImages.size(); i++)
+//                    TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
+//                if (movement < 0)
+//                    ourTank.setRotation(180);
+//                else ourTank.setRotation(0);
+//            }
+//
 //        }
-        //add background for moving on map purposes
-        TargetImages.add(backGround);
-    }
+//    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//    //randomize the trget position and set visiable according to the number for the difficulty level
+//    public void randTargets(int targetNum) {
+//        targets = new ArrayList<>(targetNum);
+//
+//
+//        final float scale = getResources().getDisplayMetrics().density;
+//        test.setText("the dinsity is " + scale);
+//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
+//
+//
+//        backGround.getLayoutParams().height = pixels;
+//        backGround.getLayoutParams().width = pixels;
+//        backGround.requestLayout();
+//        ImageView img;
+//
+////        for(int i = 0 ; i< targetNum ; i++){
+//////            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
+//////            int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
+//////            int size = (int)(Math.random() *MAX_TARGET_SIZE);
+//////            targets.add(new Taget(new Point(x,y),size));
+//////            img =(ImageView) findViewById(imgIds[i]);
+//////            img.setX(targets.get(i).getCords().x);
+//////            img.setY(targets.get(i).getCords().y);
+//////            img.setVisibility(View.VISIBLE);
+////
+////
+////            TargetImages.add(img);
+////        }
+//        //add background for moving on map purposes
+//        TargetImages.add(backGround);
+//    }
 
 
     //movement detected update the server
@@ -359,10 +380,10 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         if (deltaRotationVector[0] < 0)//check tank direction on X axis
             moveX = (backGround.getWidth() - Math.abs(backGround.getX())) > ourTank.getX() + 130;
         else moveX = (backGround.getX() < ourTank.getX());
-            if (moveX)
-                backGround.setX(backGround.getX() + deltaRotationVector[0] * 50);// tank going left = delta >0 , tank going right delta < 0
-            if (moveY)
-                backGround.setY(backGround.getY() - deltaRotationVector[1] * 50);// tank going up = delta>0, tank going down delta < 0
+        if (moveX)
+            backGround.setX(backGround.getX() + deltaRotationVector[0] * 50);// tank going left = delta >0 , tank going right delta < 0
+        if (moveY)
+            backGround.setY(backGround.getY() - deltaRotationVector[1] * 50);// tank going up = delta>0, tank going down delta < 0
 
         //Point movement = new Point(0,0);
 //        for (int i = 0; i < myenemy.size(); i++) {
@@ -382,11 +403,12 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
             movement.x = 0;
         if(!moveY)
             movement.y = 0;
-        try {
-            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
-        }catch (Exception e){
-            //an excpetion has accured ...
-        }
+        tankArry.get(0).setPosition(movement);
+ //       try {
+  //          this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
+  //      }catch (Exception e){
+  //          //an excpetion has accured ...
+  //      }
     }
 
 
@@ -469,71 +491,65 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
     }
 
 
-    private class server_Listener extends Thread {
+    private class client_Listener extends Thread {
 
-        ObjectInputStream objectInputStream;
-        //ServerMessage msg;
-        ArrayList<Tank> msg;
-        int enemiesNum = 0;
-        boolean starting = true;
+        private Socket socket;
+        private ObjectOutputStream outputToClient;
+        private ObjectInputStream inputFromClient;
+        int clientNum = 0;
 
-        public server_Listener(ObjectInputStream objectInputStream) {
-            this.objectInputStream = objectInputStream;
 
+        public client_Listener(Socket socket) {
+            this.socket = socket;
+            clientNum = clientCount++;
+            try {
+                outputToClient = new ObjectOutputStream(this.socket.getOutputStream());
+                inputFromClient = new ObjectInputStream(this.socket.getInputStream());
+            } catch (IOException ioException) {
+                //   displayToast("Server Ended the connection.");
+                //   exit();
+            }
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
+            // send client his number
             try {
-                int myIndex = objectInputStream.readInt();
+            outputToClient.writeInt(clientNum);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            catch (Exception e){
 
-            }
-            while (true) {
+            while (gameRuning) {
                 try {
-                    msg = (ArrayList<Tank>) objectInputStream.readObject();//object can be message, or new user
-                    if (starting) {//ADD all the objects to the map
-                        for(int i =0 ; i < msg.size(); i++) {
-                            if (enemiesNum == 0) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_1);
-                                newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
-                            if (enemiesNum == 1) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_2);
-                                newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
-                            if (enemiesNum == 2) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_3);
-                                newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
-                        }
 
-                        starting = false;
-                    } else{ // UPDATE tank positions and if shot make it burn or some shit
-                        for(int i =0 ; i < msg.size() ; i++){
-                            if(!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
-                                myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
-                                myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                            }
-                            else{//tanks was shot down
-                                myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
-                            }
-                        }
+                    // get stuff from client
+                    Object message = inputFromClient.readObject();
+
+                    // update list's
+                    if(message.getClass().equals((Point.class))){
+                        Point movment = (Point) message;
+                        tankArry.get(clientNum).setPosition(movment);
                     }
-                    // get the new tank cords and tank status (shot or not - tank not there, its shot)
+                    else if(message.getClass().equals((Bullet.class))){
+                        Bullet bullet = (Bullet) message;
+                        bulletArry.add(bullet);
+                    }
+                    // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
+                    outputToClient.writeObject(tankArry);
+
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
+            try {
+                outputToClient.writeInt(-1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            // send client the game is over and player num thet won
         }
     }
 }

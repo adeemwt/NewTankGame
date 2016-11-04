@@ -28,6 +28,8 @@ public class Bullet {
         this.tank = tank;
         this.tankPosition = tankPosition;
     }
+    public  Bullet(){
+    }
 
     public ArrayList<ImageView> shoot(){
         double alpha1 = 0;

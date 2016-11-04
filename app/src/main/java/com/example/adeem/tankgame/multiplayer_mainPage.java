@@ -30,6 +30,7 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
     private Button joinBTN;
     private Button connectBTN;
     private Button disconnectBTN;
+    private Button start;
     private TextView serverIP;
     private TextView log;
     private EditText serverIP_cliente;
@@ -55,6 +56,14 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
         this.log =(TextView) findViewById(R.id.log_txt);
         this.serverIP_cliente = (EditText) findViewById(R.id.serverIP_client);
         this.serverIP_cliente.setText("");
+
+        start = (Button) findViewById(R.id.strt_btn );
+        this.start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wfdReceiver.startGame();
+            }
+        });
 
         registerWfdReceiver();
 

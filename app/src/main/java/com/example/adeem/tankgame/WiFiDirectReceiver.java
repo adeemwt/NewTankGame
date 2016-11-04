@@ -21,6 +21,9 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
 {
     public static final int PORT = 7890;
 
+    Intent intent;
+
+
     boolean isWifiDirectEnabled;
     WifiP2pManager wfdManager;
     WifiP2pManager.Channel wfdChannel;
@@ -103,9 +106,10 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
         if(wifiP2pInfo.groupFormed){
-            Intent intent = new Intent(appActivity, multiPlayerInGame.class);//start game!!! (multi ingame)
+            intent = new Intent(appActivity, multiPlayerInGame.class);//start game!!! (multi ingame)
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
             appActivity.startActivity(intent);
+            //appActivity.startActivity(intent);
             Toast.makeText(appActivity, "starting the ingame !!!!!!!: " , Toast.LENGTH_SHORT).show();
 
 
@@ -119,6 +123,10 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
         }
     }
 
+
+    public void startGame(){
+        appActivity.startActivity(intent);
+    }
     @Override
     public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
         if(wifiP2pDeviceList != null &&

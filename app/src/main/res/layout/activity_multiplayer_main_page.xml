@@ -91,4 +91,13 @@
         android:layout_below="@+id/connect_button"
         android:layout_alignStart="@+id/connect_button" />
 
+    <Button
+        android:text="start game"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="12dp"
+        android:id="@+id/strt_btn" />
+
 </RelativeLayout>

@@ -1,8 +1,10 @@
 package com.example.adeem.tankgame;
 
+import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telecom.Connection;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class multiPlayerInGame extends AppCompatActivity {
     TextView txt;
@@ -23,9 +26,13 @@ public class multiPlayerInGame extends AppCompatActivity {
     private ServerSocket server;
     private Socket connection;
     WifiP2pInfo wifiP2pInfo;
+    boolean flag = true;
+
     Button test;
+    Button start;
     boolean isServer = false;
 
+    multiPlayerInGame appActivity = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +41,14 @@ public class multiPlayerInGame extends AppCompatActivity {
         txt = (TextView) findViewById(R.id.log_ingameMulti);
         Bundle bundle = getIntent().getExtras();
         test = (Button) findViewById(R.id.send_test);
-
+        start = (Button) findViewById(R.id.button_start_multi);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flag = false;
+                txt.setText("pressses!!!!!!!!!!!!");
+            }
+        });
         wifiP2pInfo = (WifiP2pInfo) bundle.get("WIFI_P2P_INFO");
         if (wifiP2pInfo != null && wifiP2pInfo.isGroupOwner) {
             txt.setText(txt.getText() +"i am the server!!!");
@@ -82,75 +96,38 @@ public class multiPlayerInGame extends AppCompatActivity {
     }
 
 
-    class ClientSocketThread2 extends Thread { // not in use
-        @Override
-        public void run() {
-            try {
-                connectToServer();
-                setupStreams();
-                whilePlaying();
-            } catch (EOFException eofException) {
-             //   displayToast("Connection closed.");
-            //    exit();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-             //   exit();
-            } finally {
-                closeStreams();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    private class ServerSocketThread2 extends Thread { // noy in use
 
-        @Override
-        public void run() {
-            try {
-                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
-                while (true) {
-                    try {
-                        waitForConnection();
-                        txt.setText(txt.getText() +"\nOK 1111111111111111111111 !");
-                        setupStreams();
-                        txt.setText(txt.getText() +"\n2@@@@@@@@@@@@O@@K!");
-                        whilePlaying();
-                    } catch (EOFException eofException) {
-                        //   displayToast("Server Ended the connection.");
-                        //   exit();
-                    } finally {
-                        closeStreams();
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-                //   exit();
-            }
-        }
-    }
     class ClientSocketThread extends Thread {
+        Intent intent;
+        Socket conn;
         @Override
-        public void run() {
+        public void run() { //the client socket thread can send the outout stearm and input to the ingame
             try {
-                connection = new Socket();
-                connection.bind(null);
-                //connection = new Socket(wifiP2pInfo.groupOwnerAddress, WiFiDirectReceiver.PORT);
+               conn = new Socket();
+                conn.bind(null);
                 InetSocketAddress  isa = new InetSocketAddress(wifiP2pInfo.groupOwnerAddress, WiFiDirectReceiver.PORT);
-                connection.connect(isa, 100000);
+                conn.connect(isa, 100000);
 
 
-                output = new ObjectOutputStream(connection.getOutputStream());
+                output = new ObjectOutputStream(conn.getOutputStream());
                 output.flush();
-                input = new ObjectInputStream(connection.getInputStream());
+                input = new ObjectInputStream(conn.getInputStream());
 
+                Intent i = new Intent();
+                Bundle b = new Bundle();
+                ArrayList<Socket> conns = new ArrayList();
+                conns.add(conn);
+//                b.putParcelable("CONNECTION",conns);
+//                i.putExtras(b);
+//                i.setClass(this, SearchDetailsActivity.class);
+//                startActivity(i);
+
+                intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+                intent.putExtra("CONNECTION", conns);
+                appActivity.startActivity(intent);
+
+
+                //each client gets here , they connect to the server and here they can call the ingame class and pass the streams
 
                 String message = "";
 
@@ -168,7 +145,7 @@ public class multiPlayerInGame extends AppCompatActivity {
                 ioException.printStackTrace();
                 //   exit();
             } finally {
-                closeStreams();
+               // closeStreams();
                 try {
                     Thread.sleep(50); // this is it
                 } catch (InterruptedException e) {
@@ -178,30 +155,32 @@ public class multiPlayerInGame extends AppCompatActivity {
         }
     }
 
-    private class ServerSocketThread extends Thread {
+
+
+    public class ServerSocketThread extends Thread {
 
         @Override
         public void run() {
+            ArrayList<Socket> allSockets = new ArrayList<>();
+            Intent intent;
             try {
                 server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+                while(flag) {
                     try {
                         connection = server.accept();
+                        allSockets.add(connection);
 
+                        //tempporry check
+                        intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
+                        intent.putExtra("TANKS_CONNECTIONS", allSockets);
+                        txt.setText("now going to the intent!!!!!!!!!!!!!!");
+                        appActivity.startActivity(intent);
+                        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                        output = new ObjectOutputStream(connection.getOutputStream());
-                        output.flush();
-                        input = new ObjectInputStream(connection.getInputStream());
-
-
-                        String message = "this was sent from the server";
-                        output.writeObject(message);
-                        output.flush();
                     } catch (EOFException eofException) {
-                     //   displayToast("Server Ended the connection.");
-                     //   exit();
-                    } finally {
-                        closeStreams();
 
+                    } finally {
+                       // closeStreams();
                         try {
                             Thread.sleep(50);
                         } catch (InterruptedException e) {
@@ -209,6 +188,13 @@ public class multiPlayerInGame extends AppCompatActivity {
                         }
 
                     }
+                }
+
+                intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
+                intent.putExtra("TANKS_CONNECTIONS", allSockets);
+                txt.setText("now going to the intent!!!!!!!!!!!!!!");
+                appActivity.startActivity(intent);
+                //send the array to the server in game using intent
             } catch (IOException ioException) {
                 ioException.printStackTrace();
              //   exit();
