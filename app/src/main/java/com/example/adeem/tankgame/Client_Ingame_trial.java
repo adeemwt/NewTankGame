@@ -502,6 +502,19 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
                             enemiesNum++;
                             mytanks.add(newTank);
                         }
+                        if(enemiesNum == 1) {//add this tank
+                            ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_2);
+                            newTank.setVisibility(View.VISIBLE);
+                            enemiesNum++;
+                            mytanks.add(newTank);
+                        }
+                        if(enemiesNum == 2) {//add this tank
+                            ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_3);
+                            newTank.setVisibility(View.VISIBLE);
+                            enemiesNum++;
+                            mytanks.add(newTank);
+                        }
+
 
                     } else if (msg.getType().equals(ServerMessage.TYPE.UPDATE)) { // UPDATE tank positions and if shot make it burn or some shit
                         for(int i =0 ; i < msg.getTanks().size() ; i++){
@@ -512,7 +525,6 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
                             else{//tanks was shot down
                                 mytanks.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
-
                         }
                     }
                     // get the new tank cords and tank status (shot or not - tank not there, its shot)
