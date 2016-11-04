@@ -117,11 +117,18 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_in_game_map);
 
 
-        conectToServer();
 
         Bundle bundle = getIntent().getExtras();
 
         wifiP2pInfo = (WifiP2pInfo) bundle.get("WIFI_P2P_INFO");
+
+        try {
+            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket 			    server before connecting.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        conectToServer();
+
 
         Resources res = getResources();
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
