@@ -1,5 +1,6 @@
 package com.example.adeem.tankgame;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -24,7 +25,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.Action; //you dont have the import in the library
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -33,6 +34,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
@@ -56,6 +58,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     ArrayList<Tank> tankArry = new ArrayList<Tank>();
     ArrayList<Bullet> bulletArry = new ArrayList<Bullet>();
     Boolean gameRuning = true;
+    private ArrayList<Thread> ClienThreads = new ArrayList<Thread>();
+    Thread socketServerThread;
 
 
     //final values
@@ -120,11 +124,18 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game_map);
 
+
+
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        Bundle bundle = getIntent().getExtras();
-        test = (Button) findViewById(R.id.send_test);
-        connections = (ArrayList<Socket>) bundle.get("TANKS_CONNECTIONS");
+//        socketServerThread = new Thread(new ServerSocketThread());
+//        socketServerThread.start();
+        conectToClient();
+//
+//        Bundle bundle = getIntent().getExtras();
+//        test = (Button) findViewById(R.id.send_test);
+//        connections = (ArrayList<Socket>) bundle.get("TANKS_CONNECTIONS");
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -190,11 +201,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             //randTargets(targetNum);
             String userName = prefs.getString(SHuserName, null);
 
-//            Random rnd = new Random();
-//            Color c = new Color();                   // the tank does not have a color for now (well be added)
-//            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-//            tanks = new ArrayList<>(playerNum);
-//            tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout_client);
@@ -226,6 +232,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
 
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
@@ -260,74 +267,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         }
     }
-//
-//    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
-//    public void moveTargets(int xOry, int movement) { // buttons only
-//        movement *= 3;
-//        final float scale = getResources().getDisplayMetrics().density;
-//        test.setText("the Width is " + backGround.getWidth() + "\nthe dp calc is " + (backGround.getHeight() - 0.5f) / scale);
-//        if (xOry == CHOOSE_X) {
-//            if (movement < 0) {
-//
-//            } else {
-//                if (ourTank.getX() < backGround.getX()) return;
-//            }
-//            if (ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX() + (backGround.getWidth() - 0.5f) / scale) {
-//                for (int i = 0; i < TargetImages.size(); i++)
-//                    TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
-//                if (movement < 0)
-//                    ourTank.setRotation(90);
-//                else ourTank.setRotation(-90);
-//            }
-//        } else {
-//            if (movement < 0) {
-//
-//            } else {
-//                if (ourTank.getY() < backGround.getY()) return;
-//            }
-//            if (ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY() + (backGround.getHeight() - 0.5f) / scale) {
-//                for (int i = 0; i < TargetImages.size(); i++)
-//                    TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
-//                if (movement < 0)
-//                    ourTank.setRotation(180);
-//                else ourTank.setRotation(0);
-//            }
-//
-//        }
-//    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//    //randomize the trget position and set visiable according to the number for the difficulty level
-//    public void randTargets(int targetNum) {
-//        targets = new ArrayList<>(targetNum);
-//
-//
-//        final float scale = getResources().getDisplayMetrics().density;
-//        test.setText("the dinsity is " + scale);
-//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-//
-//
-//        backGround.getLayoutParams().height = pixels;
-//        backGround.getLayoutParams().width = pixels;
-//        backGround.requestLayout();
-//        ImageView img;
-//
-////        for(int i = 0 ; i< targetNum ; i++){
-//////            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
-//////            int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
-//////            int size = (int)(Math.random() *MAX_TARGET_SIZE);
-//////            targets.add(new Taget(new Point(x,y),size));
-//////            img =(ImageView) findViewById(imgIds[i]);
-//////            img.setX(targets.get(i).getCords().x);
-//////            img.setY(targets.get(i).getCords().y);
-//////            img.setVisibility(View.VISIBLE);
-////
-////
-////            TargetImages.add(img);
-////        }
-//        //add background for moving on map purposes
-//        TargetImages.add(backGround);
-//    }
+
 
 
     //movement detected update the server
@@ -550,6 +490,52 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 e.printStackTrace();
             }
             // send client the game is over and player num thet won
+        }
+    }
+    public void conectToClient(){
+        ServerSocket server;
+        try {
+            server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+            boolean flag = true; // change
+            while (flag) { // while waiting for players
+                flag = false; // change
+                try {
+                    Socket socket = server.accept();
+                    client_Listener cl = new client_Listener(socket);
+                    ClienThreads.add(cl);
+                    cl.start();
+                } catch (IOException ex) {
+
+                }
+
+            }
+        } catch (IOException ex) {
+
+        }
+    }
+
+    public class ServerSocketThread extends Thread {
+        @Override
+        public void run() {
+            ServerSocket server;
+            try {
+                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+                boolean flag = true; // change
+                while (flag) { // while waiting for players
+                    flag = false; // change
+                    try {
+                        Socket socket = server.accept();
+                        client_Listener cl = new client_Listener(socket);
+                        ClienThreads.add(cl);
+                        cl.start();
+                    } catch (IOException ex) {
+
+                    }
+
+                }
+            } catch (IOException ex) {
+
+            }
         }
     }
 }

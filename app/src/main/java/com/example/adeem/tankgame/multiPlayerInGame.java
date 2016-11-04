@@ -31,7 +31,7 @@ public class multiPlayerInGame extends AppCompatActivity {
     Button test;
     Button start;
     boolean isServer = false;
-
+    Intent intent;
     multiPlayerInGame appActivity = this;
 
     @Override
@@ -39,22 +39,30 @@ public class multiPlayerInGame extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_multi_player_in_game);
         txt = (TextView) findViewById(R.id.log_ingameMulti);
-        Bundle bundle = getIntent().getExtras();
         test = (Button) findViewById(R.id.send_test);
         start = (Button) findViewById(R.id.button_start_multi);
+
         test.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 flag = false;
                 txt.setText("pressses!!!!!!!!!!!!");
             }
         });
+
+
+
+        Bundle bundle = getIntent().getExtras();
+
         wifiP2pInfo = (WifiP2pInfo) bundle.get("WIFI_P2P_INFO");
         if (wifiP2pInfo != null && wifiP2pInfo.isGroupOwner) {
             txt.setText(txt.getText() +"i am the server!!!");
             isServer = true;
-            socketServerThread = new Thread(new ServerSocketThread());
-            socketServerThread.start();
+//            socketServerThread = new Thread(new ServerSocketThread());
+//            socketServerThread.start();
+            intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
+            appActivity.startActivity(intent);
         }
         else {
             // game.setMyTurn(false);
@@ -63,9 +71,13 @@ public class multiPlayerInGame extends AppCompatActivity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            txt.setText(txt.getText() +"i am the client!!!");
-            socketServerThread = new Thread(new ClientSocketThread());
-            socketServerThread.start();
+            //txt.setText(txt.getText() +"i am the client!!!");
+
+            intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+            appActivity.startActivity(intent);
+
+//            socketServerThread = new Thread(new ClientSocketThread());
+//            socketServerThread.start();
         }
 
         test.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +135,7 @@ public class multiPlayerInGame extends AppCompatActivity {
 //                startActivity(i);
 
                 intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
-                intent.putExtra("CONNECTION", conns);
+                //intent.putExtra("CONNECTION", conns);
                 appActivity.startActivity(intent);
 
 
@@ -173,20 +185,12 @@ public class multiPlayerInGame extends AppCompatActivity {
                         //tempporry check
                         intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
                         intent.putExtra("TANKS_CONNECTIONS", allSockets);
-                        txt.setText("now going to the intent!!!!!!!!!!!!!!");
+                        //txt.setText("now going to the intent!!!!!!!!!!!!!!");
                         appActivity.startActivity(intent);
                         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-                    } catch (EOFException eofException) {
-
-                    } finally {
-                       // closeStreams();
-                        try {
-                            Thread.sleep(50);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
+                    } catch (IOException ioException) {
+                        ioException.printStackTrace();
                     }
                 }
 

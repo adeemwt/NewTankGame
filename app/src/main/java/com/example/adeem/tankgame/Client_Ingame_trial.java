@@ -9,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -31,6 +32,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
@@ -47,9 +50,10 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
     //the socketOuput and input streams , no need to initialize atm
     ObjectInputStream input = null;
     ObjectOutputStream output = null;
-
+    Socket connection;
 
     ArrayList<ImageButton> myenemy = new ArrayList<ImageButton>();
+    WifiP2pInfo wifiP2pInfo;
 
     //final values
     final Point EASY_SIZE = new Point(1000, 1000);
@@ -111,6 +115,13 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_in_game_map);
+
+
+        conectToServer();
+
+        Bundle bundle = getIntent().getExtras();
+
+        wifiP2pInfo = (WifiP2pInfo) bundle.get("WIFI_P2P_INFO");
 
         Resources res = getResources();
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
@@ -207,6 +218,22 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
+
+    public void conectToServer(){
+        try {
+            connection = new Socket();
+            connection.bind(null);
+            InetSocketAddress isa = new InetSocketAddress(wifiP2pInfo.groupOwnerAddress, WiFiDirectReceiver.PORT);
+            connection.connect(isa, 100000);
+
+
+            output = new ObjectOutputStream(connection.getOutputStream());
+            output.flush();
+            input = new ObjectInputStream(connection.getInputStream());
+        }catch (IOException ioException){
+            ioException.printStackTrace();
+        }
+    }
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override
@@ -476,15 +503,23 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         ArrayList<Tank> msg;
         int enemiesNum = 0;
         boolean starting = true;
-
+        ArrayList<ImageButton> imgs;
         public server_Listener(ObjectInputStream objectInputStream) {
             this.objectInputStream = objectInputStream;
-
+            imgs = new ArrayList<ImageButton>();
+            ImageButton btn;
+            btn = (ImageButton) findViewById(R.id.ourTank_enemy_1);
+            imgs.add(btn);
+            btn = (ImageButton) findViewById(R.id.ourTank_enemy_2);
+            imgs.add(btn);
+            btn = (ImageButton) findViewById(R.id.ourTank_enemy_3);
+            imgs.add(btn);
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
+
             try {
                 int myIndex = objectInputStream.readInt();
             }
@@ -495,25 +530,14 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
                 try {
                     msg = (ArrayList<Tank>) objectInputStream.readObject();//object can be message, or new user
                     if (starting) {//ADD all the objects to the map
+
                         for(int i =0 ; i < msg.size(); i++) {
-                            if (enemiesNum == 0) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_1);
+
+                                ImageButton newTank = imgs.get(i);
                                 newTank.setVisibility(View.VISIBLE);
                                 enemiesNum++;
                                 myenemy.add(newTank);
-                            }
-                            if (enemiesNum == 1) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_2);
-                                newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
-                            if (enemiesNum == 2) {//add this tank
-                                ImageButton newTank = (ImageButton) findViewById(R.id.ourTank_enemy_3);
-                                newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
+
                         }
 
                         starting = false;

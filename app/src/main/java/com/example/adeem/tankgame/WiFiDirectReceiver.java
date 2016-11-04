@@ -106,19 +106,13 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
     @Override
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
         if(wifiP2pInfo.groupFormed){
-            intent = new Intent(appActivity, multiPlayerInGame.class);//start game!!! (multi ingame)
+            if(wifiP2pInfo.isGroupOwner)//start server
+                intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
+            else//start client
+                intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
             appActivity.startActivity(intent);
-            //appActivity.startActivity(intent);
-            Toast.makeText(appActivity, "starting the ingame !!!!!!!: " , Toast.LENGTH_SHORT).show();
-
-
-//            if(wifiP2pInfo.isGroupOwner){
-//                    //Open a ServerSocket
-//            }
-//            else {
-//                // Open a socket to wifiP2pInfo.groupOwnerAddress
-//            }
 
         }
     }
