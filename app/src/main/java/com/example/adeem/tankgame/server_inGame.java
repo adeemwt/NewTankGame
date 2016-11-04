@@ -93,7 +93,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
   //  private ArrayList<Taget> targets;
    // private ArrayList<ImageView> TargetImages = new ArrayList<>();
 
-    private ArrayList<Socket> connections;
+   // private ArrayList<Socket> connections;
     private Point WidthAndHieght;
 
     private ImageButton ourTank;
@@ -139,10 +139,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        for(int i =0 ; i < connections.size() ; i++){
-            client_Listener listener = new client_Listener(connections.get(i));
-            tankArry.add(new Tank(new Player(""+ i),null));
-        }
+//        for(int i =0 ; i < connections.size() ; i++){
+//            client_Listener listener = new client_Listener(connections.get(i));
+//            tankArry.add(new Tank(new Player(""+ i),null));
+//        }
         Resources res = getResources();
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
