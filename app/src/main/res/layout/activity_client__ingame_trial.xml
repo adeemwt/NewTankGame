@@ -10,7 +10,7 @@
     android:background="@color/white"
 
     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-    android:id="@+id/mainlayout_client"
+    android:id="@+id/mainlayout_client">
     tools:context="com.example.adeem.tankgame.Client_Ingame_trial">
 
     <ImageView
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
-        android:id="@+id/log_client"
+        android:id="@+id/log_client_1"
         />
 
     <TextView

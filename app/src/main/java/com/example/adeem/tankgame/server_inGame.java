@@ -154,7 +154,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         ourTank = (ImageButton) findViewById(R.id.ourTank_client);
         //for debugging only
-        test = (TextView) findViewById(R.id.log_client);
+        test = (TextView) findViewById(R.id.log_client_1);
 
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {

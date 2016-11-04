@@ -131,6 +131,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
 
 
         Resources res = getResources();
+
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
         SHuserName = res.getString(R.string.SharedPreferencesUserName);
@@ -141,7 +142,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
 
         ourTank = (ImageButton) findViewById(R.id.ourTank_client);
         //for debugging only
-        test = (TextView) findViewById(R.id.log_client);
+        test = (TextView) findViewById(R.id.log_client_1);
 
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
@@ -223,6 +224,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        test.setText("all is good");
     }
 
 
