@@ -122,7 +122,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_in_game_map);
+        setContentView(R.layout.activity_server_in_game);
 
 
 
@@ -152,9 +152,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         Difficulty = prefs.getString("difficultly", null);
         UserName = prefs.getString(SHuserName, null);
 
-        ourTank = (ImageButton) findViewById(R.id.ourTank_client);
+        ourTank = (ImageButton) findViewById(R.id.ourTank_server);
         //for debugging only
-        test = (TextView) findViewById(R.id.log_client_1);
+        test = (TextView) findViewById(R.id.log_server);
 
         t = new Timer();
         t.scheduleAtFixedRate(new TimerTask() {
@@ -163,7 +163,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TextView tv = (TextView) findViewById(R.id.time_client);
+                        TextView tv = (TextView) findViewById(R.id.time_server);
                         tv.setText(String.valueOf(String.valueOf(seconds) + ""));
                         seconds++;
                     }
@@ -174,7 +174,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         test.setText("");
         /////////////////////////////////////////////////
 
-        backGround = (ImageView) findViewById(R.id.limitsView_client);
+        backGround = (ImageView) findViewById(R.id.limitsView_server);
 
         //initialize sensor
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -203,7 +203,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
             ourTank.setOnClickListener(this);
 
-            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout_client);
+            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
             rlayout.setOnClickListener(this);
 
             //on screen  touch get coordinates and change the tank aim accordingly
@@ -241,7 +241,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         int buttonId = view.getId();
         switch (buttonId) {
 
-            case (R.id.ourTank): {
+            case (R.id.ourTank_server): {
                 Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
@@ -343,7 +343,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             movement.x = 0;
         if(!moveY)
             movement.y = 0;
-        tankArry.get(0).setPosition(movement);
+      //  tankArry.get(0).setPosition(movement);
  //       try {
   //          this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
   //      }catch (Exception e){
@@ -501,9 +501,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 flag = false; // change
                 try {
                     Socket socket = server.accept();
-                    client_Listener cl = new client_Listener(socket);
-                    ClienThreads.add(cl);
-                    cl.start();
+                  //  client_Listener cl = new client_Listener(socket);
+                   // ClienThreads.add(cl);
+                   // cl.start();
                 } catch (IOException ex) {
 
                 }
@@ -513,31 +513,31 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         }
     }
-
-    public class ServerSocketThread extends Thread {
-        @Override
-        public void run() {
-            ServerSocket server;
-            try {
-                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
-                boolean flag = true; // change
-                while (flag) { // while waiting for players
-                    flag = false; // change
-                    try {
-                        Socket socket = server.accept();
-                        client_Listener cl = new client_Listener(socket);
-                        ClienThreads.add(cl);
-                        cl.start();
-                    } catch (IOException ex) {
-
-                    }
-
-                }
-            } catch (IOException ex) {
-
-            }
-        }
-    }
+//
+//    public class ServerSocketThread extends Thread {
+//        @Override
+//        public void run() {
+//            ServerSocket server;
+//            try {
+//                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+//                boolean flag = true; // change
+//                while (flag) { // while waiting for players
+//                    flag = false; // change
+//                    try {
+//                        Socket socket = server.accept();
+//                        client_Listener cl = new client_Listener(socket);
+//                        ClienThreads.add(cl);
+//                        cl.start();
+//                    } catch (IOException ex) {
+//
+//                    }
+//
+//                }
+//            } catch (IOException ex) {
+//
+//            }
+//        }
+//    }
 }
 
 

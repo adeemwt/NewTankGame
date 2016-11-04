@@ -114,7 +114,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_in_game_map);
+        setContentView(R.layout.activity_client__ingame_trial);
 
 
 
@@ -172,6 +172,8 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
 
 
         server_Listener Slistener = new server_Listener(input);
+        Slistener.start();
+
         if (Difficulty != null) {
             if (Difficulty.equals(diffSpinner[0])) { // easy
                 this.WidthAndHieght = this.EASY_SIZE;
@@ -196,7 +198,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
             tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
-            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout_client);
+            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.layout_client_Ingame_trial_21);
             rlayout.setOnClickListener(this);
 
             //on screen  touch get coordinates and change the tank aim accordingly
@@ -250,7 +252,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
         int buttonId = view.getId();
         switch (buttonId) {
 
-            case (R.id.ourTank): {
+            case (R.id.ourTank_client): {
                 Bullet bullet = new Bullet(this.TargetImages, ourTank.getRotation(), tanks.get(0), new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();

@@ -8,9 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/white"
-
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
-    android:id="@+id/mainlayout_client">
+    android:id="@+id/layout_client_Ingame_trial_21"
     tools:context="com.example.adeem.tankgame.Client_Ingame_trial">
 
     <ImageView
