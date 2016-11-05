@@ -30,7 +30,7 @@
     <ImageButton
         android:layout_width="42dp"
         android:layout_height="69dp"
-        android:id="@+id/ourTank_enemy_1_client"
+        android:id="@+id/ourTank_enemy_1_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
         android:background="@drawable/trastank"
@@ -39,7 +39,7 @@
     <ImageButton
         android:layout_width="42dp"
         android:layout_height="69dp"
-        android:id="@+id/ourTank_enemy_2_client"
+        android:id="@+id/ourTank_enemy_2_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
         android:background="@drawable/trastank"
@@ -48,7 +48,7 @@
     <ImageButton
         android:layout_width="42dp"
         android:layout_height="69dp"
-        android:id="@+id/ourTank_enemy_3_client"
+        android:id="@+id/ourTank_enemy_3_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
         android:background="@drawable/trastank"

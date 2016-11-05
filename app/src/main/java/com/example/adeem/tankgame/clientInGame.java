@@ -518,9 +518,9 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         boolean starting = true;
         int myIndex;
         private int[] imgIds = {
-                R.id.ourTank_enemy_1_client,
-                R.id.ourTank_enemy_2_client,
-                R.id.ourTank_enemy_3_client
+                R.id.ourTank_enemy_1_client2,
+                R.id.ourTank_enemy_2_client2,
+                R.id.ourTank_enemy_3_client2
         };
 
 
