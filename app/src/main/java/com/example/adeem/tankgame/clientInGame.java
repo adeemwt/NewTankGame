@@ -261,6 +261,9 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         test.setText("all is good CLIENT");
     }
 
+    public void settext_(String text){
+        test.setText(test.getText() +"\n" + text);
+    }
 
     public void conectToServer(){
         try {
@@ -578,7 +581,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
                                 myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                                mytest.setText(test.getText() + "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                                //might work
+                                settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                             } else {//tanks was shot down
                                 myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
