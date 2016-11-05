@@ -582,7 +582,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                 myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
                                 //might work
-                                settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+
+
+                                runOnUiThread(new Runnable(){
+                                    @Override
+                                    public void run(){
+                                        settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                                    }
+                                });
+
+
                             } else {//tanks was shot down
                                 myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
