@@ -547,10 +547,12 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                         for(int i =0 ; i < msg.size(); i++) {
 
-                            ImageButton newTank = imgs.get(i);
-                            newTank.setVisibility(View.VISIBLE);
-                            enemiesNum++;
-                            myenemy.add(newTank);
+                            ImageButton newTank =(ImageButton) findViewById(R.id.ourTank_enemy_1_client);
+                            if(newTank!= null) {
+                                newTank.setVisibility(View.VISIBLE);
+                                enemiesNum++;
+                                myenemy.add(newTank);
+                            }
 
                         }
 
