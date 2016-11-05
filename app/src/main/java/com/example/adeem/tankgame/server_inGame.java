@@ -483,6 +483,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
+
                     e.printStackTrace();
                 }
             }

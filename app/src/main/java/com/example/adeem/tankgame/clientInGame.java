@@ -421,6 +421,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         if(!moveY)
             movement.y = 0;
         try {
+            test.setText("moveing !!!!!!!!!!!!!!!");
             this.output.writeObject(new Integer(1));
             this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
         }catch (Exception e){
