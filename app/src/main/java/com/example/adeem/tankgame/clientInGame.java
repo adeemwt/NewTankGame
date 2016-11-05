@@ -267,6 +267,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //                }
 
                 try {
+                    this.output.writeObject(new Integer(2));
                     this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
                 }catch (Exception e){
                     //an excpetion has accured ...
@@ -420,6 +421,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         if(!moveY)
             movement.y = 0;
         try {
+            this.output.writeObject(new Integer(1));
             this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
         }catch (Exception e){
             //an excpetion has accured ...

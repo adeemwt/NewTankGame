@@ -467,19 +467,19 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 try {
 
                     // get stuff from client
-                    Object message = inputFromClient.readObject();
-
-                    // update list's
-                    if(message.getClass().equals((Point.class))){
-                        Point movment = (Point) message;
-                        tankArry.get(clientNum).setPosition(movment);
+                    int type = (int )inputFromClient.readObject();
+                    if(type == 1){
+                        Point message = (Point)inputFromClient.readObject();
+                        tankArry.get(clientNum).setPosition(message);
+                        test.setText("got movement bitch");
                     }
-                    else if(message.getClass().equals((Bullet.class))){
-                        Bullet bullet = (Bullet) message;
-                        bulletArry.add(bullet);
+                    else if(type == 2){
+                        Bullet message = (Bullet) inputFromClient.readObject();
+                        bulletArry.add(message);
                     }
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     outputToClient.writeObject(tankArry);
+                    test.setText(test.getText()+"\nsending movement bitch");
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
