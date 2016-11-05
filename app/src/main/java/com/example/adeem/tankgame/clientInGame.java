@@ -168,8 +168,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 SensorManager.SENSOR_DELAY_UI);
 
 
-        server_Listener Slistener = new server_Listener(input);
-        Slistener.start();
+        //server_Listener Slistener = new server_Listener(input);
+        //Slistener.start();
 
         Difficulty = diffSpinner[0]; // for testing !!!!
 
