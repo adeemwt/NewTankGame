@@ -586,7 +586,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             while (true) {
                 try { // UPDATE tank positions and if shot make it burn or some shit
                     msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
-
                     contex.runOnUiThread(new Runnable(){
                         @Override
                         public void run(){
@@ -596,11 +595,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                     if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
                                         contex.myenemy.get(i).setX(msg.get(i).getPosition().x + contex.backGround.getX());
                                         contex.myenemy.get(i).setY(msg.get(i).getPosition().y + contex.backGround.getY());
-                                        //might work
-
-//
-
-
 
                                     } else {//tanks was shot down
                                         contex.myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
