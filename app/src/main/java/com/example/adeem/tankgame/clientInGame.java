@@ -109,6 +109,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
          */
         private GoogleApiClient client;
 
+
+    int myIndex;
+    private int[] imgIds = {
+            R.id.ourTank_enemy_1_client2,
+            R.id.ourTank_enemy_2_client2,
+            R.id.ourTank_enemy_3_client2
+    };
+    ArrayList<Tank> msg;
+    int enemiesNum = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,8 +136,33 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         }
         conectToServer();
 
+        //!!!!!!!!!!!!!!!!!!!!! get the index and set the enemies visible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        try {
+            myIndex = input.readInt();
+        }
+        catch (Exception e){
+
+        }
+        try {
+            msg = (ArrayList<Tank>) input.readObject();//object can be message, or new user
+            int j = 0;
+            for (int i = 0; i < msg.size(); i++) {
+                if (i != myIndex) {
+                    ImageView newTank = (ImageView) findViewById(imgIds[j++]);
+                    if (newTank != null) {
+                        newTank.setVisibility(View.VISIBLE);
+                        enemiesNum++;
+                        myenemy.add(newTank);
+                    }
+                }
+            }
+        }catch(Exception e){}
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         server_Listener Slistener = new server_Listener(input);
         Slistener.start();
+
+
         Resources res = getResources();
 
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
@@ -136,10 +171,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
 
 
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
-        ImageView testingnng = (ImageView) findViewById(R.id.ourTank_enemy_1_client2);
-        testingnng.setVisibility(View.VISIBLE);
 
 
         prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
@@ -521,15 +552,9 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         ObjectInputStream objectInputStream;
         //ServerMessage msg;
-        ArrayList<Tank> msg;
-        int enemiesNum = 0;
+
+
         boolean starting = true;
-        int myIndex;
-        private int[] imgIds = {
-                R.id.ourTank_enemy_1_client2,
-                R.id.ourTank_enemy_2_client2,
-                R.id.ourTank_enemy_3_client2
-        };
 
 
         public server_Listener(ObjectInputStream objectInputStream) {
@@ -541,47 +566,25 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
 
-            try {
-                myIndex = objectInputStream.readInt();
-            }
-            catch (Exception e){
 
-            }
             while (true) {
-                try {
-                    msg = (ArrayList<Tank>) objectInputStream.readObject();//object can be message, or new user
-                    if (starting) {//ADD all the objects to the map
-
-                        for(int i =0 ; i < msg.size(); i++) {
-
-                            ImageView newTank =(ImageView) findViewById(imgIds[i]);
-                            if(newTank!= null) {
-                                //newTank.setVisibility(View.VISIBLE);
-                                enemiesNum++;
-                                myenemy.add(newTank);
-                            }
-
-                        }
-
-                        starting = false;
-                    } else{ // UPDATE tank positions and if shot make it burn or some shit
-                        for(int i =0 ; i < msg.size() ; i++){
-                            if(i!= myIndex) {
-                                if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
-                                    myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
-                                    myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                                } else {//tanks was shot down
-                                    myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
-                                }
+                try { // UPDATE tank positions and if shot make it burn or some shit
+                    for (int i = 0; i < msg.size(); i++) {
+                        if (i != myIndex) {
+                            if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
+                                myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
+                                myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
+                            } else {//tanks was shot down
+                                myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
                         }
                     }
-                    // get the new tank cords and tank status (shot or not - tank not there, its shot)
-                } catch (ClassNotFoundException | IOException e) {
-                    // TODO Auto-generated catch block
+                }// get the new tank cords and tank status (shot or not - tank not there, its shot)
+                catch (Exception e) {
                     e.printStackTrace();
                 }
             }
+
         }
     }
 }
