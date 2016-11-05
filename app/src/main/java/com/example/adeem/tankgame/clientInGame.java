@@ -454,7 +454,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         if(!moveY)
             movement.y = 0;
         try {
-            test.setText("moveing !!!!!!!!!!!!!!!");
+            //test.setText("moveing !!!!!!!!!!!!!!!");
             this.output.writeObject(new Integer(1));
             this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
         }catch (Exception e){
@@ -548,12 +548,14 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         //ServerMessage msg;
         ArrayList<Tank> msg;
         int myIndex;
-
+        TextView mytest;
         boolean starting = true;
 
 
         public server_Listener(ObjectInputStream objectInputStream) {
             this.objectInputStream = objectInputStream;
+            mytest = (TextView) findViewById(R.id.log_client2);
+
 
         }
 
@@ -576,7 +578,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
                                 myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                                test.setText(test.getText() + "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                                mytest.setText(test.getText() + "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                             } else {//tanks was shot down
                                 myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
