@@ -14,7 +14,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
 <ImageView
     android:layout_width="1000dp"
     android:layout_height="1000px"
-    android:id="@+id/limitsView_server"
+    android:id="@+id/limitsView_server2"
     android:layout_x="0dp"
     android:layout_y="0dp"
     android:background="@drawable/limits2" />
@@ -23,7 +23,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
 <ImageButton
     android:layout_width="42dp"
     android:layout_height="69dp"
-    android:id="@+id/ourTank_server"
+    android:id="@+id/ourTank_server2"
     android:layout_x="176dp"
     android:layout_y="209dp"
     android:background="@drawable/trastank" />

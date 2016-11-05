@@ -157,7 +157,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         Difficulty = prefs.getString("difficultly", null);
         UserName = prefs.getString(SHuserName, null);
 
-        ourTank = (ImageButton) findViewById(R.id.ourTank_server);
+        ourTank = (ImageButton) findViewById(R.id.ourTank_server2);
 
         tankArry .add(new Tank(new Player("server"),null));
         tankArry .add(new Tank(new Player("client"),null));
@@ -183,7 +183,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         test.setText("");
         /////////////////////////////////////////////////
 
-        backGround = (ImageView) findViewById(R.id.limitsView_server);
+        backGround = (ImageView) findViewById(R.id.limitsView_server2);
 
         //initialize sensor
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -354,7 +354,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             movement.x = 0;
         if(!moveY)
             movement.y = 0;
-      //  tankArry.get(0).setPosition(movement);
+        tankArry.get(0).setPosition(movement);
  //       try {
   //          this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
   //      }catch (Exception e){
