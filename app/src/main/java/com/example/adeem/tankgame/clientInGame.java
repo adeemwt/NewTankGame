@@ -548,7 +548,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                             ImageView newTank =(ImageView) findViewById(imgIds[i]);
                             if(newTank!= null) {
-                                newTank.setVisibility(View.VISIBLE);
+                                //newTank.setVisibility(View.VISIBLE);
                                 enemiesNum++;
                                 myenemy.add(newTank);
                             }
