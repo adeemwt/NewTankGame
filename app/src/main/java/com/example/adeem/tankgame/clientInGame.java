@@ -576,7 +576,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
                                 myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                                test.setText("moved : " + myenemy.get(i).getX() + " , " + myenemy.get(i).getY());//try it now . if we get s
+                                test.setText(test.getText() + "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                             } else {//tanks was shot down
                                 myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
