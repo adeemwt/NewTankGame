@@ -171,6 +171,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         server_Listener Slistener = new server_Listener(input);
         Slistener.start();
 
+        Difficulty = diffSpinner[0]; // for testing !!!!
+
         if (Difficulty != null) {
             if (Difficulty.equals(diffSpinner[0])) { // easy
                 this.WidthAndHieght = this.EASY_SIZE;
