@@ -51,7 +51,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         ObjectOutputStream output = null;
         Socket connection;
 
-        ArrayList<ImageButton> myenemy = new ArrayList<ImageButton>();
+        ArrayList<ImageView> myenemy = new ArrayList<ImageView>();
         WifiP2pInfo wifiP2pInfo;
 
         //final values
@@ -546,7 +546,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                         for(int i =0 ; i < msg.size(); i++) {
 
-                            ImageButton newTank =(ImageButton) findViewById(imgIds[i]);
+                            ImageView newTank =(ImageView) findViewById(imgIds[i]);
                             if(newTank!= null) {
                                 newTank.setVisibility(View.VISIBLE);
                                 enemiesNum++;

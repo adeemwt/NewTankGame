@@ -27,7 +27,7 @@
         android:layout_y="209dp"
         android:background="@drawable/trastank" />
 
-    <ImageButton
+    <ImageView
         android:layout_width="42dp"
         android:layout_height="69dp"
         android:id="@+id/ourTank_enemy_1_client2"
@@ -36,7 +36,7 @@
         android:background="@drawable/trastank"
         android:visibility="gone"/>
 
-    <ImageButton
+    <ImageView
         android:layout_width="42dp"
         android:layout_height="69dp"
         android:id="@+id/ourTank_enemy_2_client2"
@@ -45,7 +45,7 @@
         android:background="@drawable/trastank"
         android:visibility="gone"/>
 
-    <ImageButton
+    <ImageView
         android:layout_width="42dp"
         android:layout_height="69dp"
         android:id="@+id/ourTank_enemy_3_client2"
