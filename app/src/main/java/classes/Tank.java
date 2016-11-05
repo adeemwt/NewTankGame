@@ -3,6 +3,7 @@ package classes;
 import android.graphics.Color;
 import android.graphics.Point;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -17,8 +18,8 @@ import java.util.Comparator;
  4.	Class - Player  (var)
 
  */
-public class Tank implements Comparable<Tank> {
-    private Point position;
+public class Tank implements Comparable<Tank> , Serializable {
+    private MyPoint position;
     private int currentScore;
     private Player player;
     private Color colour;
@@ -28,7 +29,7 @@ public class Tank implements Comparable<Tank> {
     private boolean shot = false;
 
     public Tank(Player player,Color colour){
-        this.position = new Point(0,0);//initial possitoin
+        this.position = new MyPoint(0,0);//initial possitoin
         this.currentScore = 0;
         this.colour = colour;
         this.player = player;
@@ -40,7 +41,7 @@ public class Tank implements Comparable<Tank> {
     public Color getColour(){
         return this.colour;
     }
-    public Point getPosition() {
+    public MyPoint getPosition() {
         return position;
     }
 
@@ -53,7 +54,7 @@ public class Tank implements Comparable<Tank> {
         return shot;
     }
 
-    public void setPosition(Point position) {
+    public void setPosition(MyPoint position) {
         this.position = position;
     }
 

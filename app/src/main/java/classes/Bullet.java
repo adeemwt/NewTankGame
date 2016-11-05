@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
@@ -15,14 +16,14 @@ import java.util.ArrayList;
 
 
  */
-public class Bullet {
+public class Bullet implements Serializable {
 
     float headingAngle;
     Tank tank;
     ArrayList<ImageView> allTarget;
-    Point tankPosition;
+    MyPoint tankPosition;
 
-    public  Bullet(ArrayList<ImageView> targets, float angle, Tank tank, Point tankPosition){
+    public  Bullet(ArrayList<ImageView> targets, float angle, Tank tank, MyPoint tankPosition){
         this.allTarget =  targets;
         this.headingAngle = angle;
         this.tank = tank;

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Point;
+//import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -42,6 +42,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import classes.Bullet;
+import classes.MyPoint;
 import classes.Player;
 import classes.ServerMessage;
 import classes.Taget;
@@ -63,9 +64,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
 
     //final values
-    final Point EASY_SIZE = new Point(1000, 1000);
-    final Point MEDUIM_SIZE = new Point(1500, 1500);
-    final Point HARD_SIZE = new Point(2000, 2000);
+    final MyPoint EASY_SIZE = new MyPoint(1000, 1000);
+    final MyPoint MEDUIM_SIZE = new MyPoint(1500, 1500);
+    final MyPoint HARD_SIZE = new MyPoint(2000, 2000);
 
     //how big the step for the tank is, dp
     final int STEP = 10;
@@ -94,7 +95,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
    // private ArrayList<ImageView> TargetImages = new ArrayList<>();
 
    // private ArrayList<Socket> connections;
-    private Point WidthAndHieght;
+    private MyPoint WidthAndHieght;
 
     private ImageButton ourTank;
     private TextView test; ////// fot testing only
@@ -340,7 +341,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 //        }
 //
 
-        Point movement = new Point((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
+        MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
         if(!moveX)
             movement.x = 0;
         if(!moveY)
@@ -469,7 +470,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // get stuff from client
                     int type = (int )inputFromClient.readObject();
                     if(type == 1){
-                        Point message = (Point)inputFromClient.readObject();
+                        MyPoint message = (MyPoint)inputFromClient.readObject();
                         tankArry.get(clientNum).setPosition(message);
                         test.setText("got movement bitch");
                     }

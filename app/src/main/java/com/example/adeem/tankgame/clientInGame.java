@@ -3,7 +3,6 @@ package com.example.adeem.tankgame;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -19,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import classes.MyPoint;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -55,9 +55,9 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         WifiP2pInfo wifiP2pInfo;
 
         //final values
-        final Point EASY_SIZE = new Point(1000, 1000);
-        final Point MEDUIM_SIZE = new Point(1500, 1500);
-        final Point HARD_SIZE = new Point(2000, 2000);
+        final MyPoint EASY_SIZE = new MyPoint(1000, 1000);
+        final MyPoint MEDUIM_SIZE = new MyPoint(1500, 1500);
+        final MyPoint HARD_SIZE = new MyPoint(2000, 2000);
 
         //how big the step for the tank is, dp
         final int STEP = 10;
@@ -84,7 +84,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         private ArrayList<Tank> tanks;
         private ArrayList<Taget> targets;
         private ArrayList<ImageView> TargetImages = new ArrayList<>();
-        private Point WidthAndHieght;
+        private MyPoint WidthAndHieght;
 
         private ImageButton ourTank;
         private TextView test; ////// fot testing only
@@ -252,7 +252,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         switch (buttonId) {
 
             case (R.id.ourTank_client2): {
-                Bullet bullet = new Bullet(this.TargetImages, ourTank.getRotation(), tanks.get(0), new Point((int) ourTank.getX(), (int) ourTank.getY()));
+                Bullet bullet = new Bullet(this.TargetImages, ourTank.getRotation(), tanks.get(0), new MyPoint((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -415,7 +415,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //        }
 //
 
-        Point movement = new Point((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
+        MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
         if(!moveX)
             movement.x = 0;
         if(!moveY)

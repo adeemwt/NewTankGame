@@ -268,7 +268,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
                 moveTargets(CHOOSE_Y,-STEP);
                 break;
             case(R.id.ourTank): {
-                Bullet bullet = new Bullet(this.TargetImages,ourTank.getRotation(),tanks.get(0),new Point((int)ourTank.getX(),(int)ourTank.getY()));
+                Bullet bullet = new Bullet(this.TargetImages,ourTank.getRotation(),tanks.get(0),new MyPoint((int)ourTank.getX(),(int)ourTank.getY()));
                 ArrayList<ImageView> targets= TargetImages;
                 this.TargetImages = bullet.shoot();
 
