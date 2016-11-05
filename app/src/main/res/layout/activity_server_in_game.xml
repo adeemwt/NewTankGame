@@ -35,7 +35,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:layout_x="176dp"
     android:layout_y="209dp"
     android:background="@drawable/trastank"
-    android:visibility="invisible"/>
+    android:visibility="gone"/>
 
 <ImageButton
     android:layout_width="42dp"
@@ -44,7 +44,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:layout_x="176dp"
     android:layout_y="209dp"
     android:background="@drawable/trastank"
-    android:visibility="invisible"/>
+    android:visibility="gone"/>
 
 <ImageButton
     android:layout_width="42dp"
@@ -53,7 +53,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:layout_x="176dp"
     android:layout_y="209dp"
     android:background="@drawable/trastank"
-    android:visibility="invisible"/>
+    android:visibility="gone"/>
 
 <TextView
     android:layout_width="wrap_content"

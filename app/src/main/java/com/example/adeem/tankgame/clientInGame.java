@@ -517,17 +517,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         int enemiesNum = 0;
         boolean starting = true;
         int myIndex;
-        ArrayList<ImageButton> imgs;
+        private int[] imgIds = {
+                R.id.ourTank_enemy_1_client,
+                R.id.ourTank_enemy_2_client,
+                R.id.ourTank_enemy_3_client
+        };
+
+
         public server_Listener(ObjectInputStream objectInputStream) {
             this.objectInputStream = objectInputStream;
-            imgs = new ArrayList<ImageButton>();
-            ImageButton btn;
-            btn = (ImageButton) findViewById(R.id.ourTank_enemy_1_client);
-            imgs.add(btn);
-            btn = (ImageButton) findViewById(R.id.ourTank_enemy_2_client);
-            imgs.add(btn);
-            btn = (ImageButton) findViewById(R.id.ourTank_enemy_3_client);
-            imgs.add(btn);
+
         }
 
         @SuppressWarnings("unchecked")
@@ -547,7 +546,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                         for(int i =0 ; i < msg.size(); i++) {
 
-                            ImageButton newTank =(ImageButton) findViewById(R.id.ourTank_enemy_1_client);
+                            ImageButton newTank =(ImageButton) findViewById(imgIds[i]);
                             if(newTank!= null) {
                                 newTank.setVisibility(View.VISIBLE);
                                 enemiesNum++;
