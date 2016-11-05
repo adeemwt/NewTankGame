@@ -304,7 +304,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                 try {
                     this.output.writeObject(new Integer(2));
+                    this.output.flush();
+
                     this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
+                    this.output.flush();
+
                 }catch (Exception e){
                     //an excpetion has accured ...
                 }
@@ -459,7 +463,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         try {
             //test.setText("moveing !!!!!!!!!!!!!!!");
             this.output.writeObject(new Integer(1));
+            this.output.flush();
+
             this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
+            this.output.flush();
+
         }catch (Exception e){
             //an excpetion has accured ...
         }

@@ -469,6 +469,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             // send client his number
             try {
             outputToClient.writeInt(clientNum);
+            outputToClient.flush();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -489,6 +491,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     }
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     outputToClient.writeObject(tankArry);
+                    outputToClient.flush();
+
                     //test.setText(test.getText()+"\nsending movement bitch");
 
                 } catch (ClassNotFoundException | IOException e) {
@@ -499,6 +503,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             }
             try {
                 outputToClient.writeInt(-1);
+                outputToClient.flush();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
