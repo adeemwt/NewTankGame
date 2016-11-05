@@ -198,7 +198,7 @@ public class Client_Ingame_trial extends AppCompatActivity implements View.OnCli
             tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
-            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.layout_client_Ingame_trial_21);
+            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_client__ingame_trial);
             rlayout.setOnClickListener(this);
 
             //on screen  touch get coordinates and change the tank aim accordingly
