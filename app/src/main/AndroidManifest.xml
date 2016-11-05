@@ -41,7 +41,6 @@
         <activity android:name=".highScores" />
         <activity android:name=".multiplayer_mainPage" />
         <activity android:name=".multiPlayerInGame" />
-        <activity android:name=".Client_Ingame_trial" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

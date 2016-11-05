@@ -73,7 +73,7 @@ public class multiPlayerInGame extends AppCompatActivity {
             }
             //txt.setText(txt.getText() +"i am the client!!!");
 
-            intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+            intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
             appActivity.startActivity(intent);
 
 //            socketServerThread = new Thread(new ClientSocketThread());
@@ -134,7 +134,7 @@ public class multiPlayerInGame extends AppCompatActivity {
 //                i.setClass(this, SearchDetailsActivity.class);
 //                startActivity(i);
 
-                intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+                intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
                 //intent.putExtra("CONNECTION", conns);
                 appActivity.startActivity(intent);
 
