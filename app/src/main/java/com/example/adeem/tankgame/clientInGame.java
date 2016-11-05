@@ -110,13 +110,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         private GoogleApiClient client;
 
 
-    int myIndex;
     private int[] imgIds = {
             R.id.ourTank_enemy_1_client2,
             R.id.ourTank_enemy_2_client2,
             R.id.ourTank_enemy_3_client2
     };
-    ArrayList<Tank> msg;
     int enemiesNum = 0;
 
     @Override
@@ -137,24 +135,19 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         conectToServer();
 
         //!!!!!!!!!!!!!!!!!!!!! get the index and set the enemies visible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        try {
-            myIndex = input.readInt();
-        }
-        catch (Exception e){
+        int playerAmount = 2; // get using sherd prefrenses
 
-        }
         try {
-            msg = (ArrayList<Tank>) input.readObject();//object can be message, or new user
             int j = 0;
-            for (int i = 0; i < msg.size(); i++) {
-                if (i != myIndex) {
+            for (int i = 0; i < playerAmount-1; i++) { // swap size with a fixed size
+                //if (i != myIndex) {
                     ImageView newTank = (ImageView) findViewById(imgIds[j++]);
                     if (newTank != null) {
                         newTank.setVisibility(View.VISIBLE);
                         enemiesNum++;
                         myenemy.add(newTank);
                     }
-                }
+                //}
             }
         }catch(Exception e){}
 
@@ -554,7 +547,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         ObjectInputStream objectInputStream;
         //ServerMessage msg;
-
+        ArrayList<Tank> msg;
+        int myIndex;
 
         boolean starting = true;
 
@@ -568,9 +562,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
 
+            try {
+                myIndex = input.readInt();
+            }
+            catch (Exception e){
+
+            }
 
             while (true) {
                 try { // UPDATE tank positions and if shot make it burn or some shit
+                    msg = (ArrayList<Tank>) objectInputStream.readObject();//object can be message, or new user
                     for (int i = 0; i < msg.size(); i++) {
                         if (i != myIndex) {
                             if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
