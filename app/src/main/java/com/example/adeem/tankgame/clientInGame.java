@@ -157,6 +157,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }catch(Exception e){}
+
+
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         server_Listener Slistener = new server_Listener(input);
