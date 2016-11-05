@@ -252,7 +252,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         int buttonId = view.getId();
         switch (buttonId) {
 
-            case (R.id.ourTank_server): {
+            case (R.id.ourTank_server2): {
                 Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
