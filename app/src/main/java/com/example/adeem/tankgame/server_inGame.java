@@ -230,8 +230,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             });
         }
         // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.44444
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+        test.setText("all is good SERVER ");
     }
 
 
