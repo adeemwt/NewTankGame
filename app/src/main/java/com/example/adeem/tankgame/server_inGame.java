@@ -61,6 +61,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     Boolean gameRuning = true;
     private ArrayList<Thread> ClienThreads = new ArrayList<Thread>();
     Thread socketServerThread;
+    server_inGame contex = this;
 
 
     //final values
@@ -355,7 +356,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         if(!moveY)
             movement.y = 0;
         tankArry.get(0).setPosition(movement);
-        test.setText("server - " + movement.x+", "+movement.y);
+        //test.setText("server - " + movement.x+", "+movement.y);
 //        try {
 //            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
 //        }catch (Exception e){
@@ -493,7 +494,21 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     outputToClient.writeObject(tankArry);
                     outputToClient.flush();
 
-                    //test.setText(test.getText()+"\nsending movement bitch");
+
+                    contex.runOnUiThread(new Runnable(){
+                        @Override
+                        public void run(){
+
+                            contex.test.setText("moved : " + tankArry.get(0).getPosition().x + " , " + tankArry.get(0).getPosition().y);
+
+                            //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                        }
+                    });
+
+
+
+
+                            //test.setText(test.getText()+"\nsending movement bitch");
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
