@@ -149,11 +149,19 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
         SHuserName = res.getString(R.string.SharedPreferencesUserName);
 
+
+
+
+
         prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
         Difficulty = prefs.getString("difficultly", null);
         UserName = prefs.getString(SHuserName, null);
 
         ourTank = (ImageButton) findViewById(R.id.ourTank_server);
+
+        tankArry .add(new Tank(new Player("server"),null));
+        tankArry .add(new Tank(new Player("client"),null));
+
         //for debugging only
         test = (TextView) findViewById(R.id.log_server);
 
@@ -472,7 +480,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     if(type == 1){
                         MyPoint message = (MyPoint)inputFromClient.readObject();
                         tankArry.get(clientNum).setPosition(message);
-                        test.setText("got movement bitch");
+                        //test.setText("got movement bitch");
                     }
                     else if(type == 2){
                         Bullet message = (Bullet) inputFromClient.readObject();
@@ -480,7 +488,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     }
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     outputToClient.writeObject(tankArry);
-                    test.setText(test.getText()+"\nsending movement bitch");
+                    //test.setText(test.getText()+"\nsending movement bitch");
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
