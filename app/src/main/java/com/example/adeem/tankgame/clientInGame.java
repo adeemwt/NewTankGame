@@ -516,6 +516,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         ArrayList<Tank> msg;
         int enemiesNum = 0;
         boolean starting = true;
+        int myIndex;
         ArrayList<ImageButton> imgs;
         public server_Listener(ObjectInputStream objectInputStream) {
             this.objectInputStream = objectInputStream;
@@ -534,7 +535,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         public void run() {
 
             try {
-                int myIndex = objectInputStream.readInt();
+                myIndex = objectInputStream.readInt();
             }
             catch (Exception e){
 
@@ -556,12 +557,13 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                         starting = false;
                     } else{ // UPDATE tank positions and if shot make it burn or some shit
                         for(int i =0 ; i < msg.size() ; i++){
-                            if(!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
-                                myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
-                                myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
-                            }
-                            else{//tanks was shot down
-                                myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
+                            if(i!= myIndex) {
+                                if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
+                                    myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
+                                    myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
+                                } else {//tanks was shot down
+                                    myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
+                                }
                             }
                         }
                     }
