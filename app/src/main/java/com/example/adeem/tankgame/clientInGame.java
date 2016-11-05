@@ -577,7 +577,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
             while (true) {
                 try { // UPDATE tank positions and if shot make it burn or some shit
-                    msg = (ArrayList<Tank>) objectInputStream.readObject();//object can be message, or new user
+                    msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
 
                     contex.runOnUiThread(new Runnable(){
                         @Override
