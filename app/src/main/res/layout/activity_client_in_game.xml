@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_client_in_game"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.adeem.tankgame.clientInGame">
+
+    <ImageView
+        android:layout_width="1000dp"
+        android:layout_height="1000px"
+        android:id="@+id/limitsView_client2"
+        android:layout_x="0dp"
+        android:layout_y="0dp"
+        android:background="@drawable/limits2" />
+
+
+    <ImageButton
+        android:layout_width="42dp"
+        android:layout_height="69dp"
+        android:id="@+id/ourTank_client2"
+        android:layout_x="176dp"
+        android:layout_y="209dp"
+        android:background="@drawable/trastank" />
+
+    <ImageButton
+        android:layout_width="42dp"
+        android:layout_height="69dp"
+        android:id="@+id/ourTank_enemy_1_client"
+        android:layout_x="176dp"
+        android:layout_y="209dp"
+        android:background="@drawable/trastank"
+        android:visibility="invisible"/>
+
+    <ImageButton
+        android:layout_width="42dp"
+        android:layout_height="69dp"
+        android:id="@+id/ourTank_enemy_2_client"
+        android:layout_x="176dp"
+        android:layout_y="209dp"
+        android:background="@drawable/trastank"
+        android:visibility="invisible"/>
+
+    <ImageButton
+        android:layout_width="42dp"
+        android:layout_height="69dp"
+        android:id="@+id/ourTank_enemy_3_client"
+        android:layout_x="176dp"
+        android:layout_y="209dp"
+        android:background="@drawable/trastank"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Large Text"
+        android:id="@+id/log_client2"
+        />
+
+    <TextView
+        android:layout_width="111dp"
+        android:layout_height="46dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/time_client2"
+        android:layout_x="277dp"
+        android:layout_y="26dp" />
+
+</AbsoluteLayout>

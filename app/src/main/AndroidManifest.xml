@@ -51,7 +51,8 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".server_inGame" />
-        <activity android:name=".Main2ActivityTESTING"></activity>
+        <activity android:name=".Main2ActivityTESTING" />
+        <activity android:name=".clientInGame"></activity>
     </application>
 
 </manifest>

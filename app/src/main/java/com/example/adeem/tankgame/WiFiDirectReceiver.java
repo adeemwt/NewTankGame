@@ -109,7 +109,7 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
             if(wifiP2pInfo.isGroupOwner)//start server
                 intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
             else//start client
-                intent = new Intent(appActivity, Client_Ingame_trial.class);//start game!!! (multi ingame)
+                intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
 
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
             appActivity.startActivity(intent);
