@@ -355,11 +355,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         if(!moveY)
             movement.y = 0;
         tankArry.get(0).setPosition(movement);
- //       try {
-  //          this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
-  //      }catch (Exception e){
-  //          //an excpetion has accured ...
-  //      }
+        test.setText("server - " + movement.x+", "+movement.y);
+//        try {
+//            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
+//        }catch (Exception e){
+//            //an excpetion has accured ...
+//        }
     }
 
 
