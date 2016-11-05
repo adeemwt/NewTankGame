@@ -142,11 +142,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             for (int i = 0; i < playerAmount-1; i++) { // swap size with a fixed size
                 //if (i != myIndex) {
                     ImageView newTank = (ImageView) findViewById(imgIds[j++]);
-                    if (newTank != null) {
                         newTank.setVisibility(View.VISIBLE);
                         enemiesNum++;
                         myenemy.add(newTank);
-                    }
+
                 //}
             }
         }catch(Exception e){}
@@ -577,6 +576,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
                                 myenemy.get(i).setX(msg.get(i).getPosition().x + backGround.getX());
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
+                                test.setText("moved : " + myenemy.get(i).getX() + " , " + myenemy.get(i).getY());//try it now . if we get s
                             } else {//tanks was shot down
                                 myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
                             }
