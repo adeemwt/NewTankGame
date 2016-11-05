@@ -134,6 +134,14 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
         SHuserName = res.getString(R.string.SharedPreferencesUserName);
 
+
+
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!11
+        ImageView testingnng = (ImageView) findViewById(R.id.ourTank_enemy_1_client2);
+        testingnng.setVisibility(View.VISIBLE);
+
+
         prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
         Difficulty = prefs.getString("difficultly", null);
         UserName = prefs.getString(SHuserName, null);
