@@ -503,9 +503,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 flag = false; // change
                 try {
                     Socket socket = server.accept();
-                  //  client_Listener cl = new client_Listener(socket);
-                   // ClienThreads.add(cl);
-                   // cl.start();
+                    client_Listener cl = new client_Listener(socket);
+                    ClienThreads.add(cl);
+                    cl.start();
                 } catch (IOException ex) {
 
                 }

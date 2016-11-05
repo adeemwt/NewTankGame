@@ -126,7 +126,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         }
         conectToServer();
 
-
+        server_Listener Slistener = new server_Listener(input);
+        Slistener.start();
         Resources res = getResources();
 
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
@@ -168,8 +169,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 SensorManager.SENSOR_DELAY_UI);
 
 
-        //server_Listener Slistener = new server_Listener(input);
-        //Slistener.start();
+
 
         Difficulty = diffSpinner[0]; // for testing !!!!
 
