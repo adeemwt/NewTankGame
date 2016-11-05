@@ -153,7 +153,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        server_Listener Slistener = new server_Listener(input);
+        server_Listener Slistener = new server_Listener(input, this);
         Slistener.start();
 
 
@@ -553,9 +553,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         int myIndex;
         TextView mytest;
         boolean starting = true;
+        clientInGame contex ;
 
 
-        public server_Listener(ObjectInputStream objectInputStream) {
+        public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
+            this.contex = context_;
             this.objectInputStream = objectInputStream;
             mytest = (TextView) findViewById(R.id.log_client2);
 
@@ -583,13 +585,15 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                 myenemy.get(i).setY(msg.get(i).getPosition().y + backGround.getY());
                                 //might work
 
-
-                                runOnUiThread(new Runnable(){
+//
+                                contex.runOnUiThread(new Runnable(){
                                     @Override
                                     public void run(){
-                                        settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                                        contex.test.setText(test.getText() +"\nworked ?");
+
+                                        //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                                     }
-                                });
+                                  });
 
 
                             } else {//tanks was shot down
