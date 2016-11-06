@@ -208,8 +208,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 this.WidthAndHieght = this.HARD_SIZE;
                 targetNum = TARGET_NUM_HARD;
             }
-
-            //randTargets(targetNum);
+            setMapScale();
             String userName = prefs.getString(SHuserName, null);
 
             ourTank.setOnClickListener(this);
@@ -245,7 +244,13 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         test.setText("all is good SERVER ");
     }
 
-
+    public void setMapScale() {
+        final float scale = getResources().getDisplayMetrics().density;
+        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
+        backGround.getLayoutParams().height = pixels;
+        backGround.getLayoutParams().width = pixels;
+        backGround.requestLayout();
+    }
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override

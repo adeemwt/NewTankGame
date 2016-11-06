@@ -84,7 +84,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         private int targetNum = 0;
         private ArrayList<Tank> tanks;
         private ArrayList<Taget> targets;
-        private ArrayList<ImageView> TargetImages = new ArrayList<>();
+        //private ArrayList<ImageView> TargetImages = new ArrayList<>();
         private MyPoint WidthAndHieght;
 
         private ImageButton ourTank;
@@ -220,15 +220,15 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 this.WidthAndHieght = this.HARD_SIZE;
                 targetNum = TARGET_NUM_HARD;
             }
-
-            randTargets(targetNum);
+            setMapScale();
+            //randTargets(targetNum);
             String userName = prefs.getString(SHuserName, null);
 
-            Random rnd = new Random();
-            Color c = new Color();                   // the tank does not have a color for now (well be added)
-            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-            tanks = new ArrayList<>(playerNum);
-            tanks.add(new Tank(new Player(userName), c));
+//            Random rnd = new Random();
+//            Color c = new Color();                   // the tank does not have a color for now (well be added)
+//            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
+//            tanks = new ArrayList<>(playerNum);
+//            tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_client_in_game);
@@ -289,7 +289,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         switch (buttonId) {
 
             case (R.id.ourTank_client2): {
-                Bullet bullet = new Bullet(this.TargetImages, ourTank.getRotation(), tanks.get(0), new MyPoint((int) ourTank.getX(), (int) ourTank.getY()));
+                Bullet bullet = new Bullet();
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -319,72 +319,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
-    public void moveTargets(int xOry, int movement) { // buttons only
-        movement *= 3;
-        final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the Width is " + backGround.getWidth() + "\nthe dp calc is " + (backGround.getHeight() - 0.5f) / scale);
-        if (xOry == CHOOSE_X) {
-            if (movement < 0) {
 
-            } else {
-                if (ourTank.getX() < backGround.getX()) return;
-            }
-            if (ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX() + (backGround.getWidth() - 0.5f) / scale) {
-                for (int i = 0; i < TargetImages.size(); i++)
-                    TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
-                if (movement < 0)
-                    ourTank.setRotation(90);
-                else ourTank.setRotation(-90);
-            }
-        } else {
-            if (movement < 0) {
-
-            } else {
-                if (ourTank.getY() < backGround.getY()) return;
-            }
-            if (ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY() + (backGround.getHeight() - 0.5f) / scale) {
-                for (int i = 0; i < TargetImages.size(); i++)
-                    TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
-                if (movement < 0)
-                    ourTank.setRotation(180);
-                else ourTank.setRotation(0);
-            }
-
-        }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //randomize the trget position and set visiable according to the number for the difficulty level
-    public void randTargets(int targetNum) {
-        targets = new ArrayList<>(targetNum);
-
-
+    public void setMapScale() {
         final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the dinsity is " + scale);
         int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-
-
         backGround.getLayoutParams().height = pixels;
         backGround.getLayoutParams().width = pixels;
         backGround.requestLayout();
-        ImageView img;
-
-//        for(int i = 0 ; i< targetNum ; i++){
-////            int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
-////            int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
-////            int size = (int)(Math.random() *MAX_TARGET_SIZE);
-////            targets.add(new Taget(new Point(x,y),size));
-////            img =(ImageView) findViewById(imgIds[i]);
-////            img.setX(targets.get(i).getCords().x);
-////            img.setY(targets.get(i).getCords().y);
-////            img.setVisibility(View.VISIBLE);
-//
-//
-//            TargetImages.add(img);
-//        }
-        //add background for moving on map purposes
-        TargetImages.add(backGround);
+        //TargetImages.add(backGround);
     }
 
 
@@ -443,36 +387,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         if (moveY)
             backGround.setY(backGround.getY() - deltaRotationVector[1] * 50);// tank going up = delta>0, tank going down delta < 0
 
-        //Point movement = new Point(0,0);
-//        for (int i = 0; i < myenemy.size(); i++) {
-//            if (moveX) {
-//                myenemy.get(i).setX(myenemy.get(i).getX() + deltaRotationVector[0] * 50);
-//               // movement.x = (int)deltaRotationVector[0] * 50;
-//            }// tank going left = delta >0 , tank going right delta < 0
-//            if (moveY) {
-//                myenemy.get(i).setY(myenemy.get(i).getY() - deltaRotationVector[1] * 50);
-//               // movement.y = (int)deltaRotationVector[1] * 50;
-//            }// tank going up = delta>0, tank going down delta < 0
-//        }
-//
-//
-//        MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
-//        if(!moveX)
-//            movement.x = 0;
-//        if(!moveY)
-//            movement.y = 0;
-//        try {
-//            //test.setText("moveing !!!!!!!!!!!!!!!");
-//            this.output.writeObject(new Integer(1));
-//            this.output.flush();
-//
-//            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
-//            this.output.flush();
-            myMovement.x=(int)(ourTank.getX() - backGround.getX());
-            myMovement.y=(int)( ourTank.getY() - backGround.getY());
-//        }catch (Exception e){
-//            //an excpetion has accured ...
-//        }
+
+        // set movment ( used to send to server)
+        myMovement.x=(int)(ourTank.getX() - backGround.getX());
+        myMovement.y=(int)( ourTank.getY() - backGround.getY());
     }
 
 
@@ -558,12 +476,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     private class server_Listener extends Thread {
 
         ObjectInputStream objectInputStream;
-        //ServerMessage msg;
-        ArrayList<Integer> numbers = new ArrayList<>();
-        ArrayList<Tank> msg;
         int myIndex;
         TextView mytest;
-        boolean starting = true;
         clientInGame contex ;
 
         int x=0,y=0;
@@ -595,7 +509,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     contex.output.flush();
 
                         int j =0;
-                    //msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
                         for (int i = 0; i < contex.myenemy.size() + 1; i++) {
                             x = input.readInt();
                             y = input.readInt();
@@ -610,24 +523,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                         contex.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-//                            for (int i = 0; i < msg.size(); i++) {
-//                                if (i != myIndex) {
-//                                    if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
-//                                        contex.myenemy.get(i).setX(msg.get(i).getPosition().x + contex.backGround.getX());
-//                                        contex.myenemy.get(i).setY(msg.get(i).getPosition().y + contex.backGround.getY());
-//
-//                                    } else {//tanks was shot down
-//                                        contex.myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
-//                                    }
-//                                }
-//                            }
-//                                contex.myenemy.get(0).setX(x);
-//                                contex.myenemy.get(0).setY(y);
 
                                 contex.test.setText(contex.test.getText() + "\nmoved : " + x + " , " + y);
-                                //msg = null;
-
-                            //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
 
                     });
