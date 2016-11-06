@@ -118,9 +118,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
 
     private int[] imgIds = {
-            R.id.ourTank_enemy_1_client2,
-            R.id.ourTank_enemy_2_client2,
-            R.id.ourTank_enemy_3_client2
+            R.id.tank_1,
+            R.id.tank_2,
+            R.id.tank_3
     };
     int enemiesNum = 0;
 
@@ -554,6 +554,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
     public void conectToClient(){
         ServerSocket server;
+        ImageView img ;
         try {
             server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
             boolean flag = true; // change
@@ -564,7 +565,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     client_Listener cl = new client_Listener(socket);
                     ClienThreads.add(cl);
                     cl.start();
-                    this.enemiesTanks.add((ImageView) findViewById(this.imgIds[enemiesNum]));
+                    img = (ImageView) findViewById(this.imgIds[enemiesNum]);
+                    this.enemiesTanks.add(img);
                     this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
                     this.enemiesNum++;
                 } catch (IOException ex) {
