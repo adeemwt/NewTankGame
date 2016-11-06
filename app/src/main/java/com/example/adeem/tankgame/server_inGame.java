@@ -351,10 +351,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 //
 
         MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
-        if(!moveX)
-            movement.x = 0;
-        if(!moveY)
-            movement.y = 0;
+//        if(!moveX)
+//            movement.x = 0;
+//        if(!moveY)
+//            movement.y = 0;
 
         tankArry.get(0).setPosition(movement);
         //test.setText(test.getText()+"\ngyro - " + movement.x+", "+movement.y);
