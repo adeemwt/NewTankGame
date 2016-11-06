@@ -601,8 +601,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             y = input.readInt();
                             if(i != myIndex)
                             {
-                                contex.myenemy.get(i).setX(x);
-                                contex.myenemy.get(i).setY(y);
+                                contex.myenemy.get(i).setX(x+contex.backGround.getX());
+                                contex.myenemy.get(i).setY(y+contex.backGround.getY());
                             }
 
                         }
