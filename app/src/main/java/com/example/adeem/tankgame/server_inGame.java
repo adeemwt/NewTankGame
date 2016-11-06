@@ -468,9 +468,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         int clientNum = 0;
 
         MyPoint message = new MyPoint(0,0);
-        public client_Listener(Socket socket) {
+        public client_Listener(Socket socket,int num) {
             this.socket = socket;
-            clientNum = clientCount++;
+        //    clientNum = clientCount++;
+            clientNum = num;
             try {
                 outputToClient = new ObjectOutputStream(this.socket.getOutputStream());
                 inputFromClient = new ObjectInputStream(this.socket.getInputStream());
@@ -562,7 +563,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 flag = false; // change
                 try {
                     Socket socket = server.accept();
-                    client_Listener cl = new client_Listener(socket);
+                    client_Listener cl = new client_Listener(socket, enemiesNum);
                     ClienThreads.add(cl);
                     cl.start();
                     img = (ImageView) findViewById(this.imgIds[enemiesNum]);
