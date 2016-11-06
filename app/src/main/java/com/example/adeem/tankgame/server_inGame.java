@@ -493,11 +493,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     }
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     //outputToClient.writeObject(tankArry);
-                    outputToClient.writeInt(tankArry.get(0).getPosition().x);
-                    outputToClient.flush();
-                    outputToClient.writeInt(tankArry.get(0).getPosition().y);
-                    outputToClient.flush();
 
+
+                    for(int i =0 ; i < tankArry.size()  ; i ++ ) {
+                        outputToClient.writeInt(tankArry.get(i).getPosition().x);
+                        outputToClient.flush();
+                        outputToClient.writeInt(tankArry.get(i).getPosition().y);
+                        outputToClient.flush();
+                    }
 
                     contex.runOnUiThread(new Runnable(){
                         @Override

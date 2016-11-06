@@ -559,6 +559,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         ObjectInputStream objectInputStream;
         //ServerMessage msg;
+        ArrayList<Integer> numbers = new ArrayList<>();
         ArrayList<Tank> msg;
         int myIndex;
         TextView mytest;
@@ -593,14 +594,22 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     contex.output.writeObject(myMovement);// after geteting the movemnet the server should update all the other tanks about it
                     contex.output.flush();
 
+
                     //msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
-                    x = input.readInt();
-                    y = input.readInt();
+                        for (int i = 0; i < contex.myenemy.size() + 1; i++) {
+                            x = input.readInt();
+                            y = input.readInt();
+                            if(i != myIndex)
+                            {
+                                contex.myenemy.get(i).setX(x);
+                                contex.myenemy.get(i).setY(y);
+                            }
 
-                    contex.runOnUiThread(new Runnable(){
-                        @Override
-                        public void run(){
+                        }
 
+                        contex.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 //                            for (int i = 0; i < msg.size(); i++) {
 //                                if (i != myIndex) {
 //                                    if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
@@ -612,13 +621,15 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //                                    }
 //                                }
 //                            }
-                            contex.myenemy.get(0).setX(x);
-                            contex.myenemy.get(0).setY(y);
+//                                contex.myenemy.get(0).setX(x);
+//                                contex.myenemy.get(0).setY(y);
 
-                            contex.test.setText(contex.test.getText()+"\nmoved : " + x + " , " + y);
-                            msg=null;
+                                contex.test.setText(contex.test.getText() + "\nmoved : " + x + " , " + y);
+                                msg = null;
+
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
+
                     });
                 }// get the new tank cords and tank status (shot or not - tank not there, its shot)
                 catch (Exception e) {
