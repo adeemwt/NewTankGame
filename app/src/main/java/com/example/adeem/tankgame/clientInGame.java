@@ -50,6 +50,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         ObjectInputStream input = null;
         ObjectOutputStream output = null;
         Socket connection;
+        MyPoint myMovement = new MyPoint(0,0);
 
         ArrayList<ImageView> myenemy = new ArrayList<ImageView>();
         WifiP2pInfo wifiP2pInfo;
@@ -302,16 +303,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //                    this.saveAndExit();
 //                }
 
-                try {
-                    this.output.writeObject(new Integer(2));
-                    this.output.flush();
-
-                    this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
-                    this.output.flush();
-
-                }catch (Exception e){
-                    //an excpetion has accured ...
-                }
+//                try {
+//                    this.output.writeObject(new Integer(2));
+//                    this.output.flush();
+//
+//                    this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
+//                    this.output.flush();
+//
+//                }catch (Exception e){
+//                    //an excpetion has accured ...
+//                }
                 break;
             }
 
@@ -454,23 +455,24 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //            }// tank going up = delta>0, tank going down delta < 0
 //        }
 //
-
-        MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
-        if(!moveX)
-            movement.x = 0;
-        if(!moveY)
-            movement.y = 0;
-        try {
-            //test.setText("moveing !!!!!!!!!!!!!!!");
-            this.output.writeObject(new Integer(1));
-            this.output.flush();
-
-            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
-            this.output.flush();
-
-        }catch (Exception e){
-            //an excpetion has accured ...
-        }
+//
+//        MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
+//        if(!moveX)
+//            movement.x = 0;
+//        if(!moveY)
+//            movement.y = 0;
+//        try {
+//            //test.setText("moveing !!!!!!!!!!!!!!!");
+//            this.output.writeObject(new Integer(1));
+//            this.output.flush();
+//
+//            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
+//            this.output.flush();
+            myMovement.x=(int)(ourTank.getX() - backGround.getX());
+            myMovement.y=(int)( ourTank.getY() - backGround.getY());
+//        }catch (Exception e){
+//            //an excpetion has accured ...
+//        }
     }
 
 
@@ -585,6 +587,12 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
             while (true) {
                 try { // UPDATE tank positions and if shot make it burn or some shit
+
+                    contex.output.writeObject(new Integer(1));
+                    contex.output.flush();
+                    contex.output.writeObject(myMovement);// after geteting the movemnet the server should update all the other tanks about it
+                    contex.output.flush();
+
                     msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
                     contex.runOnUiThread(new Runnable(){
                         @Override
