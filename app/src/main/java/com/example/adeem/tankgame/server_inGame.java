@@ -115,6 +115,16 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
+
+
+    private int[] imgIds = {
+            R.id.ourTank_enemy_1_client2,
+            R.id.ourTank_enemy_2_client2,
+            R.id.ourTank_enemy_3_client2
+    };
+    int enemiesNum = 0;
+
+    ArrayList<ImageView> enemiesTanks = new ArrayList<>();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -457,7 +467,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         private ObjectInputStream inputFromClient;
         int clientNum = 0;
 
-
+        MyPoint message = new MyPoint(0,0);
         public client_Listener(Socket socket) {
             this.socket = socket;
             clientNum = clientCount++;
@@ -488,9 +498,18 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // get stuff from client
                     int type = (int )inputFromClient.readObject();
                     if(type == 1){
-                        MyPoint message = (MyPoint)inputFromClient.readObject();
+                        message = (MyPoint)inputFromClient.readObject();
                         tankArry.get(clientNum).setPosition(message);
                         //test.setText("got movement bitch");
+                        contex.runOnUiThread(new Runnable(){
+                            @Override
+                            public void run(){
+                                enemiesTanks.get(clientNum).setX(message.x + backGround.getX());
+                                enemiesTanks.get(clientNum).setY(message.y + backGround.getY());
+                                //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                            }
+                        });
+
                     }
                     else if(type == 2){
                         Bullet message = (Bullet) inputFromClient.readObject();
@@ -516,11 +535,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
                     });
-
-
-
-
-                            //test.setText(test.getText()+"\nsending movement bitch");
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
@@ -550,40 +564,17 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     client_Listener cl = new client_Listener(socket);
                     ClienThreads.add(cl);
                     cl.start();
+                    this.enemiesTanks.add((ImageView) findViewById(this.imgIds[enemiesNum]));
+                    this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
+                    this.enemiesNum++;
                 } catch (IOException ex) {
 
                 }
-
             }
         } catch (IOException ex) {
 
         }
     }
-//
-//    public class ServerSocketThread extends Thread {
-//        @Override
-//        public void run() {
-//            ServerSocket server;
-//            try {
-//                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
-//                boolean flag = true; // change
-//                while (flag) { // while waiting for players
-//                    flag = false; // change
-//                    try {
-//                        Socket socket = server.accept();
-//                        client_Listener cl = new client_Listener(socket);
-//                        ClienThreads.add(cl);
-//                        cl.start();
-//                    } catch (IOException ex) {
-//
-//                    }
-//
-//                }
-//            } catch (IOException ex) {
-//
-//            }
-//        }
-//    }
 }
 
 
