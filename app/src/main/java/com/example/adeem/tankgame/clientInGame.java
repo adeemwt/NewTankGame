@@ -594,15 +594,15 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     contex.output.writeObject(myMovement);// after geteting the movemnet the server should update all the other tanks about it
                     contex.output.flush();
 
-
+                        int j =0;
                     //msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
                         for (int i = 0; i < contex.myenemy.size() + 1; i++) {
                             x = input.readInt();
                             y = input.readInt();
                             if(i != myIndex)
                             {
-                                contex.myenemy.get(i).setX(x+contex.backGround.getX());
-                                contex.myenemy.get(i).setY(y+contex.backGround.getY());
+                                contex.myenemy.get(j).setX(x+contex.backGround.getX());
+                                contex.myenemy.get(j++).setY(y+contex.backGround.getY());
                             }
 
                         }
@@ -625,7 +625,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 //                                contex.myenemy.get(0).setY(y);
 
                                 contex.test.setText(contex.test.getText() + "\nmoved : " + x + " , " + y);
-                                msg = null;
+                                //msg = null;
 
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
