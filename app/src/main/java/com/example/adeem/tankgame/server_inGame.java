@@ -506,7 +506,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             public void run(){
                                 contex.enemiesTanks.get(clientNum-1).setX(message.x + contex.backGround.getX());
                                 contex.enemiesTanks.get(clientNum-1).setY(message.y + contex.backGround.getY());
-                                //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
+                                contex.test.setText( "\nmoved : " + message.x + " , " + message.y);//try it now . if we get s
                             }
                         });
 
@@ -526,15 +526,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         outputToClient.flush();
                     }
 
-                    contex.runOnUiThread(new Runnable(){
-                        @Override
-                        public void run(){
-
-                            contex.test.setText(contex.test.getText() + "\nsending : " + tankArry.get(0).getPosition().x + " , " + tankArry.get(0).getPosition().y);
-
-                            //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
-                        }
-                    });
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block
