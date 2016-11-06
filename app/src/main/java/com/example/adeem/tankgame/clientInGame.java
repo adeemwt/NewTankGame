@@ -602,7 +602,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                 }
                             }
 
-                            contex.test.setText("moved : " + msg.get(0).getPosition().x + " , " + msg.get(0).getPosition().y);
+                            contex.test.setText(contex.test.getText()+"\nmoved : " + msg.get(0).getPosition().x + " , " + msg.get(0).getPosition().y);
 
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }

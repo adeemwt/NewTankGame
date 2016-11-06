@@ -355,8 +355,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             movement.x = 0;
         if(!moveY)
             movement.y = 0;
+
         tankArry.get(0).setPosition(movement);
-        //test.setText("server - " + movement.x+", "+movement.y);
+        //test.setText(test.getText()+"\ngyro - " + movement.x+", "+movement.y);
 //        try {
 //            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
 //        }catch (Exception e){
@@ -499,7 +500,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         @Override
                         public void run(){
 
-                            contex.test.setText("moved : " + tankArry.get(0).getPosition().x + " , " + tankArry.get(0).getPosition().y);
+                            contex.test.setText(contex.test.getText() + "\nsending : " + tankArry.get(0).getPosition().x + " , " + tankArry.get(0).getPosition().y);
 
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
