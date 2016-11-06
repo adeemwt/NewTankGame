@@ -470,7 +470,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         MyPoint message = new MyPoint(0,0);
         public client_Listener(Socket socket,int num) {
             this.socket = socket;
-        //    clientNum = clientCount++;
+            clientNum = clientCount++;
             clientNum = num;
             try {
                 outputToClient = new ObjectOutputStream(this.socket.getOutputStream());
@@ -486,7 +486,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         public void run() {
             // send client his number
             try {
-            outputToClient.writeInt(clientNum+1);
+            outputToClient.writeInt(clientCount-1);
             outputToClient.flush();
 
             } catch (IOException e) {
