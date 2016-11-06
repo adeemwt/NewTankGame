@@ -486,7 +486,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         public void run() {
             // send client his number
             try {
-            outputToClient.writeInt(clientNum);
+            outputToClient.writeInt(clientNum+1);
             outputToClient.flush();
 
             } catch (IOException e) {
