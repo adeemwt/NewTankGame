@@ -565,7 +565,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         boolean starting = true;
         clientInGame contex ;
 
-
+        int x=0,y=0;
         public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
             this.contex = context_;
             this.objectInputStream = objectInputStream;
@@ -593,24 +593,29 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     contex.output.writeObject(myMovement);// after geteting the movemnet the server should update all the other tanks about it
                     contex.output.flush();
 
-                    msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
+                    //msg = (ArrayList<Tank>) contex.input.readObject();//object can be message, or new user
+                    x = input.readInt();
+                    y = input.readInt();
+
                     contex.runOnUiThread(new Runnable(){
                         @Override
                         public void run(){
 
-                            for (int i = 0; i < msg.size(); i++) {
-                                if (i != myIndex) {
-                                    if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
-                                        contex.myenemy.get(i).setX(msg.get(i).getPosition().x + contex.backGround.getX());
-                                        contex.myenemy.get(i).setY(msg.get(i).getPosition().y + contex.backGround.getY());
+//                            for (int i = 0; i < msg.size(); i++) {
+//                                if (i != myIndex) {
+//                                    if (!msg.get(i).getShot()) {//tank is still in te game // this is the position need to also get the angle
+//                                        contex.myenemy.get(i).setX(msg.get(i).getPosition().x + contex.backGround.getX());
+//                                        contex.myenemy.get(i).setY(msg.get(i).getPosition().y + contex.backGround.getY());
+//
+//                                    } else {//tanks was shot down
+//                                        contex.myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
+//                                    }
+//                                }
+//                            }
+                            contex.myenemy.get(0).setX(x);
+                            contex.myenemy.get(0).setY(y);
 
-                                    } else {//tanks was shot down
-                                        contex.myenemy.get(i).setImageResource(R.drawable.target_goat);//set fire or something
-                                    }
-                                }
-                            }
-
-                            contex.test.setText(contex.test.getText()+"\nmoved : " + msg.get(0).getPosition().x + " , " + msg.get(0).getPosition().y);
+                            contex.test.setText(contex.test.getText()+"\nmoved : " + x + " , " + y);
                             msg=null;
                             //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                         }
