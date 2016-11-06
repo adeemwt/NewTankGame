@@ -468,10 +468,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         int clientNum = 0;
 
         MyPoint message = new MyPoint(0,0);
-        public client_Listener(Socket socket,int num) {
+        public client_Listener(Socket socket) {
             this.socket = socket;
             clientNum = clientCount++;
-            clientNum = num;
             try {
                 outputToClient = new ObjectOutputStream(this.socket.getOutputStream());
                 inputFromClient = new ObjectInputStream(this.socket.getInputStream());
@@ -486,7 +485,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         public void run() {
             // send client his number
             try {
-            outputToClient.writeInt(clientCount-1);
+            outputToClient.writeInt(clientNum);
             outputToClient.flush();
 
             } catch (IOException e) {
@@ -501,12 +500,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     if(type == 1){
                         message = (MyPoint)inputFromClient.readObject();
                         tankArry.get(clientNum).setPosition(message);
-                        //test.setText("got movement bitch");
-                        contex.runOnUiThread(new Runnable(){
+
+                        contex.runOnUiThread(new Runnable(){ // update pos to on my scren
                             @Override
                             public void run(){
-                                enemiesTanks.get(clientNum).setX(message.x + backGround.getX());
-                                enemiesTanks.get(clientNum).setY(message.y + backGround.getY());
+                                enemiesTanks.get(clientNum-1).setX(message.x + backGround.getX());
+                                enemiesTanks.get(clientNum-1).setY(message.y + backGround.getY());
                                 //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                             }
                         });
@@ -519,7 +518,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     //outputToClient.writeObject(tankArry);
 
-
+                    //sending pos
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
                         outputToClient.writeInt(tankArry.get(i).getPosition().x);
                         outputToClient.flush();
@@ -563,7 +562,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 flag = false; // change
                 try {
                     Socket socket = server.accept();
-                    client_Listener cl = new client_Listener(socket, enemiesNum);
+                    client_Listener cl = new client_Listener(socket);
                     ClienThreads.add(cl);
                     cl.start();
                     img = (ImageView) findViewById(this.imgIds[enemiesNum]);
