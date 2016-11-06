@@ -504,8 +504,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         contex.runOnUiThread(new Runnable(){ // update pos to on my scren
                             @Override
                             public void run(){
-                                enemiesTanks.get(clientNum-1).setX(message.x + backGround.getX());
-                                enemiesTanks.get(clientNum-1).setY(message.y + backGround.getY());
+                                contex.enemiesTanks.get(clientNum-1).setX(message.x + contex.backGround.getX());
+                                contex.enemiesTanks.get(clientNum-1).setY(message.y + contex.backGround.getY());
                                 //contex.settext_( "\nmoved : " + myenemy.get(1).getX() + " , " + myenemy.get(1).getY());//try it now . if we get s
                             }
                         });
