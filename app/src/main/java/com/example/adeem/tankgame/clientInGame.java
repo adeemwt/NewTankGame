@@ -48,6 +48,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
 
         float RotationAngle;
+        boolean isShooting = false;
         //the socketOuput and input streams , no need to initialize atm
         ObjectInputStream input = null;
         ObjectOutputStream output = null;
@@ -292,7 +293,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         switch (buttonId) {
 
             case (R.id.ourTank_client2): {
-                Bullet bullet = new Bullet(this.tanks,0);
+                isShooting = true;
+      //          Bullet bullet = new Bullet(this.tanks,0);
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -468,7 +470,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onStart() {
         super.onStart();
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
@@ -485,12 +486,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         int x=0,y=0;
         float rotation_;
+        boolean amIShot = false;
         public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
             this.contex = context_;
             this.objectInputStream = objectInputStream;
             mytest = (TextView) findViewById(R.id.log_client2);
-
-
         }
 
         @SuppressWarnings("unchecked")
@@ -501,17 +501,21 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 myIndex = input.readInt();
             }
             catch (Exception e){
-
+                e.printStackTrace();
             }
 
             while (true) {
                 try {
                     // update server
-                    contex.output.writeObject(new Integer(1));
-                    contex.output.flush();
                     contex.output.writeInt(myMovement.x); contex.output.flush();
                     contex.output.writeInt(myMovement.y);contex.output.flush();
                     contex.output.writeFloat(RotationAngle);contex.output.flush();
+                    //send if you shot
+                    contex.output.writeBoolean(isShooting);contex.output.flush();
+                    isShooting = false;
+
+
+
                     // after geteting the movemnet the server should update all the other tanks about it
 
                     //update all tanks on the screen (from server)
@@ -520,11 +524,14 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             x = input.readInt();
                             y = input.readInt();
                             rotation_ = input.readFloat();
+                            amIShot = input.readBoolean();
                             if(i != myIndex)
                             {
                                 contex.myenemy.get(j).setX(x+contex.backGround.getX());
                                 contex.myenemy.get(j).setY(y+contex.backGround.getY());
-                                contex.myenemy.get(j++).setRotation(rotation_);
+                                contex.myenemy.get(j).setRotation(rotation_);
+                                if(amIShot==true)
+                                    contex.myenemy.get(j++).setVisibility(View.GONE);
                             }
 
                         }
@@ -532,7 +539,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                         contex.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
                                 contex.test.setText(contex.test.getText() + "\nmoved : " + x + " , " + y);
                         }
 

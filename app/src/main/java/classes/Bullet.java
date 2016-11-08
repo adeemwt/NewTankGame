@@ -104,7 +104,7 @@ public class Bullet implements Serializable {
                 //allTarget.get(i).setVisibility(View.GONE);
                // tanks_arr.get(i).setShot();
                 if(multi)
-                    ((ArrayList<Tank>) targets_).get(i).getShot();
+                    ((ArrayList<Tank>) targets_).get(i).setShot();
                 else
                     ((ArrayList<ImageView>) targets_).get(i).setVisibility(View.GONE);
             }

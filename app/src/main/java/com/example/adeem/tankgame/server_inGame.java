@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import classes.Bullet;
 import classes.MyPoint;
@@ -243,7 +245,11 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             alpha1 = 270 - alpha1;
                         }
                         ourTank.setRotation((float) alpha1);
-                        tankArry.get(0).setheadingAngle((float) alpha1);
+                        Lock lock = new ReentrantLock();
+                        synchronized (lock) {
+                            tankArry.get(0).setheadingAngle((float) alpha1);
+                        }
+
                     }
                     return true;
                 }
@@ -270,6 +276,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         switch (buttonId) {
 
             case (R.id.ourTank_server2): {
+
+                //SHOOT AND MAKE SOMETHING !!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
            //     Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
@@ -371,8 +383,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 //            movement.x = 0;
 //        if(!moveY)
 //            movement.y = 0;
-
-        tankArry.get(0).setPosition(movement);
+        Lock lock = new ReentrantLock();
+        synchronized (lock) {
+            tankArry.get(0).setPosition(movement);
+        }
         //test.setText(test.getText()+"\ngyro - " + movement.x+", "+movement.y);
 //        try {
 //            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
@@ -468,6 +482,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         private ObjectInputStream inputFromClient;
         int clientNum = 0;
         MyPoint position = new MyPoint(0,0);
+        Boolean shooting = false;
+        Lock lock = new ReentrantLock();
+
         float rotation_;
         public client_Listener(Socket socket) {
             this.socket = socket;
@@ -495,14 +512,20 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
             while (gameRuning) {
                 try {
-
-                    // get stuff from client
-                    int type = (int )inputFromClient.readObject();
-                    if(type == 1){
                         // get update from client
                         int x  = inputFromClient.readInt();
                         int y = inputFromClient.readInt();
                         rotation_ = inputFromClient.readFloat();
+                        shooting =  inputFromClient.readBoolean();
+                        if (shooting) {
+                            synchronized (lock) {
+                                //make bullet and make it shoot
+                                Bullet bullet = new Bullet(tankArry, clientNum);
+                                tankArry = (ArrayList<Tank>) bullet.shoot();
+
+                            }
+                        }
+                        //
                         //read the input from the clients
                         position = new MyPoint(x,y);
                         tankArry.get(clientNum).setPosition(position);
@@ -510,20 +533,20 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                             @Override
                             public void run(){
+                                //enemiesTanks = ImageViews
                                 contex.enemiesTanks.get(clientNum-1).setX(position.x + contex.backGround.getX());
                                 contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
                                 contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
-                                contex.test.setText( "\nmoved : " + position.x + " , " + position.y);//try it now . if we get s
+                                if(tankArry.get(clientNum).getShot() == true) {
+                                    contex.enemiesTanks.get(clientNum - 1).setVisibility(View.GONE);
+                                    contex.test.setText("\n"+clientNum +"was shot");//try it now . if we get s
+                                }
                             }
                         });
 
-                    }
-                    else if(type == 2){
-                        Bullet message = (Bullet) inputFromClient.readObject();
-                        bulletArry.add(message);
-                    }
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
-                    //outputToClient.writeObject(tankArry);
+                    //outputToClient.writeObject(tankArry); DAFAQ U DOIN XDBITACH ASS BITCH
+
 
                     //update clients
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
@@ -533,13 +556,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         outputToClient.flush();
                         outputToClient.writeFloat(tankArry.get(i).getheadingAngle());
                         outputToClient.flush();
-
+                        //if the client was shot or not  - in each client if that person was shot make the visibily gone
+                        outputToClient.writeBoolean(tankArry.get(i).getShot());
+                        outputToClient.flush();
                         //send the stuff to the client
                     }
 
-                } catch (ClassNotFoundException | IOException e) {
+                } catch ( IOException e) {
                     // TODO Auto-generated catch block
-
                     e.printStackTrace();
                 }
             }
@@ -561,7 +585,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             boolean flag = true; // change
             while (flag) { // while waiting for players
                 flag = false; // change
-                try {
                     Socket socket = server.accept();
                     client_Listener cl = new client_Listener(socket);
                     ClienThreads.add(cl);
@@ -570,12 +593,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     this.enemiesTanks.add(img);
                     this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
                     this.enemiesNum++;
-                } catch (IOException ex) {
-
-                }
             }
         } catch (IOException ex) {
-
+            ex.printStackTrace();
         }
     }
 }
