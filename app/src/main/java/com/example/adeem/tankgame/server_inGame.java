@@ -255,11 +255,11 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
 
     public void setMapScale() {
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-        backGround.getLayoutParams().height = pixels;
-        backGround.getLayoutParams().width = pixels;
-        backGround.requestLayout();
+//        final float scale = getResources().getDisplayMetrics().density;
+//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
+//        backGround.getLayoutParams().height = pixels;
+//        backGround.getLayoutParams().width = pixels;
+//        backGround.requestLayout();
     }
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
@@ -466,8 +466,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         private ObjectOutputStream outputToClient;
         private ObjectInputStream inputFromClient;
         int clientNum = 0;
-
-        MyPoint message = new MyPoint(0,0);
+        MyPoint position = new MyPoint(0,0);
         public client_Listener(Socket socket) {
             this.socket = socket;
             clientNum = clientCount++;
@@ -498,15 +497,17 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // get stuff from client
                     int type = (int )inputFromClient.readObject();
                     if(type == 1){
-                        message = (MyPoint)inputFromClient.readObject();
-                        tankArry.get(clientNum).setPosition(message);
+                        int x  = inputFromClient.readInt();
+                        int y = inputFromClient.readInt();
+                        position = new MyPoint(x,y);
+                        tankArry.get(clientNum).setPosition(position);
 
                         contex.runOnUiThread(new Runnable(){ // update pos to on my scren
                             @Override
                             public void run(){
-                                contex.enemiesTanks.get(clientNum-1).setX(message.x + contex.backGround.getX());
-                                contex.enemiesTanks.get(clientNum-1).setY(message.y + contex.backGround.getY());
-                                contex.test.setText( "\nmoved : " + message.x + " , " + message.y);//try it now . if we get s
+                                contex.enemiesTanks.get(clientNum-1).setX(position.x + contex.backGround.getX());
+                                contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
+                                contex.test.setText( "\nmoved : " + position.x + " , " + position.y);//try it now . if we get s
                             }
                         });
 
@@ -525,7 +526,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         outputToClient.writeInt(tankArry.get(i).getPosition().y);
                         outputToClient.flush();
                     }
-
 
                 } catch (ClassNotFoundException | IOException e) {
                     // TODO Auto-generated catch block

@@ -323,11 +323,11 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
     //randomize the trget position and set visiable according to the number for the difficulty level
     public void setMapScale() {
-        final float scale = getResources().getDisplayMetrics().density;
-        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-        backGround.getLayoutParams().height = pixels;
-        backGround.getLayoutParams().width = pixels;
-        backGround.requestLayout();
+//        final float scale = getResources().getDisplayMetrics().density;
+//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
+//        backGround.getLayoutParams().height = pixels;
+//        backGround.getLayoutParams().width = pixels;
+//        backGround.requestLayout();
         //TargetImages.add(backGround);
     }
 
@@ -505,7 +505,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                     contex.output.writeObject(new Integer(1));
                     contex.output.flush();
-                    contex.output.writeObject(myMovement);// after geteting the movemnet the server should update all the other tanks about it
+                    contex.output.writeInt(myMovement.x);
+                    contex.output.writeInt(myMovement.y);// after geteting the movemnet the server should update all the other tanks about it
                     contex.output.flush();
 
                         int j =0;
