@@ -11,6 +11,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.support.annotation.UiThread;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -118,7 +120,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
-
+    private int[] blts = {
+            R.id.blt1,
+            R.id.blt2,
+            R.id.blt3,
+            R.id.blt4
+    };
 
     private int[] imgIds = {
             R.id.tank_1,
@@ -126,7 +133,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             R.id.tank_3
     };
     int enemiesNum = 0;
-
+    AbsoluteLayout rlayout;
     ArrayList<ImageView> enemiesTanks = new ArrayList<>();
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -226,7 +233,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
             ourTank.setOnClickListener(this);
 
-            AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
+             rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
             rlayout.setOnClickListener(this);
 
             //on screen  touch get coordinates and change the tank aim accordingly
@@ -282,7 +289,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     //make bullet and make it shoot
                     Bullet bullet_ = new Bullet(tankArry,0);
                     this.tankArry = (ArrayList<Tank>) bullet_.shoot();
-                    test.setText("shooting the client..." + tankArry.get(1).getShot() +" me = " + tankArry.get(0).getShot()+"\n" + tankArry.get(0).getPosition().x +"," + tankArry.get(0).getPosition().y +" " +tankArry.get(0).getheadingAngle());
+                    float headingAngle = tankArry.get(0).getheadingAngle();
+                    if(headingAngle <0) headingAngle = 360 + headingAngle;
+                    test.setText(tankArry.get(0).getheadingAngle() +" , " + headingAngle);
                 }
                 break;
             }
@@ -347,30 +356,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         if (moveY)
             backGround.setY(backGround.getY() - deltaRotationVector[1] * 50);// tank going up = delta>0, tank going down delta < 0
 
-        //Point movement = new Point(0,0);
-//        for (int i = 0; i < myenemy.size(); i++) {
-//            if (moveX) {
-//                myenemy.get(i).setX(myenemy.get(i).getX() + deltaRotationVector[0] * 50);
-//               // movement.x = (int)deltaRotationVector[0] * 50;
-//            }// tank going left = delta >0 , tank going right delta < 0
-//            if (moveY) {
-//                myenemy.get(i).setY(myenemy.get(i).getY() - deltaRotationVector[1] * 50);
-//               // movement.y = (int)deltaRotationVector[1] * 50;
-//            }// tank going up = delta>0, tank going down delta < 0
-//        }
-//
 
         MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
         Lock lock = new ReentrantLock();
         synchronized (lock) {
             tankArry.get(0).setPosition(movement);
         }
-        //test.setText(test.getText()+"\ngyro - " + movement.x+", "+movement.y);
-//        try {
-//            this.output.writeObject(movement);// after geteting the movemnet the server should update all the other tanks about it
-//        }catch (Exception e){
-//            //an excpetion has accured ...
-//        }
     }
 
 
@@ -453,6 +444,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
 
 
+    ImageView blt;
     private class client_Listener extends Thread {
 
         private Socket socket;
@@ -501,10 +493,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 Bullet bullet = new Bullet(tankArry, clientNum);
 
                                 tankArry = (ArrayList<Tank>) bullet.shoot();
+                                blt = (ImageView) findViewById(R.id.blt1);
+                                bulletThread th = new bulletThread(bullet,blt);
+                                th.start();
                                 contex.runOnUiThread(new Runnable() { // update tanks on the screen
                                     @Override
                                     public void run() {
                                         if(tankArry.get(0).getShot()){
+
 
                                             contex.ourTank.setImageResource(R.drawable.fire);
                                             //contex.ourTank.setVisibility(View.GONE);
@@ -536,7 +532,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         });
 
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
-                    //outputToClient.writeObject(tankArry); DAFAQ U DOIN XDBITACH ASS BITCH
+                    //outputToClient.writeObject(tankArry);
 
                     int playersInGame = 0;
                     //update clients
@@ -594,6 +590,49 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             ex.printStackTrace();
         }
     }
+
+
+    private class bulletThread extends Thread {
+        Bullet bullet;
+        Timer t_ = new Timer();
+        double x1,x2,y1,y2;
+        float angle ;
+
+        ImageView btl;
+        public bulletThread(Bullet b,ImageView blt){
+            this.bullet = b;
+            y1 = bullet.getTankPosition().y;
+            x1 =  bullet.getTankPosition().x;
+            angle =  bullet.getHeadingAngle();
+            this.btl = blt;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    contex.blt.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+        @SuppressWarnings("unchecked")
+        @Override
+        public void run() {
+            t_.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            x2 = x1 + (10*Math.cos(angle));
+                            y2 = y1 + (10*Math.sin(angle));
+                            contex.blt.setX((int)x2);
+                            contex.blt.setY((int)y2);
+                            contex.test.setText(contex.test.getText() +"moving ...");
+                        }
+                    });
+                }
+            }, 0, 100);
+        }
+    }
+
 }
 
 

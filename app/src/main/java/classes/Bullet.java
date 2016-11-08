@@ -200,6 +200,9 @@ public class Bullet implements Serializable {
         return allTarget;
     }
 */
+    public MyPoint getTankPosition(){
+        return this.tankPosition;
+    }
     public Tank getTank() {
         return tank;
     }
