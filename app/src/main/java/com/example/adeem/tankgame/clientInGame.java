@@ -291,33 +291,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         int buttonId = view.getId();
         switch (buttonId) {
-
             case (R.id.ourTank_client2): {
                 isShooting = true;
-      //          Bullet bullet = new Bullet(this.tanks,0);
-//                ArrayList<ImageView> targets = TargetImages;
-//                this.TargetImages = bullet.shoot();
-//
-//                for (int i = 0; i < TargetImages.size() - 1; i++) {
-//                    if (TargetImages.get(i).getVisibility() == View.GONE) {
-//                        targets.remove(TargetImages.get(i));
-//                    }
-//                }
-//                TargetImages = targets;
-//                if (TargetImages.size() == 1) {
-//                    this.saveAndExit();
-//                }
-
-//                try {
-//                    this.output.writeObject(new Integer(2));
-//                    this.output.flush();
-//
-//                    this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about it
-//                    this.output.flush();
-//
-//                }catch (Exception e){
-//                    //an excpetion has accured ...
-//                }
                 break;
             }
 
@@ -513,9 +488,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     //send if you shot
                     contex.output.writeBoolean(isShooting);contex.output.flush();
                     isShooting = false;
-
-
-
                     // after geteting the movemnet the server should update all the other tanks about it
 
                     //update all tanks on the screen (from server)
@@ -530,8 +502,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                 contex.myenemy.get(j).setX(x+contex.backGround.getX());
                                 contex.myenemy.get(j).setY(y+contex.backGround.getY());
                                 contex.myenemy.get(j).setRotation(rotation_);
+                                if(amIShot==true ) {
+                                    contex.myenemy.get(j).setImageResource(R.drawable.fire);
+                                    //contex.myenemy.get(j++).setVisibility(View.GONE);
+                                }
+                                j++;
+                            }
+                            else{
                                 if(amIShot==true)
-                                    contex.myenemy.get(j++).setVisibility(View.GONE);
+                                    contex.ourTank.setImageResource(R.drawable.fire);
+                                    //contex.ourTank.setVisibility(View.GONE);
                             }
 
                         }

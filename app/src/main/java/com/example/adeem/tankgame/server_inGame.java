@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -276,32 +277,13 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         switch (buttonId) {
 
             case (R.id.ourTank_server2): {
-
-                //SHOOT AND MAKE SOMETHING !!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-           //     Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
-//                ArrayList<ImageView> targets = TargetImages;
-//                this.TargetImages = bullet.shoot();
-//
-//                for (int i = 0; i < TargetImages.size() - 1; i++) {
-//                    if (TargetImages.get(i).getVisibility() == View.GONE) {
-//                        targets.remove(TargetImages.get(i));
-//                    }
-//                }
-//                TargetImages = targets;
-//                if (TargetImages.size() == 1) {
-//                    this.saveAndExit();
-//                }
-
-                //bulletArry.add(bullet);
-               // try {
-               //     this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about
-               // }catch (Exception e){
-                    //an excpetion has accured ...
-               // }
+                Lock lock = new ReentrantLock();
+                synchronized (lock){
+                    //make bullet and make it shoot
+                    Bullet bullet_ = new Bullet(tankArry,0);
+                    this.tankArry = (ArrayList<Tank>) bullet_.shoot();
+                    test.setText("shooting the client..." + tankArry.get(1).getShot() +" me = " + tankArry.get(0).getShot()+"\n" + tankArry.get(0).getPosition().x +"," + tankArry.get(0).getPosition().y +" " +tankArry.get(0).getheadingAngle());
+                }
                 break;
             }
 
@@ -379,10 +361,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 //
 
         MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
-//        if(!moveX)
-//            movement.x = 0;
-//        if(!moveY)
-//            movement.y = 0;
         Lock lock = new ReentrantLock();
         synchronized (lock) {
             tankArry.get(0).setPosition(movement);
@@ -521,8 +499,19 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             synchronized (lock) {
                                 //make bullet and make it shoot
                                 Bullet bullet = new Bullet(tankArry, clientNum);
-                                tankArry = (ArrayList<Tank>) bullet.shoot();
 
+                                tankArry = (ArrayList<Tank>) bullet.shoot();
+                                contex.runOnUiThread(new Runnable() { // update tanks on the screen
+                                    @Override
+                                    public void run() {
+                                        if(tankArry.get(0).getShot()){
+
+                                            contex.ourTank.setImageResource(R.drawable.fire);
+                                            //contex.ourTank.setVisibility(View.GONE);
+                                            contex.test.setText("YOU SHOT SERVER BITCH!!");
+                                        }
+                                    }
+                                });
                             }
                         }
                         //
@@ -530,6 +519,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         position = new MyPoint(x,y);
                         tankArry.get(clientNum).setPosition(position);
                         tankArry.get(clientNum).setheadingAngle(rotation_);
+
                         contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                             @Override
                             public void run(){
@@ -538,7 +528,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
                                 contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
                                 if(tankArry.get(clientNum).getShot() == true) {
-                                    contex.enemiesTanks.get(clientNum - 1).setVisibility(View.GONE);
+                                    contex.enemiesTanks.get(clientNum - 1).setImageResource(R.drawable.fire);
+                                    //contex.enemiesTanks.get(clientNum - 1).setVisibility(View.GONE);
                                     contex.test.setText("\n"+clientNum +"was shot");//try it now . if we get s
                                 }
                             }
@@ -547,7 +538,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     //outputToClient.writeObject(tankArry); DAFAQ U DOIN XDBITACH ASS BITCH
 
-
+                    int playersInGame = 0;
                     //update clients
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
                         outputToClient.writeInt(tankArry.get(i).getPosition().x);
@@ -559,9 +550,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         //if the client was shot or not  - in each client if that person was shot make the visibily gone
                         outputToClient.writeBoolean(tankArry.get(i).getShot());
                         outputToClient.flush();
+                        if(tankArry.get(i).getShot() == false){
+                            playersInGame++;
+                        }
                         //send the stuff to the client
                     }
-
+                    if(playersInGame <=1){
+                        //game over!!!! , send to other players
+                    }
                 } catch ( IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
