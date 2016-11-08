@@ -243,6 +243,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             alpha1 = 270 - alpha1;
                         }
                         ourTank.setRotation((float) alpha1);
+                        tankArry.get(0).setheadingAngle((float) alpha1);
                     }
                     return true;
                 }
@@ -269,7 +270,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         switch (buttonId) {
 
             case (R.id.ourTank_server2): {
-                Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
+           //     Bullet bullet = new Bullet();//new ArrayList<ImageView>(), ourTank.getRotation(), ourTank, new Point((int) ourTank.getX(), (int) ourTank.getY()));
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -283,7 +284,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 //                    this.saveAndExit();
 //                }
 
-                bulletArry.add(bullet);
+                //bulletArry.add(bullet);
                // try {
                //     this.output.writeObject(bullet);// after geteting the movemnet the server should update all the other tanks about
                // }catch (Exception e){
@@ -467,6 +468,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         private ObjectInputStream inputFromClient;
         int clientNum = 0;
         MyPoint position = new MyPoint(0,0);
+        float rotation_;
         public client_Listener(Socket socket) {
             this.socket = socket;
             clientNum = clientCount++;
@@ -497,16 +499,20 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // get stuff from client
                     int type = (int )inputFromClient.readObject();
                     if(type == 1){
+                        // get update from client
                         int x  = inputFromClient.readInt();
                         int y = inputFromClient.readInt();
+                        rotation_ = inputFromClient.readFloat();
+                        //read the input from the clients
                         position = new MyPoint(x,y);
                         tankArry.get(clientNum).setPosition(position);
-
-                        contex.runOnUiThread(new Runnable(){ // update pos to on my scren
+                        tankArry.get(clientNum).setheadingAngle(rotation_);
+                        contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                             @Override
                             public void run(){
                                 contex.enemiesTanks.get(clientNum-1).setX(position.x + contex.backGround.getX());
                                 contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
+                                contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
                                 contex.test.setText( "\nmoved : " + position.x + " , " + position.y);//try it now . if we get s
                             }
                         });
@@ -519,12 +525,16 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
                     //outputToClient.writeObject(tankArry);
 
-                    //sending pos
+                    //update clients
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
                         outputToClient.writeInt(tankArry.get(i).getPosition().x);
                         outputToClient.flush();
                         outputToClient.writeInt(tankArry.get(i).getPosition().y);
                         outputToClient.flush();
+                        outputToClient.writeFloat(tankArry.get(i).getheadingAngle());
+                        outputToClient.flush();
+
+                        //send the stuff to the client
                     }
 
                 } catch (ClassNotFoundException | IOException e) {

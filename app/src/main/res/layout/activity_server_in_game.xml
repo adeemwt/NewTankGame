@@ -28,7 +28,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:layout_y="209dp"
     android:background="@drawable/trastank" />
 
-<ImageButton
+<ImageView
     android:layout_width="42dp"
     android:layout_height="69dp"
     android:id="@+id/tank_1"
@@ -37,7 +37,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:background="@drawable/trastank"
     android:visibility="gone"/>
 
-<ImageButton
+<ImageView
     android:layout_width="42dp"
     android:layout_height="69dp"
     android:id="@+id/tank_2"
@@ -46,7 +46,7 @@ tools:context="com.example.adeem.tankgame.server_inGame">
     android:background="@drawable/trastank"
     android:visibility="gone"/>
 
-<ImageButton
+<ImageView
     android:layout_width="42dp"
     android:layout_height="69dp"
     android:id="@+id/tank_3"

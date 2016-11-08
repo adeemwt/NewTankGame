@@ -270,7 +270,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
             case(R.id.ourTank): {
                 Bullet bullet = new Bullet(this.TargetImages,ourTank.getRotation(),tanks.get(0),new MyPoint((int)ourTank.getX(),(int)ourTank.getY()));
                 ArrayList<ImageView> targets= TargetImages;
-                this.TargetImages = bullet.shoot();
+                this.TargetImages =(ArrayList<ImageView>) bullet.shoot();
 
                 for(int i =0 ; i < TargetImages.size()-1; i++){
                     if(TargetImages.get(i).getVisibility() == View.GONE){

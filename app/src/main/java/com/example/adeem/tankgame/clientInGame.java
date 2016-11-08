@@ -46,6 +46,8 @@ import classes.Tank;
 public class clientInGame extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
 
 
+
+        float RotationAngle;
         //the socketOuput and input streams , no need to initialize atm
         ObjectInputStream input = null;
         ObjectOutputStream output = null;
@@ -251,6 +253,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             alpha1 = 270 - alpha1;
                         }
                         ourTank.setRotation((float) alpha1);
+                        RotationAngle = (float) alpha1;
                     }
                     return true;
                 }
@@ -289,7 +292,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         switch (buttonId) {
 
             case (R.id.ourTank_client2): {
-                Bullet bullet = new Bullet();
+                Bullet bullet = new Bullet(this.tanks,0);
 //                ArrayList<ImageView> targets = TargetImages;
 //                this.TargetImages = bullet.shoot();
 //
@@ -481,6 +484,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         clientInGame contex ;
 
         int x=0,y=0;
+        float rotation_;
         public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
             this.contex = context_;
             this.objectInputStream = objectInputStream;
@@ -501,22 +505,26 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             }
 
             while (true) {
-                try { // UPDATE tank positions and if shot make it burn or some shit
-
+                try {
+                    // update server
                     contex.output.writeObject(new Integer(1));
                     contex.output.flush();
-                    contex.output.writeInt(myMovement.x);
-                    contex.output.writeInt(myMovement.y);// after geteting the movemnet the server should update all the other tanks about it
-                    contex.output.flush();
+                    contex.output.writeInt(myMovement.x); contex.output.flush();
+                    contex.output.writeInt(myMovement.y);contex.output.flush();
+                    contex.output.writeFloat(RotationAngle);contex.output.flush();
+                    // after geteting the movemnet the server should update all the other tanks about it
 
-                        int j =0;
+                    //update all tanks on the screen (from server)
+                    int j =0;
                         for (int i = 0; i < contex.myenemy.size() + 1; i++) {
                             x = input.readInt();
                             y = input.readInt();
+                            rotation_ = input.readFloat();
                             if(i != myIndex)
                             {
                                 contex.myenemy.get(j).setX(x+contex.backGround.getX());
-                                contex.myenemy.get(j++).setY(y+contex.backGround.getY());
+                                contex.myenemy.get(j).setY(y+contex.backGround.getY());
+                                contex.myenemy.get(j++).setRotation(rotation_);
                             }
 
                         }
