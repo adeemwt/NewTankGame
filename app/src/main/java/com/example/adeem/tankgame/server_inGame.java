@@ -135,6 +135,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     int enemiesNum = 0;
     AbsoluteLayout rlayout;
     ArrayList<ImageView> enemiesTanks = new ArrayList<>();
+    ArrayList<ImageView> bullets = new ArrayList<>();
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -145,9 +147,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_server_in_game);
+        ImageView temp;
 
-
-
+        for(int i =0 ; i < blts.length ; i++){
+            temp = (ImageView) findViewById(blts[i]);
+            bullets.add(temp);
+        }
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -493,15 +498,25 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 Bullet bullet = new Bullet(tankArry, clientNum);
 
                                 tankArry = (ArrayList<Tank>) bullet.shoot();
-                                blt = (ImageView) findViewById(R.id.blt1);
-                                bulletThread th = new bulletThread(bullet,blt);
-                                th.start();
+
+                                //!!!!!!!!!!!!!!!!!!make a new bullet!!!!!!!!!!!!!!!!
+                                boolean found = false;
+                                int  i =0;
+                                while(!found)
+                                for(ImageView im : contex.bullets){
+                                    if(im.getVisibility()== View.GONE){
+                                        bulletThread th = new bulletThread(bullet,i);
+                                        th.start();
+                                        found = true;
+                                        break;
+                                    }
+                                    i++;
+                                }
+
                                 contex.runOnUiThread(new Runnable() { // update tanks on the screen
                                     @Override
                                     public void run() {
                                         if(tankArry.get(0).getShot()){
-
-
                                             contex.ourTank.setImageResource(R.drawable.fire);
                                             //contex.ourTank.setVisibility(View.GONE);
                                             contex.test.setText("YOU SHOT SERVER BITCH!!");
@@ -594,45 +609,53 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
     private class bulletThread extends Thread {
         Bullet bullet;
+        int index_;
         Timer t_ = new Timer();
         double x1,x2,y1,y2;
         float angle ;
 
-        ImageView btl;
-        public bulletThread(Bullet b,ImageView blt){
+        public bulletThread(Bullet b,int index){
             this.bullet = b;
             y1 = bullet.getTankPosition().y;
             x1 =  bullet.getTankPosition().x;
-            angle =  bullet.getHeadingAngle();
-            this.btl = blt;
-            runOnUiThread(new Runnable() {
+            angle =  bullet.getHeadingAngle()+90;
+            index_ = index;
+            contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                 @Override
-                public void run() {
-                    contex.blt.setVisibility(View.VISIBLE);
+                public void run(){
+                    //enemiesTanks = ImageViews
+                    contex.bullets.get(index_).setVisibility(View.VISIBLE);
+                    contex.bullets.get(index_).setRotation(angle);
                 }
             });
         }
+
+
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
             t_.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    runOnUiThread(new Runnable() {
+                    contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                         @Override
-                        public void run() {
-                            x2 = x1 + (10*Math.cos(angle));
-                            y2 = y1 + (10*Math.sin(angle));
-                            contex.blt.setX((int)x2);
-                            contex.blt.setY((int)y2);
-                            contex.test.setText(contex.test.getText() +"moving ...");
+                        public void run(){
+                            x1 = x1 + (5*Math.cos(angle));
+                            y1 = y1 + (5*Math.sin(angle));
+                            if(x1 > 0 | x1 < contex.backGround.getHeight() & y1 > 0 | y1 < contex.backGround.getWidth()) {
+                                contex.bullets.get(index_).setX((int) x1);
+                                contex.bullets.get(index_).setY((int) y1);
+                            }
+                            else {
+                                contex.bullets.get(index_).setVisibility(View.GONE);
+                                onStop();
+                            }
                         }
                     });
                 }
-            }, 0, 100);
+            }, 0, 10);
         }
     }
-
 }
 
 
