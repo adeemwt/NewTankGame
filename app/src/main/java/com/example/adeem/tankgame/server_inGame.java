@@ -616,7 +616,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             this.bullet = b;
             y1 = bullet.getTankPosition().y;
             x1 =  bullet.getTankPosition().x;
-            angle =  bullet.getHeadingAngle();
+            angle =  360 % (bullet.getHeadingAngle()+90);
             index_ = index;
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                 @Override
@@ -638,14 +638,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                         @Override
                         public void run(){
-//                            x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
-//                            y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
-                            double ranAngel = angle*(Math.PI / 180);
-                            x2 = x1 * Math.cos(ranAngel) - y1 * Math.sin (ranAngel);
-                            y2 = x1 *  Math.sin (ranAngel) + y1 *  Math.cos (ranAngel);
-                            x1 = x2;
-                            y1 = y2;
-                            contex.test.setText("x = "+x1+", y="+y1);
+                            x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
+                            y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
+//                            double ranAngel = angle*(Math.PI / 180);
+//                            x2 = x1 * Math.cos(ranAngel) - y1 * Math.sin (ranAngel);
+//                            y2 = x1 *  Math.sin (ranAngel) + y1 *  Math.cos (ranAngel);
+//                            x1 = x2;
+//                            y1 = y2;
+                            contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
                             if(x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
                                 contex.bullets.get(index_).setX((int) x1);
                                 contex.bullets.get(index_).setY((int) y1);
