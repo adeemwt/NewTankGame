@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -28,13 +29,8 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
 
     private Button hostBTN;
     private Button joinBTN;
-    private Button connectBTN;
-    private Button disconnectBTN;
-    private Button start;
-    private TextView serverIP;
     private TextView log;
-    private EditText serverIP_cliente;
-    private Button startGame;
+    private ProgressBar bar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +44,19 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
 
         this.hostBTN = (Button) findViewById(R.id.host_button);
         this.joinBTN = (Button) findViewById(R.id.join_button);
-        this.connectBTN = (Button) findViewById(R.id.connect_button);
-        this.disconnectBTN = (Button) findViewById(R.id.disconnectBTN);
-
-        this.startGame = (Button) findViewById(R.id.server_startGame) ;
-        this.serverIP = (TextView) findViewById(R.id.serverIP_txt);
+        this.bar = (ProgressBar) findViewById(R.id.pbar_multiMAIN);
         this.log =(TextView) findViewById(R.id.log_txt);
-        this.serverIP_cliente = (EditText) findViewById(R.id.serverIP_client);
-        this.serverIP_cliente.setText("");
-
-        start = (Button) findViewById(R.id.strt_btn );
-        this.start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                wfdReceiver.startGame();
-            }
-        });
 
         registerWfdReceiver();
 
         this.hostBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bar.setVisibility(View.VISIBLE);
                 onDiscover();
+                while(isWfdReceiverRegisteredAndFeatureEnabled()!=true);
+                bar.setVisibility(View.INVISIBLE);
+
             }
         });
         this.joinBTN.setOnClickListener(new View.OnClickListener() {
@@ -81,49 +67,16 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
             }
         });
 
-        connectBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                log.setText(log.getText() +"\n register ");//check patin
-
-                registerWfdReceiver();
-
-            }
-        });
-
-        disconnectBTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                unRegisterWfdReceiver();
-            }
-        });
     }
-    public void onClick(View view) {
-//
-        int buttonId = view.getId();
-
-        //open new socket connection and wait for client in inGame
-        if(buttonId == R.id.host_button){
-            registerWfdReceiver();
-            // this.log.setText(this.log.getText() +"\n"+ server.showIP());
-        }
-        //try to connect to chosen server , if connection istablished and server start game, start game
-        if(buttonId == R.id.join_button){
-            this.log.setText(this.log.getText() +"\n"+ this.serverIP_cliente.getText());//check patin
-            onDiscover();
-        }
-    }
-
-
 
     public void onChannelDisconnected(){
-        Toast.makeText(this,"WiFi Direct Disconnected - Reinitialize.",Toast.LENGTH_SHORT).show();
+        log.append("\nWiFi Direct Disconnected - Reinitialize.");
         reinitializeChannel();
     }
 
     private void reinitializeChannel(){
         mChannel = mManager.initialize(this, getMainLooper(), this);
-        Toast.makeText(this, "WiFi Direct Channel Initialization: " + ((mChannel != null)? "SUCCESS" : "FAILED"), Toast.LENGTH_SHORT).show();
+        log.append("\nWiFi Direct Channel Initialization: " + ((mChannel != null)? "SUCCESS" : "FAILED"));
     }
 
     private void registerWfdReceiver(){
