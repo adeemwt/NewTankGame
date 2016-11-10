@@ -109,5 +109,36 @@ tools:context="com.example.adeem.tankgame.server_inGame">
         android:id="@+id/blt4"
         android:visibility="gone"/>
 
-
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt5"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt6"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt7"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt8"
+        android:visibility="gone"/>
 </AbsoluteLayout>
