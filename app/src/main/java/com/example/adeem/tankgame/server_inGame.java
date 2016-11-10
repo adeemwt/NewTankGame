@@ -297,13 +297,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 synchronized (lock){
                     //make bullet and make it shoot
                     Bullet bullet_ = new Bullet(tankArry,0);
-                    this.tankArry = (ArrayList<Tank>) bullet_.shoot();
-                    float headingAngle = tankArry.get(0).getheadingAngle();
-                    if(headingAngle <0) headingAngle = 360 + headingAngle;
-                    test.setText(tankArry.get(0).getheadingAngle() +" , " + headingAngle);
-
                     //add bullet thread to display the bullet \
                     boolean found = false;
+
                     while(!found)
                         for(int i =0 ; i < contex.bullets.size() ; i++){
                             if(contex.bullets.get(i).getVisibility()== View.GONE){
@@ -313,6 +309,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 break;
                             }
                         }
+
+
+                    this.tankArry = (ArrayList<Tank>) bullet_.shoot();
+                    float headingAngle = tankArry.get(0).getheadingAngle();
+                    if(headingAngle <0) headingAngle = 360 + headingAngle;
+                    test.setText(tankArry.get(0).getheadingAngle() +" , " + headingAngle);
+
+
                     amIShooting = true;
                 }
                 break;

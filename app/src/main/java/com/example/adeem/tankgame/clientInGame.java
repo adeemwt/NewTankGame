@@ -526,6 +526,19 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                     //update all tanks on the screen (from server)
                     boolean shooting = input.readBoolean();
+                    if(shooting) {
+                        boolean found = false;
+                        while (!found)
+                            for (int i = 0; i < contex.bullets.size(); i++) {
+                                if (contex.bullets.get(i).getVisibility() == View.GONE) {
+                                    MyPoint P = new MyPoint((int) contex.myenemy.get(0).getX(), (int)contex.myenemy.get(0).getY());
+                                    bulletThread th = new bulletThread(P, contex.myenemy.get(0).getRotation(), i, contex);
+                                    th.start();
+                                    found = true;
+                                    break;
+                                }
+                            }
+                    }
                     //reaad the boolean ...
                     int j =0;
                         for (int i = 0; i < contex.myenemy.size() + 1; i++) {
