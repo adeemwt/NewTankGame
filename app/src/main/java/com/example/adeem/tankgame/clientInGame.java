@@ -182,6 +182,12 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
         my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
         SHuserName = res.getString(R.string.SharedPreferencesUserName);
+        ImageView temp;
+
+        for(int i =0 ; i < blts.length ; i++){
+            temp = (ImageView) findViewById(blts[i]);
+            bullets.add(temp);
+        }
 
 
 
@@ -308,9 +314,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         int buttonId = view.getId();
         switch (buttonId) {
             case (R.id.ourTank_client2): {
-
-
-
 
                 boolean found = false;
                 while(!found)
