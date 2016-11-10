@@ -522,6 +522,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                     // after geteting the movemnet the server should update all the other tanks about it
 
                     //update all tanks on the screen (from server)
+                    boolean shooting = input.readBoolean();
+                    //reaad the boolean ...
                     int j =0;
                         for (int i = 0; i < contex.myenemy.size() + 1; i++) {
                             x = input.readInt();
