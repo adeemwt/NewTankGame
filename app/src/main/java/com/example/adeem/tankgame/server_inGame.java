@@ -568,8 +568,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     int playersInGame = 0;
                     //update clients
 
-//                    outputToClient.writeBoolean(contex.amIShooting);
-//                    contex.amIShooting = false;
+                    outputToClient.writeBoolean(contex.amIShooting);
+                    contex.amIShooting = false;
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
                         outputToClient.writeInt(tankArry.get(i).getPosition().x);
                         outputToClient.flush();
