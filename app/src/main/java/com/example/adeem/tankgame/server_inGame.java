@@ -618,7 +618,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             this.bullet = b;
             y1 = bullet.getTankPosition().y;
             x1 =  bullet.getTankPosition().x;
-            angle =  bullet.getHeadingAngle()+90;
+            angle =  bullet.getHeadingAngle();
             index_ = index;
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                 @Override
@@ -642,7 +642,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         public void run(){
                             x1 = x1 + (5*Math.cos(angle));
                             y1 = y1 + (5*Math.sin(angle));
-                            if(x1 > 0 | x1 < contex.backGround.getHeight() & y1 > 0 | y1 < contex.backGround.getWidth()) {
+
+                            if(x1 > 0 & x1 < contex.backGround.getHeight() & y1 > 0 & y1 < contex.backGround.getWidth()) {
                                 contex.bullets.get(index_).setX((int) x1);
                                 contex.bullets.get(index_).setY((int) y1);
                             }
