@@ -40,7 +40,6 @@
         <activity android:name=".inGameMap" />
         <activity android:name=".highScores" />
         <activity android:name=".multiplayer_mainPage" />
-        <activity android:name=".multiPlayerInGame" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -50,7 +49,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity android:name=".server_inGame" />
-        <activity android:name=".Main2ActivityTESTING" />
         <activity android:name=".clientInGame"></activity>
     </application>
 
