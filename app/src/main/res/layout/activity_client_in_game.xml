@@ -71,4 +71,74 @@
         android:layout_x="277dp"
         android:layout_y="26dp" />
 
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt1_client"
+        android:visibility="gone"
+        />
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt2_client"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt3_client"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt4_client"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt5_client"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt6_client"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt7_client"
+        android:visibility="gone"/>
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="37dp"
+        android:background="@drawable/bullet"
+        android:layout_x="60dp"
+        android:layout_y="73dp"
+        android:id="@+id/blt8_client"
+        android:visibility="gone"/>
+
 </AbsoluteLayout>
