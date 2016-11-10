@@ -46,16 +46,19 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
         this.joinBTN = (Button) findViewById(R.id.join_button);
         this.bar = (ProgressBar) findViewById(R.id.pbar_multiMAIN);
         this.log =(TextView) findViewById(R.id.log_txt);
+        bar.setVisibility(View.VISIBLE);
 
         registerWfdReceiver();
+        wfdReceiver.setBar(this.bar);
 
         this.hostBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bar.setVisibility(View.VISIBLE);
                 onDiscover();
-                while(isWfdReceiverRegisteredAndFeatureEnabled()!=true);
-                bar.setVisibility(View.INVISIBLE);
+                boolean temp = true;
+//                while(!wfdReceiver.getChanged());
+//                bar.setVisibility(View.INVISIBLE);
 
             }
         });

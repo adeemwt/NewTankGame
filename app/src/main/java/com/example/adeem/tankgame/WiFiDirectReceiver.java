@@ -8,6 +8,8 @@ import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.example.adeem.tankgame.multiplayer_mainPage;
 
@@ -23,7 +25,6 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
 
     Intent intent;
 
-
     boolean isWifiDirectEnabled;
     WifiP2pManager wfdManager;
     WifiP2pManager.Channel wfdChannel;
@@ -31,13 +32,16 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
     private IntentFilter intentFilter;
     WifiP2pDevice[] wfdDevices;
 
-
+    ProgressBar bar;
     public WiFiDirectReceiver(WifiP2pManager wfdManager, WifiP2pManager.Channel wfdChannel, multiplayer_mainPage appActivity){
         this.wfdManager = wfdManager;
         this.wfdChannel = wfdChannel;
         this.appActivity = appActivity;
     }
 
+public void  setBar(ProgressBar bar){
+    this.bar = bar;
+}
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -59,19 +63,19 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
         int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
         isWifiDirectEnabled = state == WifiP2pManager.WIFI_P2P_STATE_ENABLED ? true : false;
         Toast.makeText(appActivity, "Enabled : " +isWifiDirectEnabled, Toast.LENGTH_SHORT).show();
-
     }
 
     private void handleWifiP2pThisDeviceChanged(Intent intent){
         WifiP2pDevice thisDevice = intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE);
-
-
+        this.bar.setVisibility(View.GONE);
     }
 
     private void handleWifiP2pPeersChanged(Intent intent){
         // The list of available peers has changed
         //Request the current list of peers
+
         wfdManager.requestPeers(wfdChannel, this);
+        this.bar.setVisibility(View.GONE);
     }
 
     private void handleWifiP2pConnectionChanged(Intent intent){
