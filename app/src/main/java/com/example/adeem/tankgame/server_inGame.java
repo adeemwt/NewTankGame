@@ -303,7 +303,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     while(!found)
                         for(int i =0 ; i < contex.bullets.size() ; i++){
                             if(contex.bullets.get(i).getVisibility()== View.GONE){
-                                bulletThread th = new bulletThread(bullet_,i);
+                                MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
+                                bulletThread th = new bulletThread(P,ourTank.getRotation(),i);
                                 th.start();
                                 found = true;
                                 break;
@@ -531,7 +532,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 while(!found)
                                     for(int i =0 ; i < contex.bullets.size() ; i++){
                                         if(contex.bullets.get(i).getVisibility()== View.GONE){
-                                            bulletThread th = new bulletThread(bullet,i);
+                                            bulletThread th = new bulletThread(tankArry.get(clientNum).getPosition(), tankArry.get(clientNum).getheadingAngle(),i);
                                             th.start();
                                             found = true;
                                             break;
@@ -630,30 +631,31 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
 
 
+
+
     private class bulletThread extends Thread {
-        Bullet bullet;
+
         int index_;
         Timer t_ = new Timer();
         double x1,y1, x2,y2;
         float angle ;
+        public bulletThread(MyPoint position, final float angle_, int index){
 
-        public bulletThread(Bullet b,int index){
-            this.bullet = b;
-            y1 = bullet.getTankPosition().y;
-            x1 =  bullet.getTankPosition().x;
-            angle =  (bullet.getHeadingAngle()-90);
+            y1 = position.y;
+            x1 =position.x;
+            angle =  (angle_-90);
             index_ = index;
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                 @Override
                 public void run(){
                     //enemiesTanks = ImageViews
                     contex.bullets.get(index_).setVisibility(View.VISIBLE);
-                    contex.bullets.get(index_).setRotation(bullet.getHeadingAngle());
+                    contex.bullets.get(index_).setRotation(angle_);
                 }
             });
         }
 
-//currently working on this thread
+        //currently working on this thread
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
@@ -665,20 +667,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         public void run(){
                             x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
-
-                            //this works , the only thing is that its dp so the bullet place kinda changes ... other than that its good
-                            //now we need to add that thread in the clients and make the client display it too
-                            // do not copy and past ... lets make it a stand alone class and pass it context , i tried to do that, got an erro
-                            // it wont take it,,  aitrse  you sure? its just one thread why go threw the pain in the ass of making a class
-                            // cus we have shit loads of duplicate code that we shuld sort out anyway at some point ..
-                            // this thread we really should not move ... its not getting duplicated eeither
-                            // it is ... how do you put it on the client?  same code and how do you plan on getting on the client if its  a class ?
-                            // mate its not worth the time ... i think we well lose points on this
-//                            double ranAngel = angle*(Math.PI / 180);
-//                            x2 = x1 * Math.cos(ranAngel) - y1 * Math.sin (ranAngel);
-//                            y2 = x1 *  Math.sin (ranAngel) + y1 *  Math.cos (ranAngel);
-//                            x1 = x2;
-//                            y1 = y2;
                             contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
                             if(x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
                                 contex.bullets.get(index_).setX((int) x1);
@@ -686,9 +674,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             }
                             else {
                                 contex.bullets.get(index_).setVisibility(View.GONE);
-                                //onStop();
                                 t_.cancel();
-                                //stop();
                             }
                         }
                     });
@@ -696,7 +682,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             }, 0, 3);
         }
     }
-
 
     //1. server make new bullet thread when he soots and makes shooting boolean true , 2. server send boolean shooting to cleint (already does that )
     // so if server is shooting client makes new bullet thread , if client shoot he display for himself the bullet
