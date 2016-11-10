@@ -501,16 +501,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
                                 //!!!!!!!!!!!!!!!!!!make a new bullet!!!!!!!!!!!!!!!!
                                 boolean found = false;
-                                int  i =0;
                                 while(!found)
-                                for(ImageView im : contex.bullets){
-                                    if(im.getVisibility()== View.GONE){
+                                for(int i =0 ; i < contex.bullets.size() ; i++){
+                                    if(contex.bullets.get(i).getVisibility()== View.GONE){
                                         bulletThread th = new bulletThread(bullet,i);
                                         th.start();
                                         found = true;
                                         break;
                                     }
-                                    i++;
                                 }
 
                                 contex.runOnUiThread(new Runnable() { // update tanks on the screen
@@ -611,7 +609,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         Bullet bullet;
         int index_;
         Timer t_ = new Timer();
-        double x1,x2,y1,y2;
+        double x1,y1, x2,y2;
         float angle ;
 
         public bulletThread(Bullet b,int index){
@@ -630,7 +628,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             });
         }
 
-
+//currently working on this thread
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
@@ -640,16 +638,23 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                         @Override
                         public void run(){
-                            x1 = x1 + (5*Math.cos(angle));
-                            y1 = y1 + (5*Math.sin(angle));
-
-                            if(x1 > 0 & x1 < contex.backGround.getHeight() & y1 > 0 & y1 < contex.backGround.getWidth()) {
+//                            x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
+//                            y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
+                            double ranAngel = angle*(Math.PI / 180);
+                            x2 = x1 * Math.cos(ranAngel) - y1 * Math.sin (ranAngel);
+                            y2 = x1 *  Math.sin (ranAngel) + y1 *  Math.cos (ranAngel);
+                            x1 = x2;
+                            y1 = y2;
+                            contex.test.setText("x = "+x1+", y="+y1);
+                            if(x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
                                 contex.bullets.get(index_).setX((int) x1);
                                 contex.bullets.get(index_).setY((int) y1);
                             }
                             else {
                                 contex.bullets.get(index_).setVisibility(View.GONE);
-                                onStop();
+                                //onStop();
+                                t_.cancel();
+                                //stop();
                             }
                         }
                     });

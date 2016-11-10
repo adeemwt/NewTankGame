@@ -81,7 +81,8 @@ tools:context="com.example.adeem.tankgame.server_inGame">
         android:layout_x="60dp"
         android:layout_y="73dp"
         android:id="@+id/blt1"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
     <ImageView
         android:layout_width="40dp"
         android:layout_height="37dp"
