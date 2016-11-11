@@ -366,7 +366,11 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        gameRuning = false;
+        super.onBackPressed();
+    }
 
     private class client_Listener extends Thread { // class privieds a thread that updates fieds for the main GUI thread acording to inf it recives from the clients
         // also, this threads sends info about the game and other players to the client ( one thred per client is needed)
@@ -473,16 +477,23 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
                 } catch ( IOException e) {
                     // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    //e.printStackTrace();
+                    break;
                 }
             }
-            try {
-                outputToClient.writeInt(-1); // alert other player that the the app is closing
-                outputToClient.flush();
+            if(contex.gameRuning )
+                contex.test.setText("the other player had left the game");
+            else
+                contex.test.setText("GAME OVER");
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                outputToClient.writeInt(-1); // alert other player that the the app is closing
+//                outputToClient.flush();
+//
+//            } catch (IOException e) {
+//                //e.printStackTrace();
+//
+//            }
             // send client the game is over and player num thet won
         }
     }
