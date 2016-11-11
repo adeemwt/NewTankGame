@@ -491,15 +491,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 }
             });
 
-//            try {
-//                outputToClient.writeInt(-1); // alert other player that the the app is closing
-//                outputToClient.flush();
-//
-//            } catch (IOException e) {
-//                //e.printStackTrace();
-//
-//            }
-            // send client the game is over and player num thet won
         }
     }
 
@@ -540,7 +531,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             // clac new location
                             x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
-                            contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
                             synchronized (lock) { // update location
 
                                 if (x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {

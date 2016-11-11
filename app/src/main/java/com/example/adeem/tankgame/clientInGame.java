@@ -659,7 +659,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
 
-                            contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
                             synchronized (lock) {
                                 if (x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
                                     contex.bullets.get(index_).setX((int) x1);
