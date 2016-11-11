@@ -303,6 +303,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+        gameRuning = false;
         client.disconnect();
     }
 
@@ -370,7 +371,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     public void onBackPressed() {
         gameRuning = false;
         ClienThreads.get(0).interrupt();
-        ClienThreads.get(0).stop();
         super.onBackPressed();
     }
 

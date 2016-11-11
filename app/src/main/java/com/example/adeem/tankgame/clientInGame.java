@@ -317,17 +317,21 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         int buttonId = view.getId();
         switch (buttonId) {
             case (R.id.ourTank_client2): {
+                Lock lock = new ReentrantLock();
 
                 boolean found = false;
                 while(!found)
                     for(int i =0 ; i < this.bullets.size() ; i++){
-                        if(this.bullets.get(i).getVisibility()== View.GONE){
-                            MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
-                            bulletThread th = new bulletThread(P,ourTank.getRotation(),i,this);
-                            th.start();
-                            found = true;
-                            break;
+                        synchronized (lock){
+                              if(this.bullets.get(i).getVisibility()== View.GONE){
+                               MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
+                              bulletThread th = new bulletThread(P,ourTank.getRotation(),i,this);
+                              th.start();
+                              found = true;
+                               break;
+                            }
                         }
+
                     }
                 isShooting = true;
                 break;
@@ -428,6 +432,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
+        gameRuning = false;
         client.disconnect();
     }
 
@@ -492,7 +497,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     public void onBackPressed() {
         gameRuning = false;
         Slistener.interrupt();
-        Slistener.stop();
 
         super.onBackPressed();
     }
