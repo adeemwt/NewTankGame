@@ -492,6 +492,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     public void onBackPressed() {
         gameRuning = false;
         Slistener.interrupt();
+        Slistener.stop();
+
         super.onBackPressed();
     }
 
@@ -589,13 +591,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
                     }
 
-                    contex.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            contex.test.setText(contex.test.getText() + "\nmoved : " + x + " , " + y);
-                        }
 
-                    });
                 }// get the new tank cords and tank status (shot or not - tank not there, its shot)
                 catch (Exception e) {
                     //e.printStackTrace();

@@ -370,6 +370,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     public void onBackPressed() {
         gameRuning = false;
         ClienThreads.get(0).interrupt();
+        ClienThreads.get(0).stop();
         super.onBackPressed();
     }
 
