@@ -491,6 +491,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                          contex.test.setText("the other player had left the game");
                     else
                          contex.test.setText("GAME OVER");
+
                 }
             });
 

@@ -93,6 +93,12 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
         wfdReceiver = null;
     }
 
+    @Override
+    public void onBackPressed() {
+        unRegisterWfdReceiver();
+        super.onBackPressed();
+    }
+
     public void onDiscover(){
         if(isWfdReceiverRegisteredAndFeatureEnabled()){
             mManager.discoverPeers(mChannel,

@@ -21,6 +21,7 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
         WifiP2pManager.PeerListListener,
         WifiP2pManager.ConnectionInfoListener
 {
+    BroadcastReceiver rc = this;
     public static final int PORT = 7890;
 
     Intent intent;
@@ -116,6 +117,7 @@ public void  setBar(ProgressBar bar){
                 intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
 
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
+
             appActivity.startActivity(intent);
 
         }
