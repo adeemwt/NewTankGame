@@ -64,8 +64,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         private ImageButton ourTank;
         private TextView test; ////// fot testing only
 
-        private Boolean running = true;
-
         //shared preference variable
         //private String UserName; // not used
 
@@ -213,17 +211,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    @Override
-    public void onBackPressed()
-    {
 
-        Lock lock_2 = new ReentrantLock();
-        synchronized (lock_2) {
-            this.running = false;
-        }
 
-        super.onBackPressed();
-    }
 
     //movement detected update the server
     //sending to server the movement and getting the places of the other tanks - (update the positions of the tanks accordingly)
@@ -362,7 +351,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
 
-            while (running) {
+            while (true) {
                 try {
                     // update server
                     contex.output.writeInt(myMovement.x); contex.output.flush();
@@ -434,24 +423,12 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                         }
 
                     });
-
-
-                    Lock lock_2 = new ReentrantLock();
-                    synchronized (lock_2) {
-                        running = (contex.input.readInt() != -1);
-                    }
-                    contex.output.writeInt(running ==true ? 1:-1);
-                    contex.output.flush();
-
                 }// get the new tank cords and tank status (shot or not - tank not there, its shot)
                 catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
-            try{
-                //contex.output.writeInt(-1);
-            }catch (Exception e){}
         }
     }
 

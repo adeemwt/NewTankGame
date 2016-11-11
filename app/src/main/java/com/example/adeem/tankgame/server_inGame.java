@@ -313,22 +313,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
 
     public void saveAndExit() { // not used
-
         this.onBackPressed();
-        //distroy all the threads running ....
     }
 
-    @Override
-    public void onBackPressed()
-    {
-
-        Lock lock_2 = new ReentrantLock();
-        synchronized (lock_2) {
-            this.gameRuning = false;
-        }
-
-        super.onBackPressed();
-    }
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -483,23 +470,17 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         outputToClient.flush();
 
                     }
-                    outputToClient.writeInt(contex.gameRuning ==true ? 1:-1);
-                    outputToClient.flush();
 
-                    Lock lock_2 = new ReentrantLock();
-                    synchronized (lock_2) {
-                        contex.gameRuning = (inputFromClient.readInt() != -1);
-                    }
                 } catch ( IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
             try {
-//                outputToClient.writeInt(-1); // alert other player that the the app is closing
-//                outputToClient.flush();
+                outputToClient.writeInt(-1); // alert other player that the the app is closing
+                outputToClient.flush();
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             // send client the game is over and player num thet won
@@ -560,6 +541,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             }, 0, 3);
         }
     }
+
 }
 
 
