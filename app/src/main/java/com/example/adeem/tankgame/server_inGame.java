@@ -481,10 +481,15 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     break;
                 }
             }
-            if(contex.gameRuning )
-                contex.test.setText("the other player had left the game");
-            else
-                contex.test.setText("GAME OVER");
+            contex.runOnUiThread(new Runnable(){ // update tanks on the screen
+                @Override
+                public void run(){ // update players tank on the screen
+                    if(contex.gameRuning )
+                         contex.test.setText("the other player had left the game");
+                    else
+                         contex.test.setText("GAME OVER");
+                }
+            });
 
 //            try {
 //                outputToClient.writeInt(-1); // alert other player that the the app is closing
