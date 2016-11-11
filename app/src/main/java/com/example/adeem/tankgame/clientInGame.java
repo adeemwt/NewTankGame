@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import classes.Bullet;
 import classes.Player;
@@ -495,6 +497,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         int x=0,y=0,GIndxe;
         float rotation_;
         boolean amIShot = false;
+        Lock lock = new ReentrantLock();
+
         public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
             this.contex = context_;
             this.objectInputStream = objectInputStream;
@@ -529,12 +533,14 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                         boolean found = false;
                         while (!found)
                             for (int i = 0; i < contex.bullets.size(); i++) {
-                                if (contex.bullets.get(i).getVisibility() == View.GONE) {
-                                    MyPoint P = new MyPoint((int) contex.myenemy.get(0).getX(), (int)contex.myenemy.get(0).getY());
-                                    bulletThread th = new bulletThread(P, contex.myenemy.get(0).getRotation(), i, contex);
-                                    th.start();
-                                    found = true;
-                                    break;
+                                synchronized (lock) {
+                                    if (contex.bullets.get(i).getVisibility() == View.GONE) {
+                                        MyPoint P = new MyPoint((int) contex.myenemy.get(0).getX(), (int) contex.myenemy.get(0).getY());
+                                        bulletThread th = new bulletThread(P, contex.myenemy.get(0).getRotation(), i, contex);
+                                        th.start();
+                                        found = true;
+                                        break;
+                                    }
                                 }
                             }
                     }
@@ -601,6 +607,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         double x1,y1, x2,y2;
         float angle ;
         clientInGame contex;
+        Lock lock = new ReentrantLock();
+
         public bulletThread(MyPoint position, final float angle_, int index, clientInGame contex_){
 
             y1 = position.y;
@@ -612,8 +620,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void run(){
                     //enemiesTanks = ImageViews
-                    contex.bullets.get(index_).setVisibility(View.VISIBLE);
-                    contex.bullets.get(index_).setRotation(angle_);
+                    synchronized (lock) {
+                        contex.bullets.get(index_).setVisibility(View.VISIBLE);
+                        contex.bullets.get(index_).setRotation(angle_);
+                    }
                 }
             });
         }
@@ -632,15 +642,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
 
                             contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
-                            if(x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
-                                contex.bullets.get(index_).setX((int) x1);
-                                contex.bullets.get(index_).setY((int) y1);
-                            }
-                            else {
-                                contex.bullets.get(index_).setVisibility(View.GONE);
-                                //onStop();
-                                t_.cancel();
-                                //stop();
+                            synchronized (lock) {
+                                if (x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
+                                    contex.bullets.get(index_).setX((int) x1);
+                                    contex.bullets.get(index_).setY((int) y1);
+                                } else {
+                                    contex.bullets.get(index_).setVisibility(View.GONE);
+                                    //onStop();
+                                    t_.cancel();
+                                    //stop();
+                                }
                             }
                         }
                     });

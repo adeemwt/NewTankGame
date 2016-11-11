@@ -291,6 +291,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
                     while(!found)
                         for(int i =0 ; i < contex.bullets.size() ; i++){
+
                             if(contex.bullets.get(i).getVisibility()== View.GONE){
                                 MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
                                 bulletThread th = new bulletThread(P,ourTank.getRotation(),i);
@@ -628,6 +629,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         Timer t_ = new Timer();
         double x1,y1, x2,y2;
         float angle ;
+        Lock lock = new ReentrantLock();
+
         public bulletThread(MyPoint position, final float angle_, int index){
 
             y1 = position.y;
@@ -638,8 +641,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 @Override
                 public void run(){
                     //enemiesTanks = ImageViews
-                    contex.bullets.get(index_).setVisibility(View.VISIBLE);
-                    contex.bullets.get(index_).setRotation(angle_);
+                    synchronized (lock) {
+                        contex.bullets.get(index_).setVisibility(View.VISIBLE);
+                        contex.bullets.get(index_).setRotation(angle_);
+                    }
                 }
             });
         }
@@ -657,13 +662,15 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
                             contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
-                            if(x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
-                                contex.bullets.get(index_).setX((int) x1);
-                                contex.bullets.get(index_).setY((int) y1);
-                            }
-                            else {
-                                contex.bullets.get(index_).setVisibility(View.GONE);
-                                t_.cancel();
+                            synchronized (lock) {
+
+                                if (x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
+                                    contex.bullets.get(index_).setX((int) x1);
+                                    contex.bullets.get(index_).setY((int) y1);
+                                } else {
+                                    contex.bullets.get(index_).setVisibility(View.GONE);
+                                    t_.cancel();
+                                }
                             }
                         }
                     });
