@@ -369,6 +369,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     @Override
     public void onBackPressed() {
         gameRuning = false;
+        ClienThreads.get(0).interrupt();
         super.onBackPressed();
     }
 
@@ -478,6 +479,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 } catch ( IOException e) {
                     // TODO Auto-generated catch block
                     //e.printStackTrace();
+                    contex.gameRuning=false;
                     break;
                 }
             }

@@ -96,7 +96,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     private ImageButton ourTank;
     private TextView test; ////// fot testing only
 
-
+    private server_Listener Slistener;
     //TIMER variables
     private Timer t;
     private int seconds;
@@ -176,7 +176,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        server_Listener Slistener = new server_Listener(input, this);
+        Slistener = new server_Listener(input, this);
         Slistener.start();
 
 
@@ -491,6 +491,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         gameRuning = false;
+        Slistener.interrupt();
         super.onBackPressed();
     }
 
