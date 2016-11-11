@@ -44,71 +44,40 @@ import classes.Tank;
 
 public class server_inGame extends AppCompatActivity  implements View.OnClickListener, SensorEventListener {
 
-    //the socketOuput and input streams , no need to initialize atm
-    //ObjectInputStream input = null;
-    //ObjectOutputStream output = null;
 
-    int clientCount = 1; // server is number 0
-    ArrayList<ImageButton> myenemy = new ArrayList<ImageButton>();
-    ArrayList<Tank> tankArry = new ArrayList<Tank>();
-    ArrayList<Bullet> bulletArry = new ArrayList<Bullet>();
-    Boolean gameRuning = true;
+    private int clientCount = 1; // server is number 0
+    private ArrayList<Tank> tankArry = new ArrayList<Tank>();
+    private Boolean gameRuning = true;
     private ArrayList<Thread> ClienThreads = new ArrayList<Thread>();
-    Thread socketServerThread;
-    server_inGame contex = this;
+    private server_inGame contex = this;
+
+    private final double EPSILON = 0.000001;
+   // private int playerNum = 1;
 
 
-    //final values
-    final MyPoint EASY_SIZE = new MyPoint(1000, 1000);
-    final MyPoint MEDUIM_SIZE = new MyPoint(1500, 1500);
-    final MyPoint HARD_SIZE = new MyPoint(2000, 2000);
-
-    //how big the step for the tank is, dp
-    final int STEP = 10;
-    final int CHOOSE_X = 0;
-    final int CHOOSE_Y = 1;
-
-    //how many target
-    final int MAX_TARGET_SIZE = 5;
-    final int TARGET_NUM_EASY = 5;
-    final int TARGET_NUM_MADUIM = 10;
-    final int TARGET_NUM_HARD = 15;
-    final double EPSILON = 0.000001;
-
-
-    private int playerNum = 1;
-
-
+    //share preferences for player name - if to be stored in firebase
     private SharedPreferences prefs;
     private String my_pref_name;
     private String SHuserName;
-
-    private SensorManager sManager;
-    private int targetNum = 0;
- // /  private ArrayList<Tank> /tanks;
-  //  private ArrayList<Taget> targets;
-   // private ArrayList<ImageView> TargetImages = new ArrayList<>();
-
-   // private ArrayList<Socket> connections;
-    private MyPoint WidthAndHieght;
-
-    private ImageButton ourTank;
-    private TextView test; ////// fot testing only
-
-
-    //TIMER variables
-    private Timer t;
-    private int seconds;
-    private ImageView backGround;
-
-    //shared preference variable
-    private String Difficulty;
     private String UserName;
 
+    //all the sensor objects used to detect movement
+    private SensorManager sManager;
+    AbsoluteLayout rlayout;
     //calculation
     private static final float NS2S = 1.0f / 1000000000.0f;
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
+
+
+    // the tank to be displayed as ours
+    private ImageButton ourTank;
+    private TextView test; ////// fot testing only (debugging pupposes)
+    private ImageView backGround;
+
+
+
+    //IDs related to shooting and boolean variable indicating if shooting or not
     private int[] blts = {
             R.id.blt1,
             R.id.blt2,
@@ -120,15 +89,16 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             R.id.blt8
     };
     boolean amIShooting = false;
+    ArrayList<ImageView> bullets = new ArrayList<>();
+
+    //IDs relating to other playes tanks
     private int[] imgIds = {
             R.id.tank_1,
             R.id.tank_2,
             R.id.tank_3
     };
     int enemiesNum = 0;
-    AbsoluteLayout rlayout;
     ArrayList<ImageView> enemiesTanks = new ArrayList<>();
-    ArrayList<ImageView> bullets = new ArrayList<>();
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -142,68 +112,33 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         setContentView(R.layout.activity_server_in_game);
         ImageView temp;
 
-        for(int i =0 ; i < blts.length ; i++){
+
+        conectToClient();
+        Resources res = getResources();
+
+        my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
+        SHuserName = res.getString(R.string.SharedPreferencesUserName);
+        prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
+        UserName = prefs.getString(SHuserName, null); ////// NOT USED
+        ourTank = (ImageButton) findViewById(R.id.ourTank_server2);
+        //for debugging only
+        test = (TextView) findViewById(R.id.log_server);
+
+        for(int i =0 ; i < blts.length ; i++){ // set all bullets
             temp = (ImageView) findViewById(blts[i]);
             bullets.add(temp);
         }
 
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-//        socketServerThread = new Thread(new ServerSocketThread());
-//        socketServerThread.start();
-        conectToClient();
-//
-//        Bundle bundle = getIntent().getExtras();
-//        test = (Button) findViewById(R.id.send_test);
-//        connections = (ArrayList<Socket>) bundle.get("TANKS_CONNECTIONS");
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!check if this is even possible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-//        for(int i =0 ; i < connections.size() ; i++){
-//            client_Listener listener = new client_Listener(connections.get(i));
-//            tankArry.add(new Tank(new Player(""+ i),null));
-//        }
-        Resources res = getResources();
-        String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
-        my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
-        SHuserName = res.getString(R.string.SharedPreferencesUserName);
-
-
-
-
-
-        prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
-        Difficulty = prefs.getString("difficultly", null);
-        UserName = prefs.getString(SHuserName, null);
-
-        ourTank = (ImageButton) findViewById(R.id.ourTank_server2);
+        rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
+        backGround = (ImageView) findViewById(R.id.limitsView_server2);
 
         tankArry .add(new Tank(new Player("server"),null));
         tankArry .add(new Tank(new Player("client"),null));
 
-        //for debugging only
-        test = (TextView) findViewById(R.id.log_server);
 
-        t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView tv = (TextView) findViewById(R.id.time_server);
-                        tv.setText(String.valueOf(String.valueOf(seconds) + ""));
-                        seconds++;
-                    }
-                });
-            }
-        }, 0, 1000);
 
-        test.setText("");
         /////////////////////////////////////////////////
-
-        backGround = (ImageView) findViewById(R.id.limitsView_server2);
-
         //initialize sensor
         sManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         sManager.registerListener(this,
@@ -211,31 +146,11 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 SensorManager.SENSOR_DELAY_UI);
 
 
-       // server_Listener Slistener = new server_Listener(input);
-        Difficulty = diffSpinner[0]; // for testing !!!!
-        if (Difficulty != null) {
-            if (Difficulty.equals(diffSpinner[0])) { // easy
-                this.WidthAndHieght = this.EASY_SIZE;
-                targetNum = TARGET_NUM_EASY;
+        ourTank.setOnClickListener(this);
+        rlayout.setOnClickListener(this);
 
-            } else if (Difficulty.equals(diffSpinner[1])) { // medium
-                this.WidthAndHieght = this.MEDUIM_SIZE;
-                targetNum = TARGET_NUM_MADUIM;
-
-            } else { // if(Difficulty.equals(diffSpinner[1]))   hard - default
-                this.WidthAndHieght = this.HARD_SIZE;
-                targetNum = TARGET_NUM_HARD;
-            }
-            setMapScale();
-            String userName = prefs.getString(SHuserName, null);
-
-            ourTank.setOnClickListener(this);
-
-             rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
-            rlayout.setOnClickListener(this);
-
-            //on screen  touch get coordinates and change the tank aim accordingly
-            rlayout.setOnTouchListener(new View.OnTouchListener() {
+        //on screen  touch get coordinates and change the tank aim accordingly
+        rlayout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -260,20 +175,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     return true;
                 }
             });
-        }
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.44444
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        test.setText("all is good SERVER ");
+        test.setText("SERVER");
     }
 
-    public void setMapScale() {
-//        final float scale = getResources().getDisplayMetrics().density;
-//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-//        backGround.getLayoutParams().height = pixels;
-//        backGround.getLayoutParams().width = pixels;
-//        backGround.requestLayout();
-    }
+
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override
@@ -283,36 +192,31 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
             case (R.id.ourTank_server2): {
                 Lock lock = new ReentrantLock();
-                synchronized (lock){
-                    //make bullet and make it shoot
-                    Bullet bullet_ = new Bullet(tankArry,0);
-                    //add bullet thread to display the bullet \
-                    boolean found = false;
 
-                    while(!found)
-                        for(int i =0 ; i < contex.bullets.size() ; i++){
+                //make bullet and make it shoot
+                Bullet bullet_ = new Bullet(tankArry,0);
+                //add bullet thread to display the bullet \
+                boolean found = false;
 
+                while(!found) // look for a free bullet to fire
+                    for(int i =0 ; i < contex.bullets.size() ; i++){
+                        synchronized (lock){
                             if(contex.bullets.get(i).getVisibility()== View.GONE){
                                 MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
-                                bulletThread th = new bulletThread(P,ourTank.getRotation(),i);
-                                th.start();
+                                bulletThread bt = new bulletThread(P,ourTank.getRotation(),i);
+                                bt.start();
                                 found = true;
                                 break;
                             }
                         }
-
-
+                    }
                     this.tankArry = (ArrayList<Tank>) bullet_.shoot();
                     float headingAngle = tankArry.get(0).getheadingAngle();
                     if(headingAngle <0) headingAngle = 360 + headingAngle;
                     test.setText(tankArry.get(0).getheadingAngle() +" , " + headingAngle);
-
-
-                    amIShooting = true;
+                    amIShooting = true; // set amIShooting so the client well recive the info
                 }
                 break;
-            }
-
         }
     }
 
@@ -377,7 +281,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         MyPoint movement = new MyPoint((int)(ourTank.getX() - backGround.getX()),(int)( ourTank.getY() - backGround.getY()));
         Lock lock = new ReentrantLock();
         synchronized (lock) {
-            tankArry.get(0).setPosition(movement);
+            tankArry.get(0).setPosition(movement); // update position so clients well recive it
         }
     }
 
@@ -395,7 +299,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         //unregister the sensor listener
         sManager.unregisterListener(this);
         super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
-// See https://g.co/AppIndexing/AndroidStudio for more information.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -408,32 +312,23 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
 
 
-    public void saveAndExit() { // save score
+    public void saveAndExit() { // not used
 
-        final Firebase mRef;
-
-        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + UserName + "/MultiPlayer/");
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                if (text == null) {
-                    mRef.setValue("" + seconds);
-                } else {
-                    if (Integer.parseInt(text) > seconds) {
-                        mRef.setValue("" + seconds);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
         this.onBackPressed();
+        //distroy all the threads running ....
     }
 
+    @Override
+    public void onBackPressed()
+    {
+
+        Lock lock_2 = new ReentrantLock();
+        synchronized (lock_2) {
+            this.gameRuning = false;
+        }
+
+        super.onBackPressed();
+    }
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -461,18 +356,43 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     }
 
 
-    ImageView blt;
-    private class client_Listener extends Thread {
+    public void conectToClient(){ // conect to clients and run a client_Listener for evry one of tham
+        ServerSocket server;
+        ImageView img ;
+        try {
+            server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+            boolean flag = true; // change
+            while (flag) { // while waiting for players
+                flag = false; // change
+                Socket socket = server.accept();
+                client_Listener cl = new client_Listener(socket);
+                ClienThreads.add(cl);
+                cl.start();
+                // display the tamk
+                img = (ImageView) findViewById(this.imgIds[enemiesNum]);
+                this.enemiesTanks.add(img);
+                this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
+                this.enemiesNum++;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+
+    private class client_Listener extends Thread { // class privieds a thread that updates fieds for the main GUI thread acording to inf it recives from the clients
+        // also, this threads sends info about the game and other players to the client ( one thred per client is needed)
 
         private Socket socket;
         private ObjectOutputStream outputToClient;
         private ObjectInputStream inputFromClient;
-        int clientNum = 0;
-        MyPoint position = new MyPoint(0,0);
-        Boolean shooting = false;
-        Lock lock = new ReentrantLock();
+        private int clientNum = 0;
+        private MyPoint position = new MyPoint(0,0);
+        private Boolean shooting = false;
+        private Lock lock = new ReentrantLock();
+        private float rotation_;
 
-        float rotation_;
         public client_Listener(Socket socket) {
             this.socket = socket;
             clientNum = clientCount++;
@@ -484,7 +404,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 //   exit();
             }
         }
-
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
@@ -492,11 +411,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             try {
             outputToClient.writeInt(clientNum);
             outputToClient.flush();
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             while (gameRuning) {
                 try {
                         // get update from client
@@ -514,7 +431,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                             synchronized (lock) {
                                 //make bullet and make it shoot
                                 Bullet bullet = new Bullet(tankArry, clientNum);
-
                                 tankArry = (ArrayList<Tank>) bullet.shoot();
 
                                 //!!!!!!!!!!!!!!!!!!make a new bullet!!!!!!!!!!!!!!!!
@@ -534,35 +450,25 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                     public void run() {
                                         if(tankArry.get(0).getShot()){
                                             contex.ourTank.setImageResource(R.drawable.fire);
-                                            //contex.ourTank.setVisibility(View.GONE);
-                                            contex.test.setText("YOU SHOT SERVER BITCH!!");
                                         }
                                     }
                                 });
                             }
                         }
-
                         contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                             @Override
-                            public void run(){
+                            public void run(){ // update players tank on the screen
                                 //enemiesTanks = ImageViews
                                 contex.enemiesTanks.get(clientNum-1).setX(position.x + contex.backGround.getX());
                                 contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
                                 contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
                                 if(tankArry.get(clientNum).getShot() == true) {
                                     contex.enemiesTanks.get(clientNum - 1).setImageResource(R.drawable.fire);
-                                    //contex.enemiesTanks.get(clientNum - 1).setVisibility(View.GONE);
                                     contex.test.setText("\n"+clientNum +"was shot");//try it now . if we get s
                                 }
                             }
                         });
-
-                    // send tankArry to client (that contains info of all tanks updated posions and if thay got shot or not
-                    //outputToClient.writeObject(tankArry);
-
-                    int playersInGame = 0;
                     //update clients
-
                     outputToClient.writeBoolean(contex.amIShooting);
                     contex.amIShooting = false;
                     for(int i =0 ; i < tankArry.size()  ; i ++ ) {
@@ -575,13 +481,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         //if the client was shot or not  - in each client if that person was shot make the visibily gone
                         outputToClient.writeBoolean(tankArry.get(i).getShot());
                         outputToClient.flush();
-                        if(tankArry.get(i).getShot() == false){
-                            playersInGame++;
-                        }
-                        //send the stuff to the client
+
                     }
-                    if(playersInGame <=1){
-                        //game over!!!! , send to other players
+                    outputToClient.writeInt(contex.gameRuning ==true ? 1:-1);
+                    outputToClient.flush();
+
+                    Lock lock_2 = new ReentrantLock();
+                    synchronized (lock_2) {
+                        contex.gameRuning = (inputFromClient.readInt() != -1);
                     }
                 } catch ( IOException e) {
                     // TODO Auto-generated catch block
@@ -589,47 +496,23 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 }
             }
             try {
-                outputToClient.writeInt(-1);
-                outputToClient.flush();
+//                outputToClient.writeInt(-1); // alert other player that the the app is closing
+//                outputToClient.flush();
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             // send client the game is over and player num thet won
         }
     }
-    public void conectToClient(){
-        ServerSocket server;
-        ImageView img ;
-        try {
-            server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
-            boolean flag = true; // change
-            while (flag) { // while waiting for players
-                flag = false; // change
-                    Socket socket = server.accept();
-                    client_Listener cl = new client_Listener(socket);
-                    ClienThreads.add(cl);
-                    cl.start();
-                    img = (ImageView) findViewById(this.imgIds[enemiesNum]);
-                    this.enemiesTanks.add(img);
-                    this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
-                    this.enemiesNum++;
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
 
+    private class bulletThread extends Thread { // this thread displayes and moves the bullet acoding to parameters
 
-
-
-    private class bulletThread extends Thread {
-
-        int index_;
-        Timer t_ = new Timer();
-        double x1,y1, x2,y2;
-        float angle ;
-        Lock lock = new ReentrantLock();
+        private int index_;
+        private Timer t_ = new Timer();
+        private double x1,y1;
+        private float angle ;
+        private Lock lock = new ReentrantLock();
 
         public bulletThread(MyPoint position, final float angle_, int index){
 
@@ -648,26 +531,25 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 }
             });
         }
-
-        //currently working on this thread
         @SuppressWarnings("unchecked")
         @Override
         public void run() {
             t_.scheduleAtFixedRate(new TimerTask() {
                 @Override
                 public void run() {
-                    contex.runOnUiThread(new Runnable(){ // update tanks on the screen
+                    contex.runOnUiThread(new Runnable(){ // update bullet  on the screen
                         @Override
                         public void run(){
+                            // clac new location
                             x1 = x1 + (5*Math.cos(angle* (Math.PI / 180)));
                             y1 = y1 + (5*Math.sin(angle* (Math.PI / 180)));
                             contex.test.setText("angel "+ angle +", x = "+x1+", y="+y1);
-                            synchronized (lock) {
+                            synchronized (lock) { // update location
 
                                 if (x1 > 0 && x1 < contex.backGround.getHeight() && y1 > 0 && y1 < contex.backGround.getWidth()) {
                                     contex.bullets.get(index_).setX((int) x1);
                                     contex.bullets.get(index_).setY((int) y1);
-                                } else {
+                                } else { // if out of map
                                     contex.bullets.get(index_).setVisibility(View.GONE);
                                     t_.cancel();
                                 }
@@ -678,9 +560,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             }, 0, 3);
         }
     }
-
-    //1. server make new bullet thread when he soots and makes shooting boolean true , 2. server send boolean shooting to cleint (already does that )
-    // so if server is shooting client makes new bullet thread , if client shoot he display for himself the bullet
 }
 
 
