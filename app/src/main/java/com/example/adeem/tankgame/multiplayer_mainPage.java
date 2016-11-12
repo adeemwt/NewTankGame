@@ -38,6 +38,7 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
         setContentView(R.layout.activity_multiplayer_main_page);
 
 
+        //bar.setVisibility(View.VISIBLE);
 
         mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(this, getMainLooper(), this);
@@ -49,17 +50,13 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
         bar.setVisibility(View.VISIBLE);
 
         registerWfdReceiver();
-        wfdReceiver.setBar(this.bar);
+        wfdReceiver.setBarAndText(this.bar,this.log,joinBTN);
 
         this.hostBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 bar.setVisibility(View.VISIBLE);
                 onDiscover();
-                boolean temp = true;
-//                while(!wfdReceiver.getChanged());
-//                bar.setVisibility(View.INVISIBLE);
-
             }
         });
         this.joinBTN.setOnClickListener(new View.OnClickListener() {
@@ -69,7 +66,6 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
                 onConnect();
             }
         });
-
     }
 
     public void onChannelDisconnected(){
@@ -85,6 +81,7 @@ public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pM
     private void registerWfdReceiver(){
         wfdReceiver = new WiFiDirectReceiver(mManager, mChannel, this);
         wfdReceiver.registerReceiver();
+        this.bar.setVisibility(View.GONE);
     }
 
     private void unRegisterWfdReceiver(){

@@ -71,7 +71,17 @@
         android:layout_x="277dp"
         android:layout_y="26dp" />
 
-
+    <TextView
+        android:text="Game Over,\nyou "
+        android:layout_width="321dp"
+        android:layout_height="433dp"
+        android:layout_x="27dp"
+        android:layout_y="33dp"
+        android:id="@+id/gameOver_viewClient"
+        android:visibility="gone"
+        android:includeFontPadding="true"
+        android:textSize="@android:dimen/notification_large_icon_width"
+        android:textColor="@android:color/holo_red_dark" />
 
     <ImageView
         android:layout_width="40dp"

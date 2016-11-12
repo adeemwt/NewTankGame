@@ -141,4 +141,17 @@ tools:context="com.example.adeem.tankgame.server_inGame">
         android:layout_y="73dp"
         android:id="@+id/blt8"
         android:visibility="gone"/>
+
+    <TextView
+        android:text="Game Over,\nyou "
+        android:layout_width="321dp"
+        android:layout_height="433dp"
+        android:layout_x="27dp"
+        android:layout_y="33dp"
+        android:id="@+id/gameOver_viewServer"
+        android:visibility="gone"
+        android:includeFontPadding="true"
+        android:textSize="@android:dimen/notification_large_icon_width"
+        android:textColor="@android:color/holo_red_dark" />
+
 </AbsoluteLayout>

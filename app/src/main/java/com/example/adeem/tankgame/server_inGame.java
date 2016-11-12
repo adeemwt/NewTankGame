@@ -1,5 +1,6 @@
 package com.example.adeem.tankgame;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 //import android.graphics.Point;
@@ -8,6 +9,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
+import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -16,6 +19,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -60,6 +64,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     private String my_pref_name;
     private String SHuserName;
     private String UserName;
+    private TextView GameOvertxt;
 
     //all the sensor objects used to detect movement
     private SensorManager sManager;
@@ -75,8 +80,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     private TextView test; ////// fot testing only (debugging pupposes)
     private ImageView backGround;
 
-
-
+    Socket socket;
+    ServerSocket server;
     //IDs related to shooting and boolean variable indicating if shooting or not
     private int[] blts = {
             R.id.blt1,
@@ -132,6 +137,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         rlayout = (AbsoluteLayout) findViewById(R.id.activity_server_in_game);
         backGround = (ImageView) findViewById(R.id.limitsView_server2);
+        GameOvertxt = (TextView) findViewById(R.id.gameOver_viewServer);
 
         tankArry .add(new Tank(new Player("server"),null));
         tankArry .add(new Tank(new Player("client"),null));
@@ -170,7 +176,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         synchronized (lock) {
                             tankArry.get(0).setheadingAngle((float) alpha1);
                         }
-
                     }
                     return true;
                 }
@@ -179,7 +184,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.44444
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        test.setText("SERVER");
+        //test.setText("SERVER");
     }
 
 
@@ -259,10 +264,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         SensorManager.getRotationMatrixFromVector(deltaRotationMatrix, deltaRotationVector);
 
-        //get  scale for screen density - used to convert from PX to DP
-        // final float scale = getResources().getDisplayMetrics().density;
-
-
         //check if tank is out of border
         boolean moveY;
         if (deltaRotationVector[1] > 0)//check tank direction on Y axis
@@ -284,8 +285,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             tankArry.get(0).setPosition(movement); // update position so clients well recive it
         }
     }
-
-
 
 
     @Override
@@ -312,10 +311,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         //Do nothing.
     }
 
-
-    public void saveAndExit() { // not used
-        this.onBackPressed();
-    }
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -345,14 +340,11 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
 
     public void conectToClient(){ // conect to clients and run a client_Listener for evry one of tham
-        ServerSocket server;
+
         ImageView img ;
         try {
             server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
-            boolean flag = true; // change
-            while (flag) { // while waiting for players
-                flag = false; // change
-                Socket socket = server.accept();
+                socket = server.accept();
                 client_Listener cl = new client_Listener(socket);
                 ClienThreads.add(cl);
                 cl.start();
@@ -361,7 +353,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 this.enemiesTanks.add(img);
                 this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
                 this.enemiesNum++;
-            }
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -369,11 +360,48 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
     @Override
     public void onBackPressed() {
+
         gameRuning = false;
         ClienThreads.get(0).interrupt();
+        exit();
+        WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
+        try {
+            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket server before connecting.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wifiManager.setWifiEnabled(true);
+
+
         super.onBackPressed();
     }
+    private void closeStreams(ObjectInputStream input,ObjectOutputStream output,Socket soket){
+        try{
+            input.close();
+            input.close();
+            soket.close();
+            socket.close();
+        }
+        catch (Exception Exception){
+            Exception.printStackTrace();
+        }
+    }
+    private void displayToast(final String toDisplay){
+            runOnUiThread(new Runnable() {
+                public void run()
+                {
+                    Toast.makeText(server_inGame.this, toDisplay, Toast.LENGTH_SHORT).show();
+                }
+            });
 
+    }
+
+    private void exit(){
+        // sendMessage(EXIT);
+        displayToast("calling EXIT");
+        finish();
+    }
     private class client_Listener extends Thread { // class privieds a thread that updates fieds for the main GUI thread acording to inf it recives from the clients
         // also, this threads sends info about the game and other players to the client ( one thred per client is needed)
 
@@ -385,6 +413,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         private Boolean shooting = false;
         private Lock lock = new ReentrantLock();
         private float rotation_;
+        private boolean iwon = false;
 
         public client_Listener(Socket socket) {
             this.socket = socket;
@@ -394,7 +423,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 inputFromClient = new ObjectInputStream(this.socket.getInputStream());
             } catch (IOException ioException) {
                 //   displayToast("Server Ended the connection.");
-                //   exit();
+                   exit();
             }
         }
         @SuppressWarnings("unchecked")
@@ -431,6 +460,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 while(!found)
                                     for(int i =0 ; i < contex.bullets.size() ; i++){
                                         if(contex.bullets.get(i).getVisibility()== View.GONE){
+                                            iwon = true;
                                             bulletThread th = new bulletThread(tankArry.get(clientNum).getPosition(), tankArry.get(clientNum).getheadingAngle(),i);
                                             th.start();
                                             found = true;
@@ -443,6 +473,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                     public void run() {
                                         if(tankArry.get(0).getShot()){
                                             contex.ourTank.setImageResource(R.drawable.fire);
+                                            gameRuning = false;
                                         }
                                     }
                                 });
@@ -457,7 +488,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
                                 if(tankArry.get(clientNum).getShot() == true) {
                                     contex.enemiesTanks.get(clientNum - 1).setImageResource(R.drawable.fire);
-                                    contex.test.setText("\n"+clientNum +"was shot");//try it now . if we get s
+                                    iwon = true;
+                                    //contex.test.setText("\n"+clientNum +"was shot");//try it now . if we get s
+                                    gameRuning = false;
                                 }
                             }
                         });
@@ -474,12 +507,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         //if the client was shot or not  - in each client if that person was shot make the visibily gone
                         outputToClient.writeBoolean(tankArry.get(i).getShot());
                         outputToClient.flush();
-
                     }
 
-                } catch ( IOException e) {
-                    // TODO Auto-generated catch block
-                    //e.printStackTrace();
+                } catch (Exception e) {
+                    displayToast("IN exception, calling close ");
+                    try {
+                        socket.close();
+                    }catch (Exception e1){}
+                    closeStreams(inputFromClient,outputToClient,socket);
                     contex.gameRuning=false;
                     break;
                 }
@@ -489,9 +524,10 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 public void run(){ // update players tank on the screen
                     if(contex.gameRuning )
                          contex.test.setText("the other player had left the game");
-                    else
-                         contex.test.setText("GAME OVER");
-
+                    else {
+                        contex.GameOvertxt.setVisibility(View.VISIBLE);
+                        contex.GameOvertxt.append(iwon == true ? " WIN!" : " LOSE!");
+                    }
                 }
             });
 

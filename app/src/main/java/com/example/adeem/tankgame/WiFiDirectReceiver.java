@@ -9,7 +9,9 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.adeem.tankgame.multiplayer_mainPage;
 
@@ -34,14 +36,17 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
     WifiP2pDevice[] wfdDevices;
 
     ProgressBar bar;
+    TextView txt;
+    Button join;
     public WiFiDirectReceiver(WifiP2pManager wfdManager, WifiP2pManager.Channel wfdChannel, multiplayer_mainPage appActivity){
         this.wfdManager = wfdManager;
         this.wfdChannel = wfdChannel;
         this.appActivity = appActivity;
     }
 
-public void  setBar(ProgressBar bar){
-    this.bar = bar;
+public void  setBarAndText(ProgressBar bar, TextView txt,Button jbtn){
+    this.join = jbtn;
+    this.bar = bar;this.txt = txt;
 }
 
     @Override
@@ -63,7 +68,7 @@ public void  setBar(ProgressBar bar){
     private void handleWifiP2pStateChanged(Intent intent){
         int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
         isWifiDirectEnabled = state == WifiP2pManager.WIFI_P2P_STATE_ENABLED ? true : false;
-        Toast.makeText(appActivity, "Enabled : " +isWifiDirectEnabled, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(appActivity, "Enabled : " +isWifiDirectEnabled, Toast.LENGTH_SHORT).show();
     }
 
     private void handleWifiP2pThisDeviceChanged(Intent intent){
@@ -77,6 +82,8 @@ public void  setBar(ProgressBar bar){
 
         wfdManager.requestPeers(wfdChannel, this);
         this.bar.setVisibility(View.GONE);
+        this.txt.setText("Peers have been found, \nclick \"connect\" to connect to the players ");
+        join.setEnabled(true);
     }
 
     private void handleWifiP2pConnectionChanged(Intent intent){
@@ -86,7 +93,7 @@ public void  setBar(ProgressBar bar){
             wfdManager.requestConnectionInfo(wfdChannel, this);
         }
         else{
-            Toast.makeText(appActivity.getApplicationContext(), "Connection Closed", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(appActivity.getApplicationContext(), "Connection Closed", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -117,7 +124,6 @@ public void  setBar(ProgressBar bar){
                 intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
 
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
-
             appActivity.startActivity(intent);
 
         }
@@ -135,7 +141,7 @@ public void  setBar(ProgressBar bar){
             wfdDevices = wifiP2pDeviceList.getDeviceList().toArray(new WifiP2pDevice[0]);
         }
         else {
-            Toast.makeText(appActivity.getApplicationContext(), wifiP2pDeviceList.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(appActivity.getApplicationContext(), wifiP2pDeviceList.toString(), Toast.LENGTH_SHORT).show();
             wfdDevices = null;
         }
     }

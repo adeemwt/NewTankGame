@@ -1,5 +1,6 @@
 package com.example.adeem.tankgame;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import android.widget.AbsoluteLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import classes.MyPoint;
 import com.firebase.client.DataSnapshot;
@@ -27,6 +30,8 @@ import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,6 +56,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
     float RotationAngle;
     boolean isShooting = false;
+
     //the socketOuput and input streams , no need to initialize atm
     ObjectInputStream input = null;
     ObjectOutputStream output = null;
@@ -78,8 +84,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     final double EPSILON = 0.000001;
 
 
-    private int playerNum = 1;
-
     private Boolean gameRuning = true;
 
     private SharedPreferences prefs;
@@ -98,6 +102,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
     private server_Listener Slistener;
     //TIMER variables
+    private TextView txtView;
     private Timer t;
     private int seconds;
     private ImageView backGround;
@@ -124,9 +129,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     };
     int enemiesNum = 0;
 
-
-
-
     private int[] blts = {
             R.id.blt1_client,
             R.id.blt2_client,
@@ -145,40 +147,34 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_in_game);
 
+        txtView = (TextView) findViewById(R.id.gameOver_viewClient);
 
         Bundle bundle = getIntent().getExtras();
 
         wifiP2pInfo = (WifiP2pInfo) bundle.get("WIFI_P2P_INFO");
 
         try {
-            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket 			    server before connecting.
+            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket server before connecting.
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         conectToServer();
 
-        //!!!!!!!!!!!!!!!!!!!!! get the index and set the enemies visible!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // get the index and set the enemies visible
         int playerAmount = 2; // get using sherd prefrenses
 
         try {
             int j = 0;
             for (int i = 0; i < playerAmount-1; i++) { // swap size with a fixed size
-                //if (i != myIndex) {
                 ImageView newTank = (ImageView) findViewById(imgIds[j++]);
                 newTank.setVisibility(View.VISIBLE);
                 enemiesNum++;
                 myenemy.add(newTank);
-
-                //}
             }
         }catch(Exception e){}
 
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        Slistener = new server_Listener(input, this);
+        Slistener = new server_Listener(this);
         Slistener.start();
-
 
         Resources res = getResources();
 
@@ -192,10 +188,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             bullets.add(temp);
         }
 
-
-
-
-
         prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
         Difficulty = prefs.getString("difficultly", null);
         UserName = prefs.getString(SHuserName, null);
@@ -204,20 +196,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         //for debugging only
         test = (TextView) findViewById(R.id.log_client2);
 
-        t = new Timer();
-        t.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView tv = (TextView) findViewById(R.id.time_client2);
-                        tv.setText(String.valueOf(String.valueOf(seconds) + ""));
-                        seconds++;
-                    }
-                });
-            }
-        }, 0, 1000);
 
         test.setText("");
         /////////////////////////////////////////////////
@@ -229,8 +207,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         sManager.registerListener(this,
                 sManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_UI);
-
-
 
 
         Difficulty = diffSpinner[0]; // for testing !!!!
@@ -248,15 +224,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 this.WidthAndHieght = this.HARD_SIZE;
                 targetNum = TARGET_NUM_HARD;
             }
-            setMapScale();
-            //randTargets(targetNum);
-            String userName = prefs.getString(SHuserName, null);
 
-//            Random rnd = new Random();
-//            Color c = new Color();                   // the tank does not have a color for now (well be added)
-//            c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
-//            tanks = new ArrayList<>(playerNum);
-//            tanks.add(new Tank(new Player(userName), c));
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_client_in_game);
@@ -288,7 +256,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        test.setText("all is good CLIENT");
+        //test.setText("all is good CLIENT");
     }
 
     public void settext_(String text){
@@ -301,17 +269,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             connection.bind(null);
             InetSocketAddress isa = new InetSocketAddress(wifiP2pInfo.groupOwnerAddress, WiFiDirectReceiver.PORT);
             connection.connect(isa, 100000);
-
-
             output = new ObjectOutputStream(connection.getOutputStream());
-            output.flush();
             input = new ObjectInputStream(connection.getInputStream());
+            output.flush();
+            displayToast("the input is " + input == null ? "yes " : "no");
+            input.available();
         }catch (IOException ioException){
             ioException.printStackTrace();
         }
     }
 
-    /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override
     public void onClick(View view) {
         int buttonId = view.getId();
@@ -341,16 +308,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    private void displayToast(final String toDisplay){
+        runOnUiThread(new Runnable() {
+            public void run()
+            {
+                Toast.makeText(clientInGame.this, toDisplay, Toast.LENGTH_SHORT).show();
+            }
+        });
 
-    //randomize the trget position and set visiable according to the number for the difficulty level
-    public void setMapScale() {
-//        final float scale = getResources().getDisplayMetrics().density;
-//        int pixels = (int) (WidthAndHieght.x * scale + 0.5f);
-//        backGround.getLayoutParams().height = pixels;
-//        backGround.getLayoutParams().width = pixels;
-//        backGround.requestLayout();
-        //TargetImages.add(backGround);
     }
+
 
 
     //movement detected update the server
@@ -492,29 +459,59 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
     }
+    private void checkIfStillConnected(){
+        if(!wifiP2pInfo.groupFormed){
+           // displayToast("Enemy Left the game.");
+            exit();
+        }
+    }
 
     @Override
     public void onBackPressed() {
-        gameRuning = false;
-        Slistener.interrupt();
+        WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
+        try {
+            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket server before connecting.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
+        wifiManager.setWifiEnabled(true);
+        gameRuning = false;
+        closeStreams();
+        exit();
+        Slistener.interrupt();
         super.onBackPressed();
     }
 
+    private void closeStreams(){
+        try{
+            output.close();
+            input.close();
+            connection.close();
+        }
+        catch (Exception Exception){
+            Exception.printStackTrace();
+        }
+    }
+    private void exit(){
+        // sendMessage(EXIT);
+        displayToast("in exit ....");
+        finish();
+    }
     private class server_Listener extends Thread {
 
-        ObjectInputStream objectInputStream;
-        int myIndex;
-        TextView mytest;
-        clientInGame contex ;
-        int x=0,y=0,GIndxe;
-        float rotation_;
-        boolean amIShot = false;
-        Lock lock = new ReentrantLock();
+        private int myIndex;
+        private TextView mytest;
+        private clientInGame contex ;
+        private int x=0,y=0,GIndxe;
+        private float rotation_;
+        private boolean amIShot = false;
+        private Lock lock = new ReentrantLock();
+        private boolean Iwon = false;
 
-        public server_Listener(ObjectInputStream objectInputStream, clientInGame context_) {
+        public server_Listener(clientInGame context_) {
             this.contex = context_;
-            this.objectInputStream = objectInputStream;
             mytest = (TextView) findViewById(R.id.log_client2);
         }
 
@@ -576,6 +573,8 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void run() {
                                         contex.myenemy.get(GIndxe).setImageResource(R.drawable.fire);
+                                        Iwon = true;
+                                        gameRuning = false;
                                     }
                                 });
                                 //contex.myenemy.get(j++).setVisibility(View.GONE);
@@ -588,17 +587,19 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                                     @Override
                                     public void run() {
                                         contex.ourTank.setImageResource(R.drawable.fire);
+                                        gameRuning = false;
                                     }
                                 });
                             //contex.ourTank.setVisibility(View.GONE);
                         }
 
                     }
-
-
+                    checkIfStillConnected();
                 }// get the new tank cords and tank status (shot or not - tank not there, its shot)
                 catch (Exception e) {
                     //e.printStackTrace();
+                    displayToast("in the exception, calling close");
+                    closeStreams();
                     break;
                 }
             }
@@ -608,8 +609,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
                 public void run(){ // update players tank on the screen
                     if(contex.gameRuning )
                         contex.test.setText("the other player had left the game");
-                    else
-                        contex.test.setText("GAME OVER");
+                    else {
+                        contex.txtView.setVisibility(View.VISIBLE);
+                        contex.txtView.append(Iwon == true ? " WIN!" : " LOSE!");
+                    }
 
                 }
             });

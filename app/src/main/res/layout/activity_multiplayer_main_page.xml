@@ -28,7 +28,8 @@
         android:id="@+id/join_button"
         android:visibility="visible"
         android:layout_below="@+id/host_button"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:enabled="false" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,7 +53,7 @@
         android:progress="1"
         android:indeterminate="true"
         android:id="@+id/pbar_multiMAIN"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_above="@+id/log_txt"
         android:layout_centerHorizontal="true" />
 
