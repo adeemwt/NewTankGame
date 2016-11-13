@@ -393,6 +393,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
 
+
+
+        //unregister the sensor listener
+        sManager.unregisterListener(this);
+        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
+// See https://g.co/AppIndexing/AndroidStudio for more information.
+
+        gameRuning = false;
+        closeStreams();
+
         WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         try {
@@ -402,13 +412,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         }
 
         wifiManager.setWifiEnabled(true);
-        gameRuning = false;
-        closeStreams();
 
-        //unregister the sensor listener
-        sManager.unregisterListener(this);
-        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
-// See https://g.co/AppIndexing/AndroidStudio for more information.
+
+
+
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -492,7 +499,7 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         gameRuning = false;
         closeStreams();
         exit();
-        Slistener.interrupt();
+        //Slistener.interrupt();
         super.onBackPressed();
     }
 

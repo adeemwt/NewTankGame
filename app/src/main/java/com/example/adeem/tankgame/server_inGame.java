@@ -296,6 +296,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     @Override
     protected void onStop() {
 
+
+
+        //unregister the sensor listener
+        sManager.unregisterListener(this);
+        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+        gameRuning = false;
         WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         try {
@@ -305,12 +313,9 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         }
 
         wifiManager.setWifiEnabled(true);
-        gameRuning = false;
 
-        //unregister the sensor listener
-        sManager.unregisterListener(this);
-        super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
+
+
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -373,7 +378,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     public void onBackPressed() {
 
         gameRuning = false;
-        ClienThreads.get(0).interrupt();
+        //ClienThreads.get(0).interrupt();
         exit();
         WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
