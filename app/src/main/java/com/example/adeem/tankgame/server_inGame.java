@@ -527,12 +527,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
                 } catch (Exception e) {
                     displayToast("IN exception, calling close ");
-                    try {
-                        socket.close();
-                    }catch (Exception e1){}
-                    closeStreams(inputFromClient,outputToClient,socket);
-                    contex.gameRuning=false;
                     break;
+
                 }
             }
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen
@@ -546,7 +542,12 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                     }
                 }
             });
+            try {
+                socket.close();
+            }catch (Exception e1){}
 
+            closeStreams(inputFromClient,outputToClient,socket);
+            contex.gameRuning=false;
         }
     }
 
