@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class multiplayer_mainPage extends AppCompatActivity implements  WifiP2pManager.ChannelListener{
+public class multiplayer_SigninPage extends AppCompatActivity implements  WifiP2pManager.ChannelListener{
 
     WifiP2pManager.Channel mChannel;
     WifiP2pManager mManager;

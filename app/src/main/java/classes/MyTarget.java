@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Created by adeem on 18/09/2016.
  */
-public class Taget{
+public class MyTarget {
     Point cords;
     int Diameter;
     boolean shot;
@@ -38,7 +38,7 @@ public class Taget{
         this.shot = shot;
     }
 
-    public Taget(Point point , int diamemter){
+    public MyTarget(Point point , int diamemter){
         this.cords = point;
         this.Diameter = diamemter;
         this.shot = false;

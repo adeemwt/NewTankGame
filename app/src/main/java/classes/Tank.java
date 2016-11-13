@@ -21,23 +21,18 @@ import java.util.Comparator;
 public class Tank implements Comparable<Tank> , Serializable {
     private MyPoint position;
     private int currentScore;
-    private Player player;
     private Color colour;
 
     private float headingAngle;
 
     private boolean shot = false;
 
-    public Tank(Player player,Color colour){
+    public Tank(Color colour){
         this.position = new MyPoint(0,0);//initial possitoin
         this.currentScore = 0;
         this.colour = colour;
-        this.player = player;
     }
 
-    public Player getPlayer(){
-        return this.player;
-    }
     public Color getColour(){
         return this.colour;
     }
@@ -80,6 +75,7 @@ public class Tank implements Comparable<Tank> , Serializable {
 
     @Override
     public int compareTo(Tank another) {
-       return this.getPlayer().getName().compareTo(another.getPlayer().getName());
+      // return this.getPlayer().getName().compareTo(another.getPlayer().getName());
+        return this.currentScore - another.currentScore;
     }
 }

@@ -1,9 +1,7 @@
 package com.example.adeem.tankgame;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -22,16 +20,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import classes.MyPoint;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
+
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
-
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -39,18 +32,12 @@ import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import classes.Bullet;
-import classes.Player;
-import classes.Taget;
-import classes.Tank;
-
-public class clientInGame extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
+public class clientInGame_multiPlayer extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
 
 
 
@@ -66,50 +53,25 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     ArrayList<ImageView> myenemy = new ArrayList<ImageView>();
     WifiP2pInfo wifiP2pInfo;
 
-    //final values
-    final MyPoint EASY_SIZE = new MyPoint(1000, 1000);
-    final MyPoint MEDUIM_SIZE = new MyPoint(1500, 1500);
-    final MyPoint HARD_SIZE = new MyPoint(2000, 2000);
 
-    //how big the step for the tank is, dp
-    final int STEP = 10;
-    final int CHOOSE_X = 0;
-    final int CHOOSE_Y = 1;
-
-    //how many target
-    final int MAX_TARGET_SIZE = 5;
-    final int TARGET_NUM_EASY = 5;
-    final int TARGET_NUM_MADUIM = 10;
-    final int TARGET_NUM_HARD = 15;
     final double EPSILON = 0.000001;
 
 
     private Boolean gameRuning = true;
 
-    private SharedPreferences prefs;
-    private String my_pref_name;
-    private String SHuserName;
 
     private SensorManager sManager;
-    private int targetNum = 0;
-    private ArrayList<Tank> tanks;
-    private ArrayList<Taget> targets;
-    //private ArrayList<ImageView> TargetImages = new ArrayList<>();
-    private MyPoint WidthAndHieght;
-
     private ImageButton ourTank;
     private TextView test; ////// fot testing only
 
     private server_Listener Slistener;
     //TIMER variables
     private TextView txtView;
-    private Timer t;
-    private int seconds;
     private ImageView backGround;
 
     //shared preference variable
     private String Difficulty;
-    private String UserName;
+    //private String UserName;
 
     //calculation
     private static final float NS2S = 1.0f / 1000000000.0f;
@@ -179,18 +141,13 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         Resources res = getResources();
 
         String[] diffSpinner = res.getStringArray(R.array.Diff_spinner);
-        my_pref_name = res.getString(R.string.SharedPreferencesPrefsName);
-        SHuserName = res.getString(R.string.SharedPreferencesUserName);
+
         ImageView temp;
 
         for(int i =0 ; i < blts.length ; i++){
             temp = (ImageView) findViewById(blts[i]);
             bullets.add(temp);
         }
-
-        prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
-        Difficulty = prefs.getString("difficultly", null);
-        UserName = prefs.getString(SHuserName, null);
 
         ourTank = (ImageButton) findViewById(R.id.ourTank_client2);
         //for debugging only
@@ -212,19 +169,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         Difficulty = diffSpinner[0]; // for testing !!!!
 
         if (Difficulty != null) {
-            if (Difficulty.equals(diffSpinner[0])) { // easy
-                this.WidthAndHieght = this.EASY_SIZE;
-                targetNum = TARGET_NUM_EASY;
-
-            } else if (Difficulty.equals(diffSpinner[1])) { // medium
-                this.WidthAndHieght = this.MEDUIM_SIZE;
-                targetNum = TARGET_NUM_MADUIM;
-
-            } else { // if(Difficulty.equals(diffSpinner[1]))   hard - default
-                this.WidthAndHieght = this.HARD_SIZE;
-                targetNum = TARGET_NUM_HARD;
-            }
-
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.activity_client_in_game);
@@ -285,7 +229,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         switch (buttonId) {
             case (R.id.ourTank_client2): {
                 Lock lock = new ReentrantLock();
-
                 boolean found = false;
                 while(!found)
                     for(int i =0 ; i < this.bullets.size() ; i++){
@@ -312,16 +255,16 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         runOnUiThread(new Runnable() {
             public void run()
             {
-                Toast.makeText(clientInGame.this, toDisplay, Toast.LENGTH_SHORT).show();
+                Toast.makeText(clientInGame_multiPlayer.this, toDisplay, Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
 
     //movement detected update the server
-    //sending to server the movement and getting the places of the other tanks - (update the positions of the tanks accordingly)
+    //sending to server the movement a1231995
+    // __nd getting the places of the other tanks - (update the positions of the tanks accordingly)
     //on sensor change listener
     public void onSensorChanged(SensorEvent event) {
 
@@ -428,31 +371,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    public void saveAndExit() { // save score
-
-        final Firebase mRef;
-
-        mRef = new Firebase("https://tankgameproject-85eb4.firebaseio.com/users/" + UserName + "/MultiPlayer/");
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue(String.class);
-                if (text == null) {
-                    mRef.setValue("" + seconds);
-                } else {
-                    if (Integer.parseInt(text) > seconds) {
-                        mRef.setValue("" + seconds);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-        this.onBackPressed();
-    }
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -522,14 +440,14 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
 
         private int myIndex;
         private TextView mytest;
-        private clientInGame contex ;
+        private clientInGame_multiPlayer contex ;
         private int x=0,y=0,GIndxe;
         private float rotation_;
         private boolean amIShot = false;
         private Lock lock = new ReentrantLock();
         private boolean Iwon = false;
 
-        public server_Listener(clientInGame context_) {
+        public server_Listener(clientInGame_multiPlayer context_) {
             this.contex = context_;
             mytest = (TextView) findViewById(R.id.log_client2);
         }
@@ -647,10 +565,10 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
         Timer t_ = new Timer();
         double x1,y1, x2,y2;
         float angle ;
-        clientInGame contex;
+        clientInGame_multiPlayer contex;
         Lock lock = new ReentrantLock();
 
-        public bulletThread(MyPoint position, final float angle_, int index, clientInGame contex_){
+        public bulletThread(MyPoint position, final float angle_, int index, clientInGame_multiPlayer contex_){
 
             y1 = position.y;
             x1 =position.x;
@@ -699,7 +617,6 @@ public class clientInGame extends AppCompatActivity implements View.OnClickListe
             }, 0, 3);
         }
     }
-
 }
 
 

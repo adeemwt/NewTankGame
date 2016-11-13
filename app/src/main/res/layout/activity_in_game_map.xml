@@ -11,7 +11,7 @@
 
     xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:id="@+id/mainlayout">
-    tools:context="com.example.adeem.tankgame.inGameMap">
+    tools:context="com.example.adeem.tankgame.inGameMap_singlePlayer">
     <ImageView
         android:layout_width="1000dp"
         android:layout_height="1000px"

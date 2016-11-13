@@ -10,7 +10,7 @@ android:paddingLeft="@dimen/activity_horizontal_margin"
 android:paddingRight="@dimen/activity_horizontal_margin"
 android:paddingTop="@dimen/activity_vertical_margin"
 android:id="@+id/activity_server_in_game"
-tools:context="com.example.adeem.tankgame.server_inGame">
+tools:context="com.example.adeem.tankgame.serverInGame_multiPlayer">
 
 <ImageView
     android:layout_width="1000dp"

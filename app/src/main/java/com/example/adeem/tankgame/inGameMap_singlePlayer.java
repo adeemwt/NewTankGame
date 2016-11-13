@@ -1,7 +1,5 @@
 package com.example.adeem.tankgame;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -10,41 +8,21 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Handler;
-import android.provider.ContactsContract;
-import android.renderscript.ScriptGroup.*;
-import android.support.annotation.AnimRes;
-import android.support.annotation.IdRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.StyleRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsoluteLayout;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 
-import junit.framework.Test;
-
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Random;
 import java.lang.Math;
@@ -54,7 +32,7 @@ import java.util.TimerTask;
 //TODO : HIGHSCORE BORES, SAVES KILLS, ~LIMITS, CHECKING FOR ACCEDENTS ,  HOST/GUEST
 import classes.*;
 
-public class inGameMap extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
+public class inGameMap_singlePlayer extends AppCompatActivity implements View.OnClickListener, SensorEventListener  {
 
 
 
@@ -86,7 +64,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
     private SensorManager sManager;
     private int targetNum = 0;
     private ArrayList<Tank> tanks;
-    private ArrayList<Taget> targets;
+    private ArrayList<MyTarget> targets;
     private ArrayList<ImageView> TargetImages = new ArrayList<>();
     private Point WidthAndHieght ;
 
@@ -219,7 +197,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
             Color c = new Color(); // the tank does not have a color for now (well be added)
             c.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256));
             tanks = new ArrayList<> (playerNum);
-            tanks.add(new Tank(new Player(userName),c));
+            tanks.add(new Tank(c));
             ourTank.setOnClickListener(this);
 
             AbsoluteLayout rlayout = (AbsoluteLayout) findViewById(R.id.mainlayout);
@@ -345,7 +323,7 @@ public class inGameMap extends AppCompatActivity implements View.OnClickListener
             int x = (int)(Math.random() * this.WidthAndHieght.x- 55) + 55; // 55?
             int y = (int)(Math.random() * this.WidthAndHieght.y - 55) + 55;
             int size = (int)(Math.random() *MAX_TARGET_SIZE);
-            targets.add(new Taget(new Point(x,y),size));
+            targets.add(new MyTarget(new Point(x,y),size));
             img =(ImageView) findViewById(imgIds[i]);
             img.setX(targets.get(i).getCords().x);
             img.setY(targets.get(i).getCords().y);

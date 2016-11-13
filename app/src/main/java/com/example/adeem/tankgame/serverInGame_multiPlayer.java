@@ -10,7 +10,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
-import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -21,10 +20,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.android.gms.appindexing.Action; //you dont have the import in the library
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
@@ -43,17 +38,16 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import classes.Bullet;
 import classes.MyPoint;
-import classes.Player;
 import classes.Tank;
 
-public class server_inGame extends AppCompatActivity  implements View.OnClickListener, SensorEventListener {
+public class serverInGame_multiPlayer extends AppCompatActivity  implements View.OnClickListener, SensorEventListener {
 
 
     private int clientCount = 1; // server is number 0
     private ArrayList<Tank> tankArry = new ArrayList<Tank>();
     private Boolean gameRuning = true;
     private ArrayList<Thread> ClienThreads = new ArrayList<Thread>();
-    private server_inGame contex = this;
+    private serverInGame_multiPlayer contex = this;
 
     private final double EPSILON = 0.000001;
    // private int playerNum = 1;
@@ -139,8 +133,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         backGround = (ImageView) findViewById(R.id.limitsView_server2);
         GameOvertxt = (TextView) findViewById(R.id.gameOver_viewServer);
 
-        tankArry .add(new Tank(new Player("server"),null));
-        tankArry .add(new Tank(new Player("client"),null));
+        tankArry .add(new Tank(null));
+        tankArry .add(new Tank(null));
 
 
 
@@ -409,7 +403,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             runOnUiThread(new Runnable() {
                 public void run()
                 {
-                    Toast.makeText(server_inGame.this, toDisplay, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(serverInGame_multiPlayer.this, toDisplay, Toast.LENGTH_SHORT).show();
                 }
             });
 

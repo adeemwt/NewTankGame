@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.adeem.tankgame.multiplayer_mainPage;
 
 /**
  * Created by adeem on 02/11/2016.
@@ -31,14 +30,14 @@ public class WiFiDirectReceiver   extends BroadcastReceiver implements
     boolean isWifiDirectEnabled;
     WifiP2pManager wfdManager;
     WifiP2pManager.Channel wfdChannel;
-    multiplayer_mainPage appActivity;
+    multiplayer_SigninPage appActivity;
     private IntentFilter intentFilter;
     WifiP2pDevice[] wfdDevices;
 
     ProgressBar bar;
     TextView txt;
     Button join;
-    public WiFiDirectReceiver(WifiP2pManager wfdManager, WifiP2pManager.Channel wfdChannel, multiplayer_mainPage appActivity){
+    public WiFiDirectReceiver(WifiP2pManager wfdManager, WifiP2pManager.Channel wfdChannel, multiplayer_SigninPage appActivity){
         this.wfdManager = wfdManager;
         this.wfdChannel = wfdChannel;
         this.appActivity = appActivity;
@@ -119,9 +118,9 @@ public void  setBarAndText(ProgressBar bar, TextView txt,Button jbtn){
     public void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo) {
         if(wifiP2pInfo.groupFormed){
             if(wifiP2pInfo.isGroupOwner)//start server
-                intent = new Intent(appActivity, server_inGame.class);//start game!!! (multi ingame)
+                intent = new Intent(appActivity, serverInGame_multiPlayer.class);//start game!!! (multi ingame)
             else//start client
-                intent = new Intent(appActivity, clientInGame.class);//start game!!! (multi ingame)
+                intent = new Intent(appActivity, clientInGame_multiPlayer.class);//start game!!! (multi ingame)
 
             intent.putExtra("WIFI_P2P_INFO", wifiP2pInfo);
             appActivity.startActivity(intent);

@@ -37,9 +37,9 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".SignUpActivity" />
-        <activity android:name=".inGameMap" />
+        <activity android:name=".inGameMap_singlePlayer" />
         <activity android:name=".highScores" />
-        <activity android:name=".multiplayer_mainPage" />
+        <activity android:name=".multiplayer_SigninPage" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -48,8 +48,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".server_inGame" />
-        <activity android:name=".clientInGame"></activity>
+        <activity android:name=".serverInGame_multiPlayer" />
+        <activity android:name=".clientInGame_multiPlayer"></activity>
     </application>
 
 </manifest>

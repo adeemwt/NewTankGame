@@ -112,10 +112,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(getApplicationContext(),res.getString(R.string.error_userNotSigedIn), Toast.LENGTH_SHORT).show();
                     return;
                 }
-             startAct2Intent = new Intent(this, inGameMap.class);
+             startAct2Intent = new Intent(this, inGameMap_singlePlayer.class);
              startActivity(startAct2Intent);
          }else if(buttonId == R.id.multiBTN){
-             startAct2Intent = new Intent(this,multiplayer_mainPage.class);
+             startAct2Intent = new Intent(this,multiplayer_SigninPage.class);
              startActivity(startAct2Intent);
          }else if(buttonId == R.id.logOffBTN){
              prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);

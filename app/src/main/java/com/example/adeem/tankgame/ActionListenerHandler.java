@@ -2,16 +2,16 @@ package com.example.adeem.tankgame;
 
 import android.net.wifi.p2p.WifiP2pManager;
 import android.widget.Toast;
-import com.example.adeem.tankgame.multiplayer_mainPage;
+
 /**
  * Created by adeem on 02/11/2016.
  */
 
 public class ActionListenerHandler  implements WifiP2pManager.ActionListener {
-    multiplayer_mainPage activity;
+    multiplayer_SigninPage activity;
     String actionDisplayText;
 
-    public ActionListenerHandler(multiplayer_mainPage activity, String actionDisplayText){
+    public ActionListenerHandler(multiplayer_SigninPage activity, String actionDisplayText){
         this.activity = activity;
         this.actionDisplayText = actionDisplayText;
     }
