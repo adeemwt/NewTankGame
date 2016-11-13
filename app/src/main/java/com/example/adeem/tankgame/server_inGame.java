@@ -379,7 +379,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         gameRuning = false;
         //ClienThreads.get(0).interrupt();
-        exit();
+
         WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
         wifiManager.setWifiEnabled(false);
         try {
@@ -388,14 +388,14 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
             e.printStackTrace();
         }
         wifiManager.setWifiEnabled(true);
-
+        exit();
 
         super.onBackPressed();
     }
     private void closeStreams(ObjectInputStream input,ObjectOutputStream output,Socket soket){
         try{
             input.close();
-            input.close();
+            output.close();
             soket.close();
             socket.close();
         }
