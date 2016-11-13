@@ -359,7 +359,7 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
 
         ImageView img ;
         try {
-            server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
+                server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
                 socket = server.accept();
                 client_Listener cl = new client_Listener(socket);
                 ClienThreads.add(cl);
@@ -369,6 +369,8 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                 this.enemiesTanks.add(img);
                 this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
                 this.enemiesNum++;
+                server.close();
+
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -476,7 +478,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                                 while(!found)
                                     for(int i =0 ; i < contex.bullets.size() ; i++){
                                         if(contex.bullets.get(i).getVisibility()== View.GONE){
-                                            iwon = true;
                                             bulletThread th = new bulletThread(tankArry.get(clientNum).getPosition(), tankArry.get(clientNum).getheadingAngle(),i);
                                             th.start();
                                             found = true;
@@ -540,13 +541,20 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
                         contex.GameOvertxt.setVisibility(View.VISIBLE);
                         contex.GameOvertxt.append(iwon == true ? " WIN!" : " LOSE!");
                     }
+
+
                 }
             });
             try {
                 socket.close();
+                inputFromClient.close();
+                outputToClient.close();
+
             }catch (Exception e1){}
 
-            closeStreams(inputFromClient,outputToClient,socket);
+            //closeStreams(inputFromClient,outputToClient,socket);
+
+
             contex.gameRuning=false;
         }
     }
