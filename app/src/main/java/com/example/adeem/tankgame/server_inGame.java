@@ -295,6 +295,18 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
     //When this Activity isn't visible anymore
     @Override
     protected void onStop() {
+
+        WifiManager wifiManager = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
+        try {
+            Thread.sleep(100); //waiting 0.1 seconds for host to set up his socket server before connecting.
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        wifiManager.setWifiEnabled(true);
+        gameRuning = false;
+
         //unregister the sensor listener
         sManager.unregisterListener(this);
         super.onStop();// ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -302,7 +314,6 @@ public class server_inGame extends AppCompatActivity  implements View.OnClickLis
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
-        gameRuning = false;
         client.disconnect();
     }
 
