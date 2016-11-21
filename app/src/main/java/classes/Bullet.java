@@ -30,7 +30,7 @@ public class Bullet implements Serializable {
     ArrayList<Tank> tanks_arr = new ArrayList<>();
     boolean multi;
 
-    //single player construstor
+    // single player constructor
     public  Bullet(ArrayList<ImageView> targets, float angle, Tank tank, MyPoint tankPosition){
         this.allTarget =  targets;
         this.headingAngle = angle;
@@ -39,7 +39,7 @@ public class Bullet implements Serializable {
         multi=false;
         shooterIndex = -1;
     }
-    //multi player constructor
+    // multi player constructor
     public  Bullet(ArrayList<Tank> tanks_Array,int IndexShooter){
         this.tanks_arr = tanks_Array;
         this.shooterIndex = IndexShooter;
@@ -112,94 +112,7 @@ public class Bullet implements Serializable {
         }
         return targets_;
     }
-/*
-    public ArrayList<Tank> shootMulti(){
-        double alpha1 = 0;
-        double Xs =0;
-        double Ys =0 ;
-        if(headingAngle <0) headingAngle = 360 + headingAngle;
 
-        for(int i =0 ; i < tanks_arr .size()-1; i++)
-        {
-
-            //check if the target is visible to the user - (still in the game)
-            if(tanks_arr.get(i).getShot()!= true)
-
-                //Xs = ( X1 - X2 )^2
-                Xs= Math.pow(tanks_arr.get(i).getPosition().x-tankPosition.x,2);
-
-            //YS = ( Y1 - Y2 ) ^2
-            Ys =  Math.pow(tanks_arr.get(i).getPosition().y - tankPosition.y,2);
-
-            //sqrt = (Ys + Xs) ^ 0.5
-            double sqrt =Math.sqrt(Xs + Ys );
-
-            //alpha(rad) = sin((Y1 - Y2)/sqrt) (RAD   0-PI)
-            alpha1 = Math.asin((tanks_arr.get(i).getPosition().y - tankPosition.y)/sqrt);
-
-            //alpha(dig) = alpha(rad)*180/PI  (DIG  0-360)
-            alpha1 =  alpha1 * 180 / Math.PI;
-
-            //check if the tank is up or bellow the target  - calculate the alpha accordingly
-            if(tankPosition.x <= tanks_arr.get(i).getPosition().x)
-                alpha1   += 90;
-            else{
-                alpha1 = 270 -alpha1;
-            }
-
-            //check aim accuracy and set invisible if show
-            if(alpha1 + 15 > headingAngle && alpha1 - 15 < headingAngle){
-                //allTarget.get(i).setVisibility(View.GONE);
-                tanks_arr.get(i).setShot();
-            }
-
-        }
-        return tanks_arr;
-    }
-
-    public ArrayList<ImageView> shootSingel(){
-        double alpha1 = 0;
-        double Xs =0;
-        double Ys =0 ;
-        if(headingAngle <0) headingAngle = 360 + headingAngle;
-
-        for(int i =0 ; i < allTarget.size()-1; i++)
-        {
-
-            //check if the target is visible to the user - (still in the game)
-            if(allTarget.get(i).getVisibility() != View.GONE)
-
-            //Xs = ( X1 - X2 )^2
-            Xs= Math.pow(allTarget.get(i).getX()-tankPosition.x,2);
-
-            //YS = ( Y1 - Y2 ) ^2
-            Ys =  Math.pow(allTarget.get(i).getY() - tankPosition.y,2);
-
-            //sqrt = (Ys + Xs) ^ 0.5
-            double sqrt =Math.sqrt(Xs + Ys );
-
-            //alpha(rad) = sin((Y1 - Y2)/sqrt) (RAD   0-PI)
-            alpha1 = Math.asin((allTarget.get(i).getY() - tankPosition.y)/sqrt);
-
-            //alpha(dig) = alpha(rad)*180/PI  (DIG  0-360)
-            alpha1 =  alpha1 * 180 / Math.PI;
-
-            //check if the tank is up or bellow the target  - calculate the alpha accordingly
-            if(tankPosition.x <= allTarget.get(i).getX())
-                alpha1   += 90;
-            else{
-                alpha1 = 270 -alpha1;
-            }
-
-            //check aim accuracy and set invisible if show
-            if(alpha1 + 15 > headingAngle && alpha1 - 15 < headingAngle){
-                   allTarget.get(i).setVisibility(View.GONE);
-            }
-
-        }
-        return allTarget;
-    }
-*/
     public MyPoint getTankPosition(){
         return this.tankPosition;
     }

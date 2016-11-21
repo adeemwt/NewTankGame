@@ -20,38 +20,38 @@
 
 
     <ImageButton
-        android:layout_width="42dp"
-        android:layout_height="69dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/ourTank_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
-        android:background="@drawable/trastank" />
+        android:background="@drawable/background" />
 
-    <ImageView
-        android:layout_width="42dp"
-        android:layout_height="69dp"
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/ourTank_enemy_1_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
-        android:background="@drawable/trastank"
+        android:background="@drawable/background"
         android:visibility="gone"/>
 
-    <ImageView
-        android:layout_width="42dp"
-        android:layout_height="69dp"
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/ourTank_enemy_2_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
-        android:background="@drawable/trastank"
+        android:background="@drawable/background"
         android:visibility="gone"/>
 
-    <ImageView
-        android:layout_width="42dp"
-        android:layout_height="69dp"
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/ourTank_enemy_3_client2"
         android:layout_x="176dp"
         android:layout_y="209dp"
-        android:background="@drawable/trastank"
+        android:background="@drawable/background"
         android:visibility="gone"/>
 
     <TextView

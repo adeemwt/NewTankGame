@@ -21,7 +21,6 @@ public class Client {
     public void start(TextView logg,String serverIP) {
         this.log = logg;
         enterChatRoom(serverIP);
-        //XDDD this wass the problem, it didnt do shit!!!!!!!!!!!!
     }
     private void enterChatRoom(String serverIP) {
         try { // Create a socket to connect to the server

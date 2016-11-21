@@ -87,9 +87,29 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
             R.id.blt7,
             R.id.blt8
     };
+
+    private int[] imgtANK = {
+            R.drawable.tank0,
+            R.drawable.tank15,
+            R.drawable.tank45,
+            R.drawable.tank55,
+            R.drawable.tank90,
+            R.drawable.tank95,
+            R.drawable.tank135,
+            R.drawable.tank140,
+            R.drawable.tank180,
+            R.drawable.tank190,
+            R.drawable.tank215,
+            R.drawable.tank260,
+            R.drawable.tank270,
+            R.drawable.tank280,
+            R.drawable.tank315,
+            R.drawable.tank320
+    };
+
     boolean amIShooting = false;
     ArrayList<ImageView> bullets = new ArrayList<>();
-
+    float outTankRotat  = 0;
     //IDs relating to other playes tanks
     private int[] imgIds = {
             R.id.tank_1,
@@ -97,7 +117,7 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
             R.id.tank_3
     };
     int enemiesNum = 0;
-    ArrayList<ImageView> enemiesTanks = new ArrayList<>();
+    ArrayList<ImageButton> enemiesTanks = new ArrayList<>();
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -120,6 +140,8 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
         prefs = getSharedPreferences(my_pref_name, MODE_PRIVATE);
         UserName = prefs.getString(SHuserName, null); ////// NOT USED
         ourTank = (ImageButton) findViewById(R.id.ourTank_server2);
+        ourTank.setImageResource(imgtANK[0]);
+
         //for debugging only
         test = (TextView) findViewById(R.id.log_server);
 
@@ -165,7 +187,11 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
                         else {
                             alpha1 = 270 - alpha1;
                         }
-                        ourTank.setRotation((float) alpha1);
+                        //ourTank.setRotation((float) alpha1);
+                        outTankRotat = (float)alpha1;
+                        //ourTank.setRotation((float)alpha1);
+                        setImageByRotation(outTankRotat);
+
                         Lock lock = new ReentrantLock();
                         synchronized (lock) {
                             tankArry.get(0).setheadingAngle((float) alpha1);
@@ -181,6 +207,11 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
         //test.setText("SERVER");
     }
 
+
+
+    private void setImageByRotation(float rotation){
+        ourTank.setImageResource(imgtANK[(int)(rotation/(360/imgtANK.length)) % imgtANK.length]);
+    }
 
 
     /////////////////////////////////////for debugging purposes //////////////////////////////////
@@ -202,7 +233,7 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
                         synchronized (lock){
                             if(contex.bullets.get(i).getVisibility()== View.GONE){
                                 MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
-                                bulletThread bt = new bulletThread(P,ourTank.getRotation(),i);
+                                bulletThread bt = new bulletThread(P,outTankRotat,i);
                                 bt.start();
                                 found = true;
                                 break;
@@ -351,7 +382,7 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
 
     public void conectToClient(){ // conect to clients and run a client_Listener for evry one of tham
 
-        ImageView img ;
+        ImageButton img ;
         try {
                 server = new ServerSocket(WiFiDirectReceiver.PORT);//, 1);
                 socket = server.accept();
@@ -359,7 +390,7 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
                 ClienThreads.add(cl);
                 cl.start();
                 // display the tamk
-                img = (ImageView) findViewById(this.imgIds[enemiesNum]);
+                img = (ImageButton) findViewById(this.imgIds[enemiesNum]);
                 this.enemiesTanks.add(img);
                 this.enemiesTanks.get(enemiesNum).setVisibility(View.VISIBLE);
                 this.enemiesNum++;
@@ -496,7 +527,9 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
                                 //enemiesTanks = ImageViews
                                 contex.enemiesTanks.get(clientNum-1).setX(position.x + contex.backGround.getX());
                                 contex.enemiesTanks.get(clientNum-1).setY(position.y + contex.backGround.getY());
-                                contex.enemiesTanks.get(clientNum-1).setRotation(rotation_);
+                                if(rotation_ >= 0 && rotation_ <= 360)
+                                    contex.enemiesTanks.get(clientNum-1).setImageResource(contex.imgtANK[(int)(rotation_/(360/contex.imgtANK.length)) % contex.imgtANK.length]);
+
                                 if(tankArry.get(clientNum).getShot() == true) {
                                     contex.enemiesTanks.get(clientNum - 1).setImageResource(R.drawable.fire);
                                     iwon = true;
@@ -563,9 +596,11 @@ public class serverInGame_multiPlayer extends AppCompatActivity  implements View
 
         public bulletThread(MyPoint position, final float angle_, int index){
 
-            y1 = position.y;
-            x1 =position.x;
+            y1 = position.y+50;
+            x1 =position.x+50;
             angle =  (angle_-90);
+            angle = (int)(angle/16)*16;
+
             index_ = index;
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen
                 @Override

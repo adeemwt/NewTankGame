@@ -41,7 +41,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
 
 
 
-    float RotationAngle;
+    float RotationAngle =0;
     boolean isShooting = false;
 
     //the socketOuput and input streams , no need to initialize atm
@@ -50,7 +50,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
     Socket connection;
     MyPoint myMovement = new MyPoint(0,0);
 
-    ArrayList<ImageView> myenemy = new ArrayList<ImageView>();
+    ArrayList<ImageButton> myenemy = new ArrayList<ImageButton>();
     WifiP2pInfo wifiP2pInfo;
 
 
@@ -63,7 +63,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
     private SensorManager sManager;
     private ImageButton ourTank;
     private TextView test; ////// fot testing only
-
+    private  float enemyRotation = 0;
     private server_Listener Slistener;
     //TIMER variables
     private TextView txtView;
@@ -101,6 +101,24 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
             R.id.blt7_client,
             R.id.blt8_client
     };
+    private int[] imgtANK = {
+            R.drawable.tank0,
+            R.drawable.tank15,
+            R.drawable.tank45,
+            R.drawable.tank55,
+            R.drawable.tank90,
+            R.drawable.tank95,
+            R.drawable.tank135,
+            R.drawable.tank140,
+            R.drawable.tank180,
+            R.drawable.tank190,
+            R.drawable.tank215,
+            R.drawable.tank260,
+            R.drawable.tank270,
+            R.drawable.tank280,
+            R.drawable.tank315,
+            R.drawable.tank320
+    };
     ArrayList<ImageView> bullets = new ArrayList<>();
 
 
@@ -128,7 +146,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
         try {
             int j = 0;
             for (int i = 0; i < playerAmount-1; i++) { // swap size with a fixed size
-                ImageView newTank = (ImageView) findViewById(imgIds[j++]);
+                ImageButton newTank = (ImageButton) findViewById(imgIds[j++]);
                 newTank.setVisibility(View.VISIBLE);
                 enemiesNum++;
                 myenemy.add(newTank);
@@ -150,6 +168,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
         }
 
         ourTank = (ImageButton) findViewById(R.id.ourTank_client2);
+        ourTank.setImageResource(imgtANK[0]);
         //for debugging only
         test = (TextView) findViewById(R.id.log_client2);
 
@@ -190,8 +209,11 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                         else {
                             alpha1 = 270 - alpha1;
                         }
-                        ourTank.setRotation((float) alpha1);
+                        //ourTank.setRotation((float) alpha1);
                         RotationAngle = (float) alpha1;
+
+                        //ourTank.setRotation((float)alpha1);
+                        setImageByRotation(RotationAngle);
                     }
                     return true;
                 }
@@ -203,6 +225,12 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
         //test.setText("all is good CLIENT");
     }
 
+    private void setImageByRotation(float rotation){
+        ourTank.setImageResource(imgtANK[(int)(rotation/(360/imgtANK.length)) % imgtANK.length]);
+    }
+    private void setImageByRotation_ENEMY(float rotation,int num){
+        myenemy.get(num).setImageResource(imgtANK[(int)(rotation/(360/imgtANK.length)) % imgtANK.length]);
+    }
     public void settext_(String text){
         test.setText(test.getText() +"\n" + text);
     }
@@ -231,11 +259,11 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                 Lock lock = new ReentrantLock();
                 boolean found = false;
                 while(!found)
-                    for(int i =0 ; i < this.bullets.size() ; i++){
+                    for(int i =0 ; i <   this.bullets.size() ; i++){
                         synchronized (lock){
                               if(this.bullets.get(i).getVisibility()== View.GONE){
                                MyPoint P = new MyPoint((int)ourTank.getX(),(int)ourTank.getY());
-                              bulletThread th = new bulletThread(P,ourTank.getRotation(),i,this);
+                              bulletThread th = new bulletThread(P,RotationAngle,i,this);
                               th.start();
                               found = true;
                                break;
@@ -446,7 +474,8 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
         private boolean amIShot = false;
         private Lock lock = new ReentrantLock();
         private boolean Iwon = false;
-
+        int j =0;
+        float enemyrot = 0;
         public server_Listener(clientInGame_multiPlayer context_) {
             this.contex = context_;
             mytest = (TextView) findViewById(R.id.log_client2);
@@ -483,7 +512,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                                 synchronized (lock) {
                                     if (contex.bullets.get(i).getVisibility() == View.GONE) {
                                         MyPoint P = new MyPoint((int) contex.myenemy.get(0).getX(), (int) contex.myenemy.get(0).getY());
-                                        bulletThread th = new bulletThread(P, contex.myenemy.get(0).getRotation(), i, contex);
+                                        bulletThread th = new bulletThread(P, enemyRotation, i, contex);
                                         th.start();
                                         found = true;
                                         break;
@@ -493,17 +522,30 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                     }
 
                     //reaad the boolean ...
-                    int j =0;
+                    j =0;
                     for (int i = 0; i < contex.myenemy.size() + 1; i++) {
                         x = input.readInt();
                         y = input.readInt();
                         rotation_ = input.readFloat();
                         amIShot = input.readBoolean();
+
                         if(i != myIndex)
                         {
+                            enemyrot = rotation_;
                             contex.myenemy.get(j).setX(x+contex.backGround.getX());
                             contex.myenemy.get(j).setY(y+contex.backGround.getY());
-                            contex.myenemy.get(j).setRotation(rotation_);
+
+                            contex.enemyRotation  = rotation_;
+
+                            contex.runOnUiThread(new Runnable() { // update tanks on the screen
+                                    @Override
+                                    public void run() {
+                                        if (rotation_ >= 0 && rotation_ <= 360)
+                                            contex.myenemy.get(0).setImageResource(contex.imgtANK[(int)(enemyrot/(360/contex.imgtANK.length)) % contex.imgtANK.length]);
+                                    }
+                             });
+
+
                             if(amIShot==true ) {
                                 GIndxe = j;
                                 contex.runOnUiThread(new Runnable() {
@@ -529,7 +571,6 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                                 });
                             //contex.ourTank.setVisibility(View.GONE);
                         }
-
                     }
                     checkIfStillConnected();
                 }// get the new tank cords and tank status (shot or not - tank not there, its shot)
@@ -546,6 +587,7 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
                 public void run(){ // update players tank on the screen
                     if(contex.gameRuning )
                         contex.test.setText("the other player had left the game");
+
                     else {
                         contex.txtView.setVisibility(View.VISIBLE);
                         contex.txtView.append(Iwon == true ? " WIN!" : " LOSE!");
@@ -570,9 +612,11 @@ public class clientInGame_multiPlayer extends AppCompatActivity implements View.
 
         public bulletThread(MyPoint position, final float angle_, int index, clientInGame_multiPlayer contex_){
 
-            y1 = position.y;
-            x1 =position.x;
+            y1 = position.y+50;
+            x1 =position.x+50;
             angle =  (angle_-90);
+
+            angle = (int)(angle/16)*16;
             index_ = index;
             contex = contex_;
             contex.runOnUiThread(new Runnable(){ // update tanks on the screen

@@ -29,7 +29,7 @@ public class Server{
 
     public void start(TextView logg) {
         this.log = logg;
-        log.setText(log.getText() +"shit ");
+        log.setText(log.getText() +"tank ");
         new Thread(new Runnable() {
             public void run() {
                 try { // Create a server socket
@@ -68,9 +68,9 @@ public class Server{
             this.socket = socket;
             outputToClient = new ObjectOutputStream(socket.getOutputStream());
             inputFromClient = new ObjectInputStream(socket.getInputStream());
-            log.setText(log.getText() +"waiting for client name ..."); //this doesnt change the log
+            log.setText(log.getText() +"waiting for client name ..."); // this doesn't change the log
 
-            String name = inputFromClient.readObject().toString(); //sjould we get vlient name ?
+            String name = inputFromClient.readObject().toString(); // get client name
             boolean flag = true;
             if (flag) {
             }

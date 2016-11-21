@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -96,6 +97,7 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
     private final float[] deltaRotationVector = new float[4];
     private float timestamp;
 
+    float outTankRotat= 0;
     //initialize all targets
     private int[] imgIds = {
             R.id.target1,
@@ -114,7 +116,24 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
             R.id.target14,
             R.id.target15
     };
-
+    private int[] imgtANK = {
+            R.drawable.tank0,
+            R.drawable.tank15,
+            R.drawable.tank45,
+            R.drawable.tank55,
+            R.drawable.tank90,
+            R.drawable.tank95,
+            R.drawable.tank135,
+            R.drawable.tank140,
+            R.drawable.tank180,
+            R.drawable.tank190,
+            R.drawable.tank215,
+            R.drawable.tank260,
+            R.drawable.tank270,
+            R.drawable.tank280,
+            R.drawable.tank315,
+            R.drawable.tank320
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,6 +149,8 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
         UserName = prefs.getString(SHuserName, null);
 
         ourTank = (ImageButton) findViewById(R.id.ourTank);
+        ourTank.setImageResource(imgtANK[0]);
+
         //for debugging only
         test =(TextView) findViewById(R.id.gyrosxample);
         test.setVisibility(View.GONE);
@@ -219,7 +240,9 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
                         else{
                             alpha1 = 270 -alpha1;
                         }
-                        ourTank.setRotation((float)alpha1);
+                        outTankRotat = (float)alpha1;
+                        //ourTank.setRotation((float)alpha1);
+                        setImageByRotation(outTankRotat);
                     }
                     return true;
                 }
@@ -228,25 +251,28 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
     }
 
 
+    private void setImageByRotation(float rotation){
+        ourTank.setImageResource(imgtANK[(int)(rotation/(360/imgtANK.length)) % imgtANK.length]);
+    }
     /////////////////////////////////////for debugging purposes //////////////////////////////////
     @Override
     public void onClick(View view) {
         int buttonId = view.getId();
         switch(buttonId){
-            case(R.id.upBTN):
-                moveTargets(CHOOSE_Y,STEP);
-                break;
-            case(R.id.leftBTN):
-                moveTargets(CHOOSE_X,STEP);
-                break;
-            case(R.id.rightBTN):
-                moveTargets(CHOOSE_X,-STEP);
-                break;
-            case(R.id.downBTN):
-                moveTargets(CHOOSE_Y,-STEP);
-                break;
+//            case(R.id.upBTN):
+//                moveTargets(CHOOSE_Y,STEP);
+//                break;
+//            case(R.id.leftBTN):
+//                moveTargets(CHOOSE_X,STEP);
+//                break;
+//            case(R.id.rightBTN):
+//                moveTargets(CHOOSE_X,-STEP);
+//                break;
+//            case(R.id.downBTN):
+//                moveTargets(CHOOSE_Y,-STEP);
+//                break;
             case(R.id.ourTank): {
-                Bullet bullet = new Bullet(this.TargetImages,ourTank.getRotation(),tanks.get(0),new MyPoint((int)ourTank.getX(),(int)ourTank.getY()));
+                Bullet bullet = new Bullet(this.TargetImages,outTankRotat,tanks.get(0),new MyPoint((int)ourTank.getX(),(int)ourTank.getY()));
                 ArrayList<ImageView> targets= TargetImages;
                 this.TargetImages =(ArrayList<ImageView>) bullet.shoot();
 
@@ -265,44 +291,6 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
         }
     }
 
-    //////////////////////////// for debugging purposes ////////////////////////////////////////////////////////
-    public void  moveTargets(int xOry, int movement){ // buttons only
-        movement*=3;
-        final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the Width is "+ backGround.getWidth() + "\nthe dp calc is "+ (backGround.getHeight()-0.5f)/scale);
-        if(xOry == CHOOSE_X){
-            if(movement <  0 ) {
-
-            }
-            else{
-                if(ourTank.getX()  < backGround.getX()) return;
-            }
-           if(ourTank.getX() > backGround.getX() && ourTank.getX() > backGround.getX()+(backGround.getWidth()-0.5f)/scale) {
-               for (int i = 0; i < TargetImages.size(); i++)
-                   TargetImages.get(i).setX(TargetImages.get(i).getX() + movement);
-               if (movement < 0)
-                   ourTank.setRotation(90);
-               else ourTank.setRotation(-90);
-           }
-        }
-        else{
-            if(movement <  0 ) {
-
-            }
-            else{
-                if(ourTank.getY()  < backGround.getY()) return;
-            }
-          if(ourTank.getY() < backGround.getY() && ourTank.getY() > backGround.getY()+(backGround.getHeight()-0.5f)/scale) {
-                for (int i = 0; i < TargetImages.size(); i++)
-                    TargetImages.get(i).setY(TargetImages.get(i).getY() + movement);
-                if (movement < 0)
-                    ourTank.setRotation(180);
-                else ourTank.setRotation(0);
-           }
-
-        }
-    }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     //randomize the trget position and set visiable according to the number for the difficulty level
     public void randTargets(int targetNum){
@@ -310,7 +298,7 @@ public class inGameMap_singlePlayer extends AppCompatActivity implements View.On
 
 
         final float scale = getResources().getDisplayMetrics().density;
-        test.setText("the dinsity is " +scale);
+        test.setText("the density is " +scale);
         int pixels = (int) (WidthAndHieght.x* scale + 0.5f);
 
 

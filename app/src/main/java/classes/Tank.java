@@ -28,7 +28,7 @@ public class Tank implements Comparable<Tank> , Serializable {
     private boolean shot = false;
 
     public Tank(Color colour){
-        this.position = new MyPoint(0,0);//initial possitoin
+        this.position = new MyPoint(0,0);   // initial position
         this.currentScore = 0;
         this.colour = colour;
     }
